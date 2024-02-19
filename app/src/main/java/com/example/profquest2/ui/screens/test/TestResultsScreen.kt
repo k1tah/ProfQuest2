@@ -1,0 +1,258 @@
+package com.example.profquest2.ui.screens.test
+
+import androidx.compose.animation.AnimatedVisibility
+import androidx.compose.animation.core.LinearOutSlowInEasing
+import androidx.compose.animation.core.tween
+import androidx.compose.animation.scaleIn
+import androidx.compose.animation.slideIn
+import androidx.compose.animation.slideInHorizontally
+import androidx.compose.animation.slideInVertically
+import androidx.compose.foundation.ExperimentalFoundationApi
+import androidx.compose.foundation.Image
+import androidx.compose.foundation.clickable
+import androidx.compose.foundation.gestures.detectTapGestures
+import androidx.compose.foundation.layout.Arrangement
+import androidx.compose.foundation.layout.Box
+import androidx.compose.foundation.layout.Column
+import androidx.compose.foundation.layout.Spacer
+import androidx.compose.foundation.layout.fillMaxSize
+import androidx.compose.foundation.layout.fillMaxWidth
+import androidx.compose.foundation.layout.height
+import androidx.compose.foundation.layout.padding
+import androidx.compose.foundation.layout.size
+import androidx.compose.foundation.lazy.LazyRow
+import androidx.compose.foundation.pager.HorizontalPager
+import androidx.compose.foundation.pager.rememberPagerState
+import androidx.compose.foundation.shape.RoundedCornerShape
+import androidx.compose.material.icons.Icons
+import androidx.compose.material.icons.automirrored.filled.ArrowForward
+import androidx.compose.material3.Icon
+import androidx.compose.material3.Text
+import androidx.compose.runtime.Composable
+import androidx.compose.runtime.LaunchedEffect
+import androidx.compose.runtime.getValue
+import androidx.compose.runtime.mutableStateOf
+import androidx.compose.runtime.remember
+import androidx.compose.runtime.rememberCoroutineScope
+import androidx.compose.runtime.setValue
+import androidx.compose.ui.Alignment
+import androidx.compose.ui.Modifier
+import androidx.compose.ui.draw.clip
+import androidx.compose.ui.graphics.graphicsLayer
+import androidx.compose.ui.input.pointer.pointerInput
+import androidx.compose.ui.layout.ContentScale
+import androidx.compose.ui.res.painterResource
+import androidx.compose.ui.res.stringResource
+import androidx.compose.ui.text.font.FontWeight
+import androidx.compose.ui.text.style.TextAlign
+import androidx.compose.ui.unit.IntOffset
+import androidx.compose.ui.unit.dp
+import com.example.profquest2.R
+import com.example.profquest2.utils.Results
+import kotlinx.coroutines.delay
+import kotlinx.coroutines.launch
+
+@OptIn(ExperimentalFoundationApi::class)
+@Composable
+fun TestResultsScreen(results: Results) {
+    val scope = rememberCoroutineScope()
+    val pagerState = rememberPagerState(0, pageCount = { 5 })
+    fun moveToPage(page: Int) = scope.launch {
+        pagerState.animateScrollToPage(page)
+    }
+
+    val pages =
+        listOf<@Composable () -> Unit>(
+            {
+                SpecsPage(results.type, results.description) { moveToPage(1) }
+            },
+            {
+                SpecsPage(stringResource(R.string.specs), results.specs) { moveToPage(2) }
+            },
+            {
+                SpecsPage(
+                    stringResource(R.string.orientation),
+                    results.orientation
+                ) { moveToPage(3) }
+            },
+            {
+                SpecsPage(
+                    stringResource(R.string.enviroment),
+                    results.professionalEnvironment
+                ) { moveToPage(4) }
+            },
+            {
+                ProfessionsPage(results)
+            }
+        )
+    Column(
+        horizontalAlignment = Alignment.CenterHorizontally,
+        verticalArrangement = Arrangement.Center,
+        modifier = Modifier.pointerInput(Unit) {
+            detectTapGestures(onTap = {
+                if (it.x > size.width / 2) {
+                    moveToPage(pagerState.currentPage + 1)
+                } else {
+                    moveToPage(pagerState.currentPage - 1)
+                }
+            })
+        }) {
+        Spacer(modifier = Modifier.weight(1f))
+        HorizontalPager(state = pagerState) {
+            pages[it].invoke()
+        }
+        Spacer(modifier = Modifier.weight(1f))
+        LazyRow(
+            verticalAlignment = Alignment.CenterVertically,
+            horizontalArrangement = Arrangement.spacedBy(2.dp)
+        ) {
+            items(4) {
+                Icon(
+                    painter = painterResource(id = R.drawable.ic_circle),
+                    contentDescription = null,
+                    modifier = Modifier.size(if (it == pagerState.currentPage) 12.dp else 8.dp)
+                )
+            }
+        }
+        Spacer(modifier = Modifier.height(24.dp))
+    }
+}
+
+@Composable
+fun SpecsPage(title: String, specs: String, onNext: () -> Unit) {
+    Column(
+        horizontalAlignment = Alignment.CenterHorizontally,
+        verticalArrangement = Arrangement.Center,
+        modifier = Modifier
+            .fillMaxWidth()
+            .padding(horizontal = 16.dp)
+    ) {
+        Text(
+            text = title,
+            fontWeight = FontWeight.Bold,
+            textAlign = TextAlign.Center,
+        )
+        Spacer(modifier = Modifier.height(16.dp))
+        Text(
+            text = specs,
+            textAlign = TextAlign.Center,
+        )
+        Spacer(modifier = Modifier.height(48.dp))
+        Icon(
+            imageVector = Icons.AutoMirrored.Filled.ArrowForward,
+            contentDescription = null,
+            modifier = Modifier.clickable { onNext() }
+        )
+    }
+}
+
+@Composable
+fun ProfessionsPage(results: Results) {
+    var image1Visible by remember {
+        mutableStateOf(false)
+    }
+    var image2Visible by remember {
+        mutableStateOf(false)
+    }
+    var image3Visible by remember {
+        mutableStateOf(false)
+    }
+    LaunchedEffect(true) {
+        image1Visible = true
+        delay(1000)
+        image2Visible = true
+        delay(1000)
+        image3Visible = true
+    }
+    Box(modifier = Modifier.fillMaxSize()) {
+        AnimatedVisibility(
+            visible = image1Visible,
+            enter = slideInVertically(
+                animationSpec = tween(
+                    durationMillis = 1000,
+                    easing = LinearOutSlowInEasing
+                )
+            ) + scaleIn(),
+            modifier = Modifier
+                .align(Alignment.TopStart)
+                .padding(start = 48.dp, top = 64.dp)
+        ) {
+            RotatedImage(
+                res = results.images[0],
+                rotation = -30f
+            )
+        }
+        AnimatedVisibility(
+            visible = image3Visible,
+            enter = slideInHorizontally(
+                animationSpec = tween(
+                    durationMillis = 1000,
+                    easing = LinearOutSlowInEasing
+                )
+            ) + scaleIn(),
+            modifier = Modifier
+                .align(Alignment.BottomStart)
+                .padding(start = 48.dp, bottom = 128.dp)
+        ) {
+            RotatedImage(
+                res = results.images[1],
+                rotation = 30f
+            )
+        }
+        AnimatedVisibility(
+            visible = image2Visible,
+            enter = slideIn(
+                initialOffset = { s -> IntOffset(s.width, -s.height) },
+                animationSpec = tween(
+                    durationMillis = 1000,
+                    easing = LinearOutSlowInEasing
+                )
+            ) + scaleIn(),
+            modifier = Modifier
+                .align(Alignment.CenterEnd)
+                .padding(
+                    bottom = 256.dp
+                )
+        ) {
+            RotatedImage(
+                res = results.images[2],
+                rotation = 30f
+            )
+        }
+        Column(
+            horizontalAlignment = Alignment.CenterHorizontally,
+            modifier = Modifier
+                .fillMaxWidth()
+                .padding(horizontal = 16.dp)
+                .align(Alignment.Center)
+        ) {
+            Text(
+                text = stringResource(R.string.professions),
+                fontWeight = FontWeight.Bold,
+                textAlign = TextAlign.Center
+            )
+            Spacer(modifier = Modifier.height(16.dp))
+            Text(
+                text = results.professions,
+                textAlign = TextAlign.Center
+            )
+            Spacer(modifier = Modifier.height(48.dp))
+        }
+    }
+}
+
+@Composable
+fun RotatedImage(res: Int, rotation: Float, modifier: Modifier = Modifier) {
+    Image(
+        painter = painterResource(id = res),
+        contentDescription = null,
+        modifier = modifier
+            .graphicsLayer {
+                rotationZ = rotation
+            }
+            .size(height = 150.dp, width = 110.dp)
+            .clip(RoundedCornerShape(8.dp)),
+        contentScale = ContentScale.Crop,
+        alpha = 0.3f
+    )
+}

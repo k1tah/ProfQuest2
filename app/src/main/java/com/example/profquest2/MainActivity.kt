@@ -1,0 +1,110 @@
+package com.example.profquest2
+
+import android.os.Bundle
+import androidx.activity.ComponentActivity
+import androidx.activity.compose.setContent
+import androidx.compose.animation.AnimatedVisibility
+import androidx.compose.foundation.Image
+import androidx.compose.foundation.layout.Box
+import androidx.compose.foundation.layout.fillMaxSize
+import androidx.compose.foundation.layout.padding
+import androidx.compose.material.BottomNavigation
+import androidx.compose.material.BottomNavigationItem
+import androidx.compose.material.Icon
+import androidx.compose.material3.MaterialTheme
+import androidx.compose.material3.Scaffold
+import androidx.compose.material3.Surface
+import androidx.compose.material3.Text
+import androidx.compose.runtime.Composable
+import androidx.compose.ui.Alignment
+import androidx.compose.ui.Modifier
+import androidx.compose.ui.graphics.Color
+import androidx.compose.ui.res.painterResource
+import androidx.compose.ui.res.stringResource
+import androidx.compose.ui.unit.dp
+import androidx.navigation.NavGraph.Companion.findStartDestination
+import androidx.navigation.NavHostController
+import androidx.navigation.compose.NavHost
+import androidx.navigation.compose.rememberNavController
+import com.example.profquest2.ui.navigation.Navigation
+import com.example.profquest2.ui.navigation.graph.homeGraph
+import com.example.profquest2.ui.navigation.graph.profileGraph
+import com.example.profquest2.ui.navigation.graph.testGraph
+import com.example.profquest2.ui.navigation.graph.vacanciesGraph
+import com.example.profquest2.ui.theme.ProfQuest2Theme
+
+class MainActivity : ComponentActivity() {
+    override fun onCreate(savedInstanceState: Bundle?) {
+        super.onCreate(savedInstanceState)
+        setContent {
+            ProfQuest2Theme {
+                Surface(
+                    modifier = Modifier.fillMaxSize(), color = MaterialTheme.colorScheme.background
+                ) {
+                    MainScreen()
+                }
+            }
+        }
+    }
+}
+
+@Composable
+fun MainScreen() {
+    val navController = rememberNavController()
+    Scaffold(
+        modifier = Modifier.fillMaxSize(),
+        bottomBar = { BottomNavigationBar(navController = navController) }
+    ) { paddingValues ->
+        Box(Modifier.padding(paddingValues), contentAlignment = Alignment.Center) {
+            Image(
+                painter = painterResource(id = R.drawable.bg),
+                contentDescription = null,
+                modifier = Modifier.fillMaxSize()
+            )
+            NavHost(navController = navController, startDestination = "homeGraph") {
+                homeGraph(navController = navController)
+                testGraph(navController = navController)
+                profileGraph(navController = navController)
+                vacanciesGraph(navController = navController)
+            }
+        }
+    }
+}
+
+@Composable
+fun BottomNavigationBar(navController: NavHostController) {
+    BottomNavigation(backgroundColor = Color.White) {
+        Navigation.items.forEach {
+            val selected = Navigation.isSelected(navController = navController, route = it.route)
+            BottomNavigationItem(
+                alwaysShowLabel = true,
+                selected = selected,
+                onClick = {
+                    navController.navigate(it.route) {
+                        popUpTo(navController.graph.findStartDestination().id) {
+                            saveState = true
+                        }
+                        launchSingleTop = true
+                        restoreState = true
+                    }
+                },
+                icon = {
+                    Icon(
+                        painter = painterResource(id = if (selected) it.selectedIcon else it.icon),
+                        tint = if (selected) ProfQuest2Theme.colors.colorPrimary else ProfQuest2Theme.colors.labelText,
+                        contentDescription = stringResource(id = it.name),
+                        modifier = if (selected) Modifier.padding(6.dp) else Modifier
+                    )
+                },
+                label = {
+                    AnimatedVisibility(visible = selected) {
+                        Text(
+                            text = stringResource(id = it.name),
+                            color = ProfQuest2Theme.colors.colorPrimary
+                        )
+                    }
+                }
+            )
+        }
+    }
+}
