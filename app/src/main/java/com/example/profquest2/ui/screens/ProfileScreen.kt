@@ -20,10 +20,12 @@ import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.clip
 import androidx.compose.ui.layout.ContentScale
 import androidx.compose.ui.res.painterResource
+import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import androidx.navigation.NavController
 import com.example.profquest2.R
+import com.example.profquest2.ui.navigation.Destination
 import com.example.profquest2.ui.theme.ProfQuest2Theme
 import com.example.profquest2.ui.views.buttons.PrimaryButton
 
@@ -36,12 +38,11 @@ fun ProfileScreen(navController: NavController) {
         horizontalAlignment = Alignment.CenterHorizontally
     ) {
         Row(verticalAlignment = Alignment.CenterVertically) {
-            Icon(
-                painter = painterResource(id = R.drawable.ic_arrow_left),
-                contentDescription = null
-            )
             Spacer(modifier = Modifier.weight(1f))
-            Text(text = "Mой профиль", style = ProfQuest2Theme.typography.title)
+            Text(
+                text = stringResource(id = R.string.profile),
+                style = ProfQuest2Theme.typography.title
+            )
             Spacer(modifier = Modifier.weight(1f))
             Icon(
                 painter = painterResource(id = R.drawable.ic_settings),
@@ -111,9 +112,9 @@ fun ProfileScreen(navController: NavController) {
         Spacer(modifier = Modifier.weight(1f))
         PrimaryButton(
             onClick = {
-                navController.navigate("editProfile")
+                navController.navigate(Destination.EditProfile.route)
             },
-            text = "Редактировать профиль",
+            text = stringResource(id = R.string.edit_profile),
             modifier = Modifier
                 .fillMaxWidth()
                 .height(56.dp)

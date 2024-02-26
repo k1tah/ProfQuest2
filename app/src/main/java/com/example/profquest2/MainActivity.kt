@@ -27,6 +27,7 @@ import androidx.navigation.NavHostController
 import androidx.navigation.compose.NavHost
 import androidx.navigation.compose.rememberNavController
 import com.example.profquest2.ui.navigation.Navigation
+import com.example.profquest2.ui.navigation.graph.Graph
 import com.example.profquest2.ui.navigation.graph.homeGraph
 import com.example.profquest2.ui.navigation.graph.profileGraph
 import com.example.profquest2.ui.navigation.graph.testGraph
@@ -61,7 +62,7 @@ fun MainScreen() {
                 contentDescription = null,
                 modifier = Modifier.fillMaxSize()
             )
-            NavHost(navController = navController, startDestination = "homeGraph") {
+            NavHost(navController = navController, startDestination = Graph.HomeGraph.route) {
                 homeGraph(navController = navController)
                 testGraph(navController = navController)
                 profileGraph(navController = navController)

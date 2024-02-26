@@ -20,4 +20,12 @@ sealed class Destination(val route: String) {
     data object Profile: Destination("profile")
 
     data object EditProfile: Destination("editProfile")
+
+    data object Auth: Destination("auth")
+
+    data object Code: Destination("code")
+
+    data object Email: Destination("email")
+
+    data object ResetPassword: Destination("resetPassword")
 }

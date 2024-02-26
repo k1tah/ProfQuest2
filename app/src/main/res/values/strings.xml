@@ -7,6 +7,17 @@
     <string name="vacansies">Вакансии</string>
     <string name="profile">Профиль</string>
 
+    <!-- Profile Screen -->
+    <string name="edit_profile">Редактировать профиль</string>
+
+    <!-- Edit Profile Screen -->
+    <string name="fullname">ФИО</string>
+    <string name="education">Место учёбы</string>
+    <string name="phone">Номер телефона</string>
+    <string name="group">Группа</string>
+    <string name="select_document">Выбрать документ</string>
+    <string name="done">Готово</string>
+
     <!-- Test Results Screen -->
     <string name="specs">Психологические характеристики, особенности личности, способности</string>
     <string name="orientation">Ориентация, направленность, предпочтения</string>
@@ -35,13 +46,10 @@
     <string name="change_password">Изменить пароль</string>
 
     <!-- Enter Email Screen -->
-    <string name="enter_email">Введите ваш адресс электронной почты для восстановления пароля.</string>
+    <string name="enter_email">Введите ваш адресс электронной почты для восстановления пароля</string>
     <string name="email_address">Адресс электронной почты</string>
-    <string name="send_code">Отправить завку на восстановление</string>
-    <string name="agree">Согласен(а) на обработку персональных данных</string>
-    <string name="do_you_want_to_sign_up_for_a_tour">Хотите записаться на экскурсию?</string>
+    <string name="send_code">Отправить код</string>
     <string name="log_in">Авторизоваться</string>
-    <string name="show_faculties">Показать факультеты</string>
 
     <string name="auth_preference_file_key">authPrefs</string>
     <string name="first_launch_preference_file_key">firstLaunch</string>

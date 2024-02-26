@@ -14,8 +14,6 @@ import androidx.compose.foundation.layout.size
 import androidx.compose.foundation.layout.width
 import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.material3.Icon
-import androidx.compose.material3.OutlinedTextField
-import androidx.compose.material3.OutlinedTextFieldDefaults
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.getValue
@@ -27,11 +25,13 @@ import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.clip
 import androidx.compose.ui.layout.ContentScale
 import androidx.compose.ui.res.painterResource
+import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.unit.dp
 import androidx.navigation.NavController
 import com.example.profquest2.R
 import com.example.profquest2.ui.theme.ProfQuest2Theme
 import com.example.profquest2.ui.views.buttons.PrimaryButton
+import com.example.profquest2.ui.views.textFields.ProfileInfoField
 
 @Composable
 fun EditProfileScreen(navController: NavController) {
@@ -51,7 +51,10 @@ fun EditProfileScreen(navController: NavController) {
                 modifier = Modifier.clickable { navController.popBackStack() }
             )
             Spacer(modifier = Modifier.weight(1f))
-            Text(text = "Mой профиль", style = ProfQuest2Theme.typography.title)
+            Text(
+                text = stringResource(id = R.string.profile),
+                style = ProfQuest2Theme.typography.title
+            )
             Spacer(modifier = Modifier.width(16.dp))
             Spacer(modifier = Modifier.weight(1f))
         }
@@ -78,7 +81,7 @@ fun EditProfileScreen(navController: NavController) {
         }
         Spacer(modifier = Modifier.height(16.dp))
         ProfileInfoField(
-            label = "ФИО",
+            label = stringResource(id = R.string.fullname),
             value = fullName,
             onValueChange = {
                 fullName = it
@@ -87,7 +90,7 @@ fun EditProfileScreen(navController: NavController) {
         )
         Spacer(modifier = Modifier.height(8.dp))
         ProfileInfoField(
-            label = "Место учёбы",
+            label = stringResource(id = R.string.education),
             value = fullName,
             onValueChange = {
                 fullName = it
@@ -97,7 +100,7 @@ fun EditProfileScreen(navController: NavController) {
         Spacer(modifier = Modifier.height(8.dp))
         Row(Modifier.fillMaxWidth()) {
             ProfileInfoField(
-                label = "Номер телефона",
+                label = stringResource(id = R.string.phone),
                 value = fullName,
                 onValueChange = {
                     fullName = it
@@ -106,7 +109,7 @@ fun EditProfileScreen(navController: NavController) {
             )
             Spacer(modifier = Modifier.width(16.dp))
             ProfileInfoField(
-                label = "Группа",
+                label = stringResource(id = R.string.group),
                 value = fullName,
                 onValueChange = {
                     fullName = it
@@ -116,7 +119,7 @@ fun EditProfileScreen(navController: NavController) {
         }
         Spacer(modifier = Modifier.height(8.dp))
         ProfileInfoField(
-            label = "Выбрать документ",
+            label = stringResource(id = R.string.select_document),
             value = fullName,
             onValueChange = {
                 fullName = it
@@ -133,46 +136,10 @@ fun EditProfileScreen(navController: NavController) {
         Spacer(modifier = Modifier.weight(1f))
         PrimaryButton(
             onClick = { navController.popBackStack() },
-            text = "Готово",
+            text = stringResource(id = R.string.done),
             modifier = Modifier
                 .fillMaxWidth()
                 .height(56.dp)
-        )
-    }
-}
-
-@Composable
-fun ProfileInfoField(
-    label: String,
-    value: String,
-    onValueChange: (String) -> Unit,
-    modifier: Modifier = Modifier,
-    trailingIcon: @Composable () -> Unit = {}
-) {
-    Column {
-        Text(
-            text = label,
-            style = ProfQuest2Theme.typography.body,
-            modifier = Modifier.padding(start = 4.dp)
-        )
-        Spacer(modifier = Modifier.height(4.dp))
-        OutlinedTextField(
-            value = value,
-            onValueChange = onValueChange,
-            colors = OutlinedTextFieldDefaults.colors(
-                focusedBorderColor = ProfQuest2Theme.colors.colorPrimary,
-                unfocusedBorderColor = ProfQuest2Theme.colors.colorPrimary,
-                focusedContainerColor = ProfQuest2Theme.colors.colorSurface,
-                unfocusedContainerColor = ProfQuest2Theme.colors.colorSurface
-            ),
-            shape = RoundedCornerShape(8.dp),
-            singleLine = true,
-            textStyle = ProfQuest2Theme.typography.body,
-            placeholder = {
-                Text(text = label, style = ProfQuest2Theme.typography.label)
-            },
-            modifier = modifier.height(48.dp),
-            trailingIcon = { trailingIcon() }
         )
     }
 }
