@@ -1,6 +1,7 @@
-package com.example.profquest2.ui.screens
+package com.example.profquest2.ui.screens.profile
 
 import androidx.compose.foundation.Image
+import androidx.compose.foundation.clickable
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.Row
@@ -41,12 +42,14 @@ fun ProfileScreen(navController: NavController) {
             Spacer(modifier = Modifier.weight(1f))
             Text(
                 text = stringResource(id = R.string.profile),
-                style = ProfQuest2Theme.typography.title
+                style = ProfQuest2Theme.typography.title.copy(color = ProfQuest2Theme.colors.onSurface)
             )
             Spacer(modifier = Modifier.weight(1f))
             Icon(
                 painter = painterResource(id = R.drawable.ic_settings),
-                contentDescription = null
+                contentDescription = null,
+                modifier = Modifier.clickable { navController.navigate(Destination.Settings.route) },
+                tint = ProfQuest2Theme.colors.onSurface
             )
         }
         Spacer(modifier = Modifier.height(16.dp))
@@ -67,7 +70,10 @@ fun ProfileScreen(navController: NavController) {
         Row(verticalAlignment = Alignment.CenterVertically, modifier = Modifier.fillMaxWidth()) {
             Text(text = "ФИО", style = ProfQuest2Theme.typography.label.copy(fontSize = 16.sp))
             Spacer(modifier = Modifier.width(16.dp))
-            Text(text = "Владимир Владимирович Путин", style = ProfQuest2Theme.typography.body)
+            Text(
+                text = "Владимир Владимирович Путин",
+                style = ProfQuest2Theme.typography.body.copy(color = ProfQuest2Theme.colors.onSurface)
+            )
         }
         Spacer(modifier = Modifier.height(16.dp))
         Row(verticalAlignment = Alignment.CenterVertically, modifier = Modifier.fillMaxWidth()) {
@@ -76,13 +82,19 @@ fun ProfileScreen(navController: NavController) {
                 style = ProfQuest2Theme.typography.label.copy(fontSize = 16.sp)
             )
             Spacer(modifier = Modifier.width(16.dp))
-            Text(text = "ГАПОУ ПО ПКИПТ (ит-колледж)", style = ProfQuest2Theme.typography.body)
+            Text(
+                text = "ГАПОУ ПО ПКИПТ (ит-колледж)",
+                style = ProfQuest2Theme.typography.body.copy(color = ProfQuest2Theme.colors.onSurface)
+            )
         }
         Spacer(modifier = Modifier.height(16.dp))
         Row(verticalAlignment = Alignment.CenterVertically, modifier = Modifier.fillMaxWidth()) {
             Text(text = "Группа", style = ProfQuest2Theme.typography.label.copy(fontSize = 16.sp))
             Spacer(modifier = Modifier.width(16.dp))
-            Text(text = "22ит17", style = ProfQuest2Theme.typography.body)
+            Text(
+                text = "22ит17",
+                style = ProfQuest2Theme.typography.body.copy(color = ProfQuest2Theme.colors.onSurface)
+            )
         }
         Spacer(modifier = Modifier.height(16.dp))
         Row(verticalAlignment = Alignment.CenterVertically, modifier = Modifier.fillMaxWidth()) {
@@ -91,13 +103,19 @@ fun ProfileScreen(navController: NavController) {
                 style = ProfQuest2Theme.typography.label.copy(fontSize = 16.sp)
             )
             Spacer(modifier = Modifier.width(16.dp))
-            Text(text = "+7 (964) 870-08-95", style = ProfQuest2Theme.typography.body)
+            Text(
+                text = "+7 (964) 870-08-95",
+                style = ProfQuest2Theme.typography.body.copy(color = ProfQuest2Theme.colors.onSurface)
+            )
         }
         Spacer(modifier = Modifier.height(16.dp))
         Row(verticalAlignment = Alignment.CenterVertically, modifier = Modifier.fillMaxWidth()) {
             Text(text = "Документ", style = ProfQuest2Theme.typography.label.copy(fontSize = 16.sp))
             Spacer(modifier = Modifier.width(16.dp))
-            Text(text = "name.docx", style = ProfQuest2Theme.typography.body)
+            Text(
+                text = "name.docx",
+                style = ProfQuest2Theme.typography.body.copy(color = ProfQuest2Theme.colors.onSurface)
+            )
         }
         Spacer(modifier = Modifier.height(16.dp))
         Text(
@@ -107,7 +125,7 @@ fun ProfileScreen(navController: NavController) {
         Spacer(modifier = Modifier.height(16.dp))
         Text(
             text = "Очень большой текст Очень большой текст Очень большой текст Очень большой текст Очень большой текст Очень большой текст Очень большой текст Очень большой текст Очень большой текст",
-            style = ProfQuest2Theme.typography.body
+            style = ProfQuest2Theme.typography.body.copy(color = ProfQuest2Theme.colors.onSurface)
         )
         Spacer(modifier = Modifier.weight(1f))
         PrimaryButton(

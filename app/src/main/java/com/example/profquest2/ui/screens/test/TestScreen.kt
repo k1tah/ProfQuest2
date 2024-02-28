@@ -76,16 +76,16 @@ fun TestScreen(navController: NavController) {
             ) {
                 LinearProgressIndicator(
                     progress = progress,
-                    color = ProfQuest2Theme.colors.colorPrimary,
-                    trackColor = ProfQuest2Theme.colors.colorTertiary
+                    color = ProfQuest2Theme.colors.primary,
+                    trackColor = ProfQuest2Theme.colors.tertiary
                 )
                 Text(
                     text = stringResource(R.string.test_question),
-                    color = ProfQuest2Theme.colors.bodyText
+                    color = ProfQuest2Theme.colors.onSurface
                 )
                 Text(
                     text = "Вопрос ${currentQuestion + 1}/${listVariants.size}",
-                    color = ProfQuest2Theme.colors.bodyText
+                    color = ProfQuest2Theme.colors.onSurface
                 )
             }
             Spacer(modifier = Modifier.height(8.dp))
@@ -111,7 +111,7 @@ fun TestScreen(navController: NavController) {
                         topEnd = 0.dp,
                         bottomEnd = 0.dp
                     ),
-                    colors = ButtonDefaults.buttonColors(containerColor = ProfQuest2Theme.colors.colorPrimary),
+                    colors = ButtonDefaults.buttonColors(containerColor = ProfQuest2Theme.colors.primary),
                     modifier = Modifier
                         .weight(0.5f)
                         .height(64.dp)
@@ -131,14 +131,14 @@ fun TestScreen(navController: NavController) {
                         topEnd = 40.dp,
                         bottomEnd = 40.dp
                     ),
-                    colors = ButtonDefaults.buttonColors(containerColor = ProfQuest2Theme.colors.colorTertiary),
+                    colors = ButtonDefaults.buttonColors(containerColor = ProfQuest2Theme.colors.tertiary),
                     modifier = Modifier
                         .weight(0.5f)
                         .height(64.dp)
                 ) {
                     Text(
                         text = listVariants[currentQuestion].second.name,
-                        color = ProfQuest2Theme.colors.bodyText,
+                        color = ProfQuest2Theme.colors.onSurface,
                         textAlign = TextAlign.Center
                     )
                 }
@@ -148,7 +148,8 @@ fun TestScreen(navController: NavController) {
         Icon(
             painter = painterResource(id = R.drawable.ic_arrow_left),
             contentDescription = null,
-            modifier = Modifier.clickable { navController.popBackStack() }
+            modifier = Modifier.clickable { navController.popBackStack() },
+            tint = ProfQuest2Theme.colors.onSurface
         )
     }
 }

@@ -28,4 +28,6 @@ sealed class Destination(val route: String) {
     data object Email: Destination("email")
 
     data object ResetPassword: Destination("resetPassword")
+
+    data object Settings: Destination("settings")
 }

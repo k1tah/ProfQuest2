@@ -7,6 +7,10 @@
     <string name="vacansies">Вакансии</string>
     <string name="profile">Профиль</string>
 
+    <!-- Settings Screen -->
+    <string name="settings">Настройки</string>
+    <string name="dark_theme">Темная тема</string>
+
     <!-- Profile Screen -->
     <string name="edit_profile">Редактировать профиль</string>
 
@@ -57,4 +61,13 @@
     <string name="second_test">Методика Л.А. Йовайши</string>
     <string name="golland_test">Тест Д. Голланда</string>
     <string name="select_test">Bыбор теста</string>
+    <string name="show_more">Показать больше...</string>
+    <string name="duties">Обязанности</string>
+    <string name="description">Описание Описание Описание Описание Описание Описание</string>
+    <string name="requirements">Требования</string>
+    <string name="hide">Свернуть</string>
+    <string name="address">Адрес</string>
+    <string name="contacts">Контакты</string>
+    <string name="skills">Навыки</string>
+    <string name="working_conditions">Условия труда</string>
 </resources>

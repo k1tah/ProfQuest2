@@ -1,4 +1,4 @@
-package com.example.profquest2.ui.screens
+package com.example.profquest2.ui.screens.profile.auth
 
 import androidx.compose.animation.AnimatedVisibility
 import androidx.compose.foundation.clickable
@@ -91,7 +91,10 @@ fun CodeScreen(navController: NavController) {
         Spacer(modifier = Modifier.weight(1f))
         Text(
             text = stringResource(id = R.string.we_send_code),
-            style = ProfQuest2Theme.typography.title.copy(textAlign = TextAlign.Center),
+            style = ProfQuest2Theme.typography.title.copy(
+                textAlign = TextAlign.Center,
+                color = ProfQuest2Theme.colors.onSurface
+            ),
             modifier = Modifier.padding(horizontal = 16.dp)
         )
         Spacer(modifier = Modifier.height(24.dp))
@@ -168,7 +171,7 @@ fun CodeScreen(navController: NavController) {
         AnimatedVisibility(showRetryButton) {
             Text(
                 text = stringResource(id = R.string.send_code),
-                style = ProfQuest2Theme.typography.body.copy(color = ProfQuest2Theme.colors.colorPrimary),
+                style = ProfQuest2Theme.typography.body.copy(color = ProfQuest2Theme.colors.primary),
                 modifier = Modifier
                     .clickable {
                         showRetryButton = false
@@ -180,7 +183,7 @@ fun CodeScreen(navController: NavController) {
         AnimatedVisibility(!showRetryButton) {
             Text(
                 text = "Повторная отправка возможна через $time сек",
-                style = ProfQuest2Theme.typography.body
+                style = ProfQuest2Theme.typography.body.copy(color = ProfQuest2Theme.colors.onSurface)
             )
         }
         Spacer(modifier = Modifier.weight(1f))

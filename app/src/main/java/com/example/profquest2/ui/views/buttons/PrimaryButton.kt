@@ -13,7 +13,7 @@ import com.example.profquest2.ui.theme.ProfQuest2Theme
 fun PrimaryButton(onClick: () -> Unit, text: String, modifier: Modifier = Modifier) {
     Button(
         onClick = onClick,
-        colors = ButtonDefaults.buttonColors(containerColor = ProfQuest2Theme.colors.colorPrimary),
+        colors = ButtonDefaults.buttonColors(containerColor = ProfQuest2Theme.colors.primary),
         modifier = modifier,
         shape = RoundedCornerShape(8.dp)
     ) {

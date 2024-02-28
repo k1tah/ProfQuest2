@@ -26,7 +26,7 @@ fun ProfileInfoField(
         if (showLabel) {
             Text(
                 text = label,
-                style = ProfQuest2Theme.typography.body,
+                style = ProfQuest2Theme.typography.body.copy(color = ProfQuest2Theme.colors.onSurface),
                 modifier = Modifier.padding(start = 4.dp)
             )
             Spacer(modifier = Modifier.height(4.dp))
@@ -35,10 +35,10 @@ fun ProfileInfoField(
             value = value,
             onValueChange = onValueChange,
             colors = OutlinedTextFieldDefaults.colors(
-                focusedBorderColor = ProfQuest2Theme.colors.colorPrimary,
-                unfocusedBorderColor = ProfQuest2Theme.colors.colorPrimary,
-                focusedContainerColor = ProfQuest2Theme.colors.colorSurface,
-                unfocusedContainerColor = ProfQuest2Theme.colors.colorSurface
+                focusedBorderColor = ProfQuest2Theme.colors.primary,
+                unfocusedBorderColor = ProfQuest2Theme.colors.primary,
+                focusedContainerColor = ProfQuest2Theme.colors.surface,
+                unfocusedContainerColor = ProfQuest2Theme.colors.surface
             ),
             shape = RoundedCornerShape(8.dp),
             singleLine = true,

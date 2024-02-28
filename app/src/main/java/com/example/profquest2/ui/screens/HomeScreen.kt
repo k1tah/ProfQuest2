@@ -70,7 +70,7 @@ fun HomeScreen(navController: NavController) {
             AnimatedVisibility(visible = !isSearchVisible) {
                 Row(verticalAlignment = Alignment.CenterVertically) {
                     Image(
-                        painter = painterResource(id = R.drawable.ic_logo),
+                        painter = painterResource(id = ProfQuest2Theme.images.logo),
                         contentDescription = null,
                         Modifier.size(160.dp, 64.dp)
                     )
@@ -80,11 +80,14 @@ fun HomeScreen(navController: NavController) {
                         contentDescription = null,
                         modifier = Modifier.clickable {
                             isSearchVisible = true
-                        })
+                        },
+                        tint = ProfQuest2Theme.colors.onSurface
+                    )
                     Spacer(modifier = Modifier.width(16.dp))
                     Icon(
                         painter = painterResource(id = R.drawable.ic_notification),
-                        contentDescription = null
+                        contentDescription = null,
+                        tint = ProfQuest2Theme.colors.onSurface
                     )
                 }
             }
@@ -112,7 +115,7 @@ fun HomeScreen(navController: NavController) {
             TabRow(
                 selectedTabIndex = pagerState.currentPage,
                 containerColor = Color.Transparent,
-                contentColor = ProfQuest2Theme.colors.bodyText,
+                contentColor = ProfQuest2Theme.colors.onSurface,
                 indicator = {
                     Box(
                         modifier = Modifier
@@ -120,7 +123,7 @@ fun HomeScreen(navController: NavController) {
                             .height(4.dp)
                             .clip(RoundedCornerShape(8.dp))
                             .padding(horizontal = 28.dp)
-                            .background(color = ProfQuest2Theme.colors.colorPrimary)
+                            .background(color = ProfQuest2Theme.colors.primary)
                     )
                 }) {
                 tabs.forEachIndexed { index, s ->
@@ -164,16 +167,21 @@ fun HomeScreen(navController: NavController) {
 fun CompanyItem(onNavigateToCompany: () -> Unit) {
     Row(
         verticalAlignment = Alignment.CenterVertically,
-        modifier = Modifier.fillMaxWidth().clickable { onNavigateToCompany() }
+        modifier = Modifier
+            .fillMaxWidth()
+            .clickable { onNavigateToCompany() }
     ) {
         Icon(
             painter = painterResource(id = R.drawable.niiemp),
             contentDescription = null,
-            tint = ProfQuest2Theme.colors.colorPrimary
+            tint = ProfQuest2Theme.colors.primary
         )
         Spacer(modifier = Modifier.width(8.dp))
         Column {
-            Text(text = "НИИЭМП", style = ProfQuest2Theme.typography.body)
+            Text(
+                text = "НИИЭМП",
+                style = ProfQuest2Theme.typography.body.copy(color = ProfQuest2Theme.colors.onSurface)
+            )
             Spacer(modifier = Modifier.height(2.dp))
             Text(text = "Пенза, ул. Каракозова 88", style = ProfQuest2Theme.typography.label)
         }
@@ -185,7 +193,7 @@ fun GoodNewsCard() {
     Card(
         modifier = Modifier.fillMaxWidth(),
         shape = RoundedCornerShape(12.dp),
-        colors = CardDefaults.cardColors(containerColor = ProfQuest2Theme.colors.colorSurface),
+        colors = CardDefaults.cardColors(containerColor = ProfQuest2Theme.colors.surface),
         elevation = CardDefaults.cardElevation(4.dp)
     ) {
         Column(modifier = Modifier.padding(horizontal = 16.dp, vertical = 12.dp)) {
@@ -198,13 +206,19 @@ fun GoodNewsCard() {
                 )
                 Spacer(modifier = Modifier.width(16.dp))
                 Column {
-                    Text(text = "НИИЭМП", style = ProfQuest2Theme.typography.title)
+                    Text(
+                        text = "НИИЭМП",
+                        style = ProfQuest2Theme.typography.title.copy(color = ProfQuest2Theme.colors.onSurface)
+                    )
                     Spacer(modifier = Modifier.height(2.dp))
                     Text(text = "12.02.2024 09:00", style = ProfQuest2Theme.typography.label)
                 }
             }
             Spacer(modifier = Modifier.height(16.dp))
-            Text(text = "О нет! Мы закрылись!", style = ProfQuest2Theme.typography.body)
+            Text(
+                text = "О нет! Мы закрылись!",
+                style = ProfQuest2Theme.typography.body.copy(color = ProfQuest2Theme.colors.onSurface)
+            )
             Spacer(modifier = Modifier.height(24.dp))
             Image(
                 painter = painterResource(id = R.drawable.kotik),
@@ -223,7 +237,7 @@ fun NewsCard() {
     Card(
         modifier = Modifier.fillMaxWidth(),
         shape = RoundedCornerShape(12.dp),
-        colors = CardDefaults.cardColors(containerColor = ProfQuest2Theme.colors.colorSurface),
+        colors = CardDefaults.cardColors(containerColor = ProfQuest2Theme.colors.surface),
         elevation = CardDefaults.cardElevation(4.dp)
     ) {
         Column(modifier = Modifier.padding(horizontal = 16.dp, vertical = 12.dp)) {
@@ -236,13 +250,19 @@ fun NewsCard() {
                 )
                 Spacer(modifier = Modifier.width(16.dp))
                 Column {
-                    Text(text = "НИИЭМП", style = ProfQuest2Theme.typography.title)
+                    Text(
+                        text = "НИИЭМП",
+                        style = ProfQuest2Theme.typography.title.copy(color = ProfQuest2Theme.colors.onSurface)
+                    )
                     Spacer(modifier = Modifier.height(2.dp))
                     Text(text = "12.02.2024 09:00", style = ProfQuest2Theme.typography.label)
                 }
             }
             Spacer(modifier = Modifier.height(16.dp))
-            Text(text = "О да! Для вас мы открылись!", style = ProfQuest2Theme.typography.body)
+            Text(
+                text = "О да! Для вас мы открылись!",
+                style = ProfQuest2Theme.typography.body.copy(color = ProfQuest2Theme.colors.onSurface)
+            )
             Spacer(modifier = Modifier.height(24.dp))
             Image(
                 painter = painterResource(id = R.drawable.image),
@@ -263,7 +283,7 @@ fun SearchField(value: String, onValueChanged: (String) -> Unit, onClose: () -> 
             .fillMaxWidth()
             .height(56.dp)
             .padding(start = 16.dp, end = 16.dp, top = 8.dp),
-        colors = CardDefaults.cardColors(containerColor = ProfQuest2Theme.colors.colorSurface)
+        colors = CardDefaults.cardColors(containerColor = ProfQuest2Theme.colors.surface)
     ) {
         TextField(
             modifier = Modifier
@@ -277,19 +297,21 @@ fun SearchField(value: String, onValueChanged: (String) -> Unit, onClose: () -> 
                     contentDescription = null,
                     modifier = Modifier.clickable {
                         onClose()
-                    }
+                    },
+                    tint = ProfQuest2Theme.colors.onSurface
                 )
             },
             trailingIcon = {
                 Icon(
                     painter = painterResource(id = R.drawable.ic_filter),
-                    contentDescription = null
+                    contentDescription = null,
+                    tint = ProfQuest2Theme.colors.onSurface
                 )
             },
             colors = TextFieldDefaults.textFieldColors(
                 focusedIndicatorColor = Color.Transparent,
                 unfocusedIndicatorColor = Color.Transparent,
-                cursorColor = ProfQuest2Theme.colors.colorPrimary
+                cursorColor = ProfQuest2Theme.colors.primary
             ),
             placeholder = {
                 Text(text = "Поиск", style = ProfQuest2Theme.typography.label)

@@ -1,4 +1,4 @@
-package com.example.profquest2.ui.screens
+package com.example.profquest2.ui.screens.profile.auth
 
 import androidx.compose.foundation.clickable
 import androidx.compose.foundation.layout.Arrangement
@@ -41,7 +41,10 @@ fun AuthScreen(navController: NavController) {
         verticalArrangement = Arrangement.Center,
         horizontalAlignment = Alignment.CenterHorizontally
     ) {
-        Text(text = stringResource(id = R.string.sign_in), style = ProfQuest2Theme.typography.title)
+        Text(
+            text = stringResource(id = R.string.sign_in),
+            style = ProfQuest2Theme.typography.title.copy(color = ProfQuest2Theme.colors.onSurface)
+        )
         Spacer(modifier = Modifier.height(24.dp))
         ProfileInfoField(
             label = stringResource(id = R.string.login),
@@ -67,7 +70,7 @@ fun AuthScreen(navController: NavController) {
                 text = stringResource(id = R.string.forgot_password),
                 style = ProfQuest2Theme.typography.label.copy(
                     fontSize = 14.sp,
-                    color = ProfQuest2Theme.colors.colorPrimary
+                    color = ProfQuest2Theme.colors.primary
                 ),
                 textDecoration = TextDecoration.Underline,
                 modifier = Modifier

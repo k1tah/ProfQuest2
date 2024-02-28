@@ -54,36 +54,27 @@ android {
 }
 
 dependencies {
-    val navVersion = "2.7.5"
+    implementation(project(":data"))
+
+    val navVersion = "2.7.7"
     implementation("androidx.navigation:navigation-compose:$navVersion")
     // Coil
     implementation("io.coil-kt:coil-compose:2.5.0")
-    // Retrofit
-    implementation("com.squareup.retrofit2:retrofit:2.9.0")
-    implementation("org.jetbrains.kotlinx:kotlinx-serialization-json:1.6.0")
-    implementation("com.squareup.retrofit2:converter-gson:2.9.0")
-    implementation ("com.squareup.okhttp3:logging-interceptor:4.10.0")
     // Orbit
     val orbitVersion = "6.1.0"
     implementation("org.orbit-mvi:orbit-core:$orbitVersion")
     implementation("org.orbit-mvi:orbit-viewmodel:$orbitVersion")
     implementation("org.orbit-mvi:orbit-compose:$orbitVersion")
-    val roomVersion = "2.6.0"
-    // Room
-    implementation("androidx.room:room-runtime:$roomVersion")
-    ksp("androidx.room:room-compiler:$roomVersion")
-    implementation("androidx.room:room-ktx:$roomVersion")
-    //Gson
-    implementation ("com.google.code.gson:gson:2.9.0")
-    // Hilt
-    implementation("com.google.dagger:hilt-android:2.48.1")
-    ksp("com.google.dagger:hilt-android-compiler:2.48.1")
-    implementation("androidx.hilt:hilt-navigation-compose:1.1.0")
-    // Ktor
-    implementation("io.ktor:ktor-client-core:1.6.1")
-    implementation("io.ktor:ktor-client-android:1.0.1")
 
-    implementation("androidx.compose.material:material:1.6.1")
+    //Gson
+    implementation ("com.google.code.gson:gson:2.10")
+
+    // Hilt
+    implementation("com.google.dagger:hilt-android:2.49")
+    ksp("com.google.dagger:hilt-android-compiler:2.48.1")
+    implementation("androidx.hilt:hilt-navigation-compose:1.2.0")
+
+    implementation("androidx.compose.material:material:1.6.2")
     implementation("androidx.navigation:navigation-compose:2.7.7")
     implementation("androidx.core:core-ktx:1.12.0")
     implementation("androidx.lifecycle:lifecycle-runtime-ktx:2.7.0")

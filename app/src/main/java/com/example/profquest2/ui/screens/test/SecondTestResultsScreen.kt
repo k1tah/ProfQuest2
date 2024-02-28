@@ -13,6 +13,7 @@ import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
+import com.example.profquest2.ui.theme.ProfQuest2Theme
 import com.example.profquest2.utils.SecondTestResults
 
 @Composable
@@ -24,15 +25,18 @@ fun SecondTestResultsScreen(secondTestResults: SecondTestResults) {
     ) {
         Text(
             text = secondTestResults.title,
-            fontWeight = FontWeight.Bold,
-            textAlign = TextAlign.Center,
-            fontSize = 24.sp
+            style = ProfQuest2Theme.typography.title.copy(
+                color = ProfQuest2Theme.colors.onSurface,
+                textAlign = TextAlign.Center
+            )
         )
         Spacer(modifier = Modifier.height(24.dp))
         Text(
             text = secondTestResults.description,
-            textAlign = TextAlign.Center,
-            fontSize = 18.sp
+            style = ProfQuest2Theme.typography.body.copy(
+                color = ProfQuest2Theme.colors.onSurface,
+                textAlign = TextAlign.Center
+            )
         )
         Spacer(modifier = Modifier.height(48.dp))
     }

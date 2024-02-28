@@ -94,7 +94,8 @@ fun SecondTestScreen(
             Icon(
                 imageVector = Icons.Default.Close,
                 contentDescription = null,
-                modifier = Modifier.clickable { navController.popBackStack() }
+                modifier = Modifier.clickable { navController.popBackStack() },
+                tint = ProfQuest2Theme.colors.onSurface
             )
         }
         Spacer(modifier = Modifier.weight(1f))
@@ -107,9 +108,7 @@ fun SecondTestScreen(
             )
             Text(
                 text = "${currentQuestion + 1}. ${questions[currentQuestion].title}",
-                fontWeight = FontWeight.Bold,
-                fontSize = 20.sp,
-                textAlign = TextAlign.Center
+                style = ProfQuest2Theme.typography.title.copy(color = ProfQuest2Theme.colors.onSurface)
             )
             Spacer(modifier = Modifier.height(8.dp))
             AnswerPickerItem(
@@ -143,8 +142,8 @@ fun ProgressIndicatorItem(
         Modifier
             .size(24.dp)
             .background(
-                if (isCompleted) ProfQuest2Theme.colors.colorPrimary
-                else ProfQuest2Theme.colors.colorTertiary
+                if (isCompleted) ProfQuest2Theme.colors.primary
+                else ProfQuest2Theme.colors.tertiary
             )
     ) {
         Text(
@@ -166,9 +165,10 @@ fun AnswerPickerItem(text: String, onSelect: () -> Unit) {
         Icon(
             painter = painterResource(id = R.drawable.ic_circle),
             contentDescription = null,
-            Modifier.size(8.dp)
+            modifier = Modifier.size(8.dp),
+            tint = ProfQuest2Theme.colors.onSurface
         )
         Spacer(modifier = Modifier.width(12.dp))
-        Text(text = text, fontSize = 18.sp)
+        Text(text = text, style = ProfQuest2Theme.typography.body.copy(color = ProfQuest2Theme.colors.onSurface))
     }
 }

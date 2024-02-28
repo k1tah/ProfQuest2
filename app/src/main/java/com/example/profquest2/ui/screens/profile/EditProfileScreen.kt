@@ -1,4 +1,4 @@
-package com.example.profquest2.ui.screens
+package com.example.profquest2.ui.screens.profile
 
 import androidx.compose.foundation.Image
 import androidx.compose.foundation.clickable
@@ -53,7 +53,7 @@ fun EditProfileScreen(navController: NavController) {
             Spacer(modifier = Modifier.weight(1f))
             Text(
                 text = stringResource(id = R.string.profile),
-                style = ProfQuest2Theme.typography.title
+                style = ProfQuest2Theme.typography.title.copy(color = ProfQuest2Theme.colors.onSurface)
             )
             Spacer(modifier = Modifier.width(16.dp))
             Spacer(modifier = Modifier.weight(1f))
@@ -76,7 +76,7 @@ fun EditProfileScreen(navController: NavController) {
                 contentDescription = null,
                 modifier = Modifier.align(
                     Alignment.BottomEnd
-                ), tint = ProfQuest2Theme.colors.colorPrimary
+                ), tint = ProfQuest2Theme.colors.primary
             )
         }
         Spacer(modifier = Modifier.height(16.dp))
@@ -129,7 +129,7 @@ fun EditProfileScreen(navController: NavController) {
                 Icon(
                     painter = painterResource(id = R.drawable.ic_add_doc),
                     contentDescription = null,
-                    tint = ProfQuest2Theme.colors.colorPrimary
+                    tint = ProfQuest2Theme.colors.primary
                 )
             }
         )

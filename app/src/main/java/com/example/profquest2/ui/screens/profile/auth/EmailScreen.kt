@@ -1,4 +1,4 @@
-package com.example.profquest2.ui.screens
+package com.example.profquest2.ui.screens.profile.auth
 
 import androidx.compose.foundation.clickable
 import androidx.compose.foundation.layout.Column
@@ -19,6 +19,7 @@ import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.res.stringResource
+import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.unit.dp
 import androidx.navigation.NavController
 import com.example.profquest2.R
@@ -28,11 +29,8 @@ import com.example.profquest2.ui.views.buttons.PrimaryButton
 import com.example.profquest2.ui.views.textFields.ProfileInfoField
 
 @Composable
-fun ResetPasswordScreen(navController: NavController) {
-    var password by rememberSaveable {
-        mutableStateOf("")
-    }
-    var passwordConfirmation by rememberSaveable {
+fun EmailScreen(navController: NavController) {
+    var email by rememberSaveable {
         mutableStateOf("")
     }
     Column(
@@ -51,37 +49,26 @@ fun ResetPasswordScreen(navController: NavController) {
         }
         Spacer(modifier = Modifier.weight(1f))
         Text(
-            text = stringResource(id = R.string.refresh_password),
-            style = ProfQuest2Theme.typography.title
+            text = stringResource(id = R.string.enter_email),
+            style = ProfQuest2Theme.typography.title.copy(
+                textAlign = TextAlign.Center,
+                color = ProfQuest2Theme.colors.onSurface
+            ),
+            modifier = Modifier.padding(horizontal = 16.dp)
         )
         Spacer(modifier = Modifier.height(24.dp))
         ProfileInfoField(
-            label = stringResource(id = R.string.new_password),
+            label = stringResource(id = R.string.email_address),
             showLabel = false,
-            value = password,
+            value = email,
             onValueChange = {
-                password = it
-            }
-        )
-        Spacer(modifier = Modifier.height(16.dp))
-        ProfileInfoField(
-            label = stringResource(id = R.string.confirm_password),
-            showLabel = false,
-            value = passwordConfirmation,
-            onValueChange = {
-                passwordConfirmation = it
+                email = it
             }
         )
         Spacer(modifier = Modifier.height(32.dp))
         PrimaryButton(
-            onClick = {
-                navController.navigate(Destination.Profile.route) {
-                    popUpTo(Destination.Profile.route) {
-                        inclusive = true
-                    }
-                }
-            },
-            text = stringResource(id = R.string.change_password),
+            onClick = { navController.navigate(Destination.Code.route) },
+            text = stringResource(id = R.string.send_code),
             modifier = Modifier
                 .fillMaxWidth()
                 .padding(horizontal = 32.dp)

@@ -5,6 +5,7 @@ import androidx.annotation.StringRes
 import androidx.compose.foundation.Image
 import androidx.compose.foundation.clickable
 import androidx.compose.foundation.layout.Column
+import androidx.compose.foundation.layout.PaddingValues
 import androidx.compose.foundation.layout.Row
 import androidx.compose.foundation.layout.Spacer
 import androidx.compose.foundation.layout.fillMaxSize
@@ -34,13 +35,25 @@ fun SelectTestScreen(navController: NavController) {
     val tests = listOf(
         TestItem(R.drawable.test_1, { navController.navigate("test") }, R.string.golland_test),
         TestItem(R.drawable.test_2, { navController.navigate("secondTest") }, R.string.second_test),
-        TestItem(R.drawable.test_3, { uriHandler.openUri("https://bvbinfo.ru/suits") }, R.string.test_ticket_in_future),
+        TestItem(
+            R.drawable.test_3,
+            { uriHandler.openUri("https://bvbinfo.ru/suits") },
+            R.string.test_ticket_in_future
+        ),
         TestItem(R.drawable.test_1, { navController.navigate("test") }, R.string.golland_test),
         TestItem(R.drawable.test_2, { navController.navigate("secondTest") }, R.string.second_test),
-        TestItem(R.drawable.test_3, { uriHandler.openUri("https://bvbinfo.ru/suits") }, R.string.test_ticket_in_future),
+        TestItem(
+            R.drawable.test_3,
+            { uriHandler.openUri("https://bvbinfo.ru/suits") },
+            R.string.test_ticket_in_future
+        ),
         TestItem(R.drawable.test_1, { navController.navigate("test") }, R.string.golland_test),
         TestItem(R.drawable.test_2, { navController.navigate("secondTest") }, R.string.second_test),
-        TestItem(R.drawable.test_3, { uriHandler.openUri("https://bvbinfo.ru/suits") }, R.string.test_ticket_in_future)
+        TestItem(
+            R.drawable.test_3,
+            { uriHandler.openUri("https://bvbinfo.ru/suits") },
+            R.string.test_ticket_in_future
+        )
     )
     Column(
         modifier = Modifier
@@ -53,17 +66,21 @@ fun SelectTestScreen(navController: NavController) {
                 contentDescription = null,
                 modifier = Modifier.clickable {
                     navController.popBackStack()
-                })
+                }, tint = ProfQuest2Theme.colors.onSurface
+            )
             Spacer(modifier = Modifier.weight(1f))
             Text(
                 text = stringResource(id = R.string.select_test),
-                style = ProfQuest2Theme.typography.title
+                style = ProfQuest2Theme.typography.title.copy(color = ProfQuest2Theme.colors.onSurface)
             )
             Spacer(modifier = Modifier.width(16.dp))
             Spacer(modifier = Modifier.weight(1f))
         }
         Spacer(modifier = Modifier.height(24.dp))
-        LazyVerticalGrid(columns = GridCells.Fixed(2)) {
+        LazyVerticalGrid(
+            columns = GridCells.Fixed(2),
+            contentPadding = PaddingValues(vertical = 16.dp)
+        ) {
             items(tests) { testItem ->
                 TestImage(testItem)
             }
@@ -83,6 +100,9 @@ fun TestImage(testItem: TestItem) {
                 .size(164.dp)
                 .clickable { testItem.onClick() })
         Spacer(modifier = Modifier.height(8.dp))
-        Text(text = stringResource(id = testItem.title))
+        Text(
+            text = stringResource(id = testItem.title),
+            style = ProfQuest2Theme.typography.body.copy(color = ProfQuest2Theme.colors.onSurface)
+        )
     }
 }

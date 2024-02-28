@@ -35,8 +35,8 @@ fun PrimaryTextField(
     keyboardOptions: KeyboardOptions = KeyboardOptions.Default,
     singleLine: Boolean = true,
     colors: TextFieldColors = TextFieldDefaults.colors(
-        focusedContainerColor = ProfQuest2Theme.colors.colorSurface,
-        unfocusedContainerColor = ProfQuest2Theme.colors.colorSurface,
+        focusedContainerColor = ProfQuest2Theme.colors.surface,
+        unfocusedContainerColor = ProfQuest2Theme.colors.surface,
         focusedIndicatorColor = Color.Transparent,
         unfocusedIndicatorColor = Color.Transparent
     ),
@@ -59,9 +59,9 @@ fun PrimaryTextField(
             contentAlignment = Alignment.Center,
             modifier = Modifier.border(
                 1.dp,
-                ProfQuest2Theme.colors.colorPrimary,
+                ProfQuest2Theme.colors.primary,
                 shape
-            ).background(ProfQuest2Theme.colors.colorSurface)
+            ).background(ProfQuest2Theme.colors.surface)
         ) {
             TextFieldDefaults.DecorationBox(
                 value = value,

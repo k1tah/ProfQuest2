@@ -13,6 +13,10 @@ val LocalProfQuest2Typography = staticCompositionLocalOf<Typography> {
     error("Typography not provided")
 }
 
+val LocalProfQuest2Image = staticCompositionLocalOf<Image> {
+    error("Images not provided")
+}
+
 object ProfQuest2Theme {
     val colors: ColorScheme
         @Composable
@@ -21,6 +25,10 @@ object ProfQuest2Theme {
     val typography: Typography
         @Composable
         get() = LocalProfQuest2Typography.current
+
+    val images: Image
+        @Composable
+        get() = LocalProfQuest2Image.current
 }
 
 @Composable
@@ -28,12 +36,14 @@ fun ProfQuest2Theme(
     darkTheme: Boolean = isSystemInDarkTheme(),
     content: @Composable () -> Unit
 ) {
-    val colors = lightColorPalette
+    val colors = if (darkTheme) darkColorPalette else lightColorPalette
     val typography = typography
+    val images = if (darkTheme) darkImages else lightImages
 
     CompositionLocalProvider(
         LocalProfQuest2Colors provides colors,
         LocalProfQuest2Typography provides typography,
+        LocalProfQuest2Image provides images,
         content = content
     )
 }
