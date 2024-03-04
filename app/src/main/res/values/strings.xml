@@ -70,4 +70,6 @@
     <string name="contacts">Контакты</string>
     <string name="skills">Навыки</string>
     <string name="working_conditions">Условия труда</string>
+    <string name="search">Поиск</string>
+    <string name="cancel_vote">Отменить голос</string>
 </resources>
