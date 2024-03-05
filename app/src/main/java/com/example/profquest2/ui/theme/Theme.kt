@@ -37,7 +37,7 @@ fun ProfQuest2Theme(
     content: @Composable () -> Unit
 ) {
     val colors = if (darkTheme) darkColorPalette else lightColorPalette
-    val typography = typography
+    val typography = if (darkTheme) darkTypography else lightTypography
     val images = if (darkTheme) darkImages else lightImages
 
     CompositionLocalProvider(

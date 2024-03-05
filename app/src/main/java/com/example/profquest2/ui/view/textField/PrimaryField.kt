@@ -1,4 +1,4 @@
-package com.example.profquest2.ui.views.textFields
+package com.example.profquest2.ui.view.textField
 
 import androidx.compose.foundation.background
 import androidx.compose.foundation.border

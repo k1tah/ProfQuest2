@@ -32,7 +32,7 @@ import androidx.navigation.NavController
 import com.example.profquest2.R
 import com.example.profquest2.ui.navigation.Destination
 import com.example.profquest2.ui.theme.ProfQuest2Theme
-import com.example.profquest2.ui.views.textFields.PrimaryTextField
+import com.example.profquest2.ui.view.textField.PrimaryTextField
 import kotlinx.coroutines.delay
 
 @Composable

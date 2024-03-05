@@ -1,13 +1,13 @@
-package com.example.profquest2.ui.views.buttons
+package com.example.profquest2.ui.view.button
 
 import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.material3.Button
 import androidx.compose.material3.ButtonDefaults
-import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.unit.dp
 import com.example.profquest2.ui.theme.ProfQuest2Theme
+import com.example.profquest2.ui.view.text.BodyText
 
 @Composable
 fun PrimaryButton(onClick: () -> Unit, text: String, modifier: Modifier = Modifier) {
@@ -17,6 +17,6 @@ fun PrimaryButton(onClick: () -> Unit, text: String, modifier: Modifier = Modifi
         modifier = modifier,
         shape = RoundedCornerShape(8.dp)
     ) {
-        Text(text = text)
+        BodyText(text = text)
     }
 }

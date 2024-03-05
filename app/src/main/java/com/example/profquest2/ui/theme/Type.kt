@@ -7,16 +7,9 @@ import androidx.compose.ui.unit.sp
 
 data class Typography(
     val title: TextStyle,
+    val subtitle: TextStyle,
     val body: TextStyle,
     val label: TextStyle
-)
-
-val body = TextStyle(
-    fontFamily = FontFamily.Default,
-    fontWeight = FontWeight.Normal,
-    fontSize = 16.sp,
-    lineHeight = 24.sp,
-    letterSpacing = 0.5.sp
 )
 
 val title = TextStyle(
@@ -27,7 +20,17 @@ val title = TextStyle(
     letterSpacing = 0.sp
 )
 
-val labelSmall = TextStyle(
+val subtitle = title.copy(fontSize = 16.sp)
+
+val body = TextStyle(
+    fontFamily = FontFamily.Default,
+    fontWeight = FontWeight.Normal,
+    fontSize = 16.sp,
+    lineHeight = 24.sp,
+    letterSpacing = 0.5.sp
+)
+
+val label = TextStyle(
     fontFamily = FontFamily.Default,
     fontWeight = FontWeight.Normal,
     fontSize = 12.sp,
@@ -36,6 +39,11 @@ val labelSmall = TextStyle(
     color = grayMed
 )
 
-val typography = Typography(title, body, labelSmall)
+val lightTypography = Typography(title, subtitle, body, label)
 
-
+val darkTypography = Typography(
+    title.copy(color = white),
+    subtitle.copy(color = white),
+    body.copy(color = white),
+    label
+)

@@ -1,4 +1,4 @@
-package com.example.profquest2.ui.views.switchs
+package com.example.profquest2.ui.view.mswitch
 
 import androidx.compose.material3.Switch
 import androidx.compose.material3.SwitchDefaults

@@ -16,7 +16,6 @@ import androidx.compose.foundation.layout.size
 import androidx.compose.foundation.layout.width
 import androidx.compose.foundation.lazy.LazyColumn
 import androidx.compose.foundation.shape.RoundedCornerShape
-import androidx.compose.material.Icon
 import androidx.compose.material3.Card
 import androidx.compose.material3.CardDefaults
 import androidx.compose.material3.Text
@@ -31,9 +30,14 @@ import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.unit.dp
-import androidx.compose.ui.unit.sp
 import com.example.profquest2.R
 import com.example.profquest2.ui.theme.ProfQuest2Theme
+import com.example.profquest2.ui.view.icon.Icon
+import com.example.profquest2.ui.view.text.BodyText
+import com.example.profquest2.ui.view.text.LabelText
+import com.example.profquest2.ui.view.text.SubtitleText
+import com.example.profquest2.ui.view.text.TitleText
+import com.example.profquest2.ui.view.textField.SearchField
 
 @Composable
 fun VacanciesScreen() {
@@ -56,25 +60,16 @@ fun VacanciesScreen() {
         ) {
             AnimatedVisibility(visible = !isSearchVisible) {
                 Row(verticalAlignment = Alignment.CenterVertically) {
-                    Icon(
-                        painter = painterResource(id = R.drawable.ic_favorites),
-                        contentDescription = null,
-                        tint = ProfQuest2Theme.colors.onSurface
-                    )
+                    Icon(icon = R.drawable.ic_favorites)
                     Spacer(modifier = Modifier.weight(1f))
-                    Text(
-                        text = "Вакансии",
-                        style = ProfQuest2Theme.typography.title.copy(color = ProfQuest2Theme.colors.onSurface)
-                    )
+                    TitleText(text = stringResource(id = R.string.vacansies))
                     Spacer(modifier = Modifier.weight(1f))
                     Spacer(modifier = Modifier.width(16.dp))
                     Icon(
-                        painter = painterResource(id = R.drawable.ic_search),
-                        contentDescription = null,
+                        icon = R.drawable.ic_search,
                         modifier = Modifier.clickable {
                             isSearchVisible = true
-                        },
-                        tint = ProfQuest2Theme.colors.onSurface
+                        }
                     )
                 }
             }
@@ -114,7 +109,7 @@ fun VacancyCard() {
     ) {
         Column(modifier = Modifier.padding(horizontal = 16.dp, vertical = 12.dp)) {
             Row(verticalAlignment = Alignment.CenterVertically) {
-                Icon(
+                androidx.compose.material3.Icon(
                     painter = painterResource(id = R.drawable.niiemp),
                     contentDescription = null,
                     modifier = Modifier.size(64.dp),
@@ -122,32 +117,17 @@ fun VacancyCard() {
                 )
                 Spacer(modifier = Modifier.width(16.dp))
                 Column {
-                    Text(
-                        text = "НИИЭМП",
-                        style = ProfQuest2Theme.typography.title.copy(color = ProfQuest2Theme.colors.onSurface)
-                    )
+                    TitleText(text = "НИИЭМП")
                     Spacer(modifier = Modifier.height(2.dp))
-                    Text(text = "12.02.2024 09:00", style = ProfQuest2Theme.typography.label)
+                    LabelText(text = "12.02.2024 09:00")
                 }
             }
             Spacer(modifier = Modifier.height(16.dp))
-            Text(
-                text = "Прораммист-техник",
-                style = ProfQuest2Theme.typography.title.copy(color = ProfQuest2Theme.colors.onSurface)
-            )
+            TitleText(text = "Прораммист-техник")
             Spacer(modifier = Modifier.height(4.dp))
-            Text(
-                text = "500000 Р",
-                style = ProfQuest2Theme.typography.title.copy(color = ProfQuest2Theme.colors.onSurface)
-            )
+            TitleText(text = "500000 Р")
             Spacer(modifier = Modifier.height(16.dp))
-            Text(
-                text = "Описание",
-                style = ProfQuest2Theme.typography.title.copy(
-                    fontSize = 16.sp,
-                    color = ProfQuest2Theme.colors.onSurface
-                )
-            )
+            SubtitleText(text = "Описание")
             Spacer(modifier = Modifier.height(4.dp))
             Text(
                 text = "Описание Описание Описание Описание Описание Описание",
@@ -157,103 +137,51 @@ fun VacancyCard() {
             Spacer(modifier = Modifier.height(16.dp))
             if (!expanded) {
                 Row(verticalAlignment = Alignment.CenterVertically) {
-                    Text(
+                    LabelText(
                         text = stringResource(R.string.show_more),
-                        style = ProfQuest2Theme.typography.label.copy(fontSize = 16.sp),
                         modifier = Modifier.clickable { expanded = !expanded }
                     )
                     Spacer(modifier = Modifier.weight(1f))
                     Icon(
-                        painter = painterResource(id = if (isFavorite) R.drawable.ic_favorite_fill else R.drawable.ic_favorite),
-                        contentDescription = null,
-                        modifier = Modifier.clickable { isFavorite = !isFavorite },
-                        tint = ProfQuest2Theme.colors.onSurface
+                        icon = if (isFavorite) R.drawable.ic_favorite_fill else R.drawable.ic_favorite,
+                        modifier = Modifier.clickable { isFavorite = !isFavorite }
                     )
                 }
             }
             AnimatedVisibility(visible = expanded) {
                 Column {
-                    Text(
-                        text = stringResource(R.string.duties),
-                        style = ProfQuest2Theme.typography.title.copy(
-                            fontSize = 16.sp,
-                            color = ProfQuest2Theme.colors.onSurface
-                        )
-                    )
+                    SubtitleText(text = stringResource(R.string.duties))
                     Spacer(modifier = Modifier.height(4.dp))
-                    Text(
-                        text = stringResource(R.string.description),
-                        style = ProfQuest2Theme.typography.body.copy(color = ProfQuest2Theme.colors.onSurface)
-                    )
+                    BodyText(text = stringResource(R.string.description))
                     Spacer(modifier = Modifier.height(8.dp))
-                    Text(
-                        text = stringResource(R.string.requirements),
-                        style = ProfQuest2Theme.typography.title.copy(
-                            fontSize = 16.sp,
-                            color = ProfQuest2Theme.colors.onSurface
-                        )
-                    )
+
+                    SubtitleText(text = stringResource(R.string.requirements))
                     Spacer(modifier = Modifier.height(4.dp))
-                    Text(
-                        text = stringResource(R.string.description),
-                        style = ProfQuest2Theme.typography.body.copy(color = ProfQuest2Theme.colors.onSurface)
-                    )
+                    BodyText(text = stringResource(R.string.description))
                     Spacer(modifier = Modifier.height(8.dp))
-                    Text(
-                        text = stringResource(R.string.working_conditions),
-                        style = ProfQuest2Theme.typography.title.copy(
-                            fontSize = 16.sp,
-                            color = ProfQuest2Theme.colors.onSurface
-                        )
-                    )
+
+                    SubtitleText(text = stringResource(R.string.working_conditions))
                     Spacer(modifier = Modifier.height(4.dp))
-                    Text(
-                        text = stringResource(R.string.description),
-                        style = ProfQuest2Theme.typography.body.copy(color = ProfQuest2Theme.colors.onSurface)
-                    )
+                    BodyText(text = stringResource(R.string.description))
                     Spacer(modifier = Modifier.height(8.dp))
-                    Text(
-                        text = stringResource(R.string.skills),
-                        style = ProfQuest2Theme.typography.title.copy(
-                            fontSize = 16.sp,
-                            color = ProfQuest2Theme.colors.onSurface
-                        )
-                    )
+
+                    SubtitleText(text = stringResource(R.string.skills))
                     Spacer(modifier = Modifier.height(4.dp))
-                    Text(
-                        text = stringResource(R.string.description),
-                        style = ProfQuest2Theme.typography.body.copy(color = ProfQuest2Theme.colors.onSurface)
-                    )
+                    BodyText(text = stringResource(R.string.description))
                     Spacer(modifier = Modifier.height(8.dp))
-                    Text(
-                        text = stringResource(R.string.contacts),
-                        style = ProfQuest2Theme.typography.title.copy(
-                            fontSize = 16.sp,
-                            color = ProfQuest2Theme.colors.onSurface
-                        )
-                    )
+
+                    SubtitleText(text = stringResource(R.string.contacts))
                     Spacer(modifier = Modifier.height(4.dp))
-                    Text(
-                        text = stringResource(R.string.description),
-                        style = ProfQuest2Theme.typography.body.copy(color = ProfQuest2Theme.colors.onSurface)
-                    )
+                    BodyText(text = stringResource(R.string.description))
                     Spacer(modifier = Modifier.height(8.dp))
-                    Text(
-                        text = stringResource(R.string.address),
-                        style = ProfQuest2Theme.typography.title.copy(
-                            fontSize = 16.sp,
-                            color = ProfQuest2Theme.colors.onSurface
-                        )
-                    )
+
+                    SubtitleText(text = stringResource(R.string.address))
                     Spacer(modifier = Modifier.height(4.dp))
-                    Text(
-                        text = stringResource(R.string.description),
-                        style = ProfQuest2Theme.typography.body.copy(color = ProfQuest2Theme.colors.onSurface)
-                    )
+                    BodyText(text = stringResource(R.string.description) )
                     Spacer(modifier = Modifier.height(8.dp))
-                    Text(
+
+                    LabelText(
                         text = stringResource(R.string.hide),
-                        style = ProfQuest2Theme.typography.label.copy(fontSize = 16.sp),
                         modifier = Modifier.clickable { expanded = !expanded }
                     )
                 }

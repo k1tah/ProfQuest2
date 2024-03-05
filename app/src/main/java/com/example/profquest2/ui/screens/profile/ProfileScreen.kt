@@ -28,7 +28,7 @@ import androidx.navigation.NavController
 import com.example.profquest2.R
 import com.example.profquest2.ui.navigation.Destination
 import com.example.profquest2.ui.theme.ProfQuest2Theme
-import com.example.profquest2.ui.views.buttons.PrimaryButton
+import com.example.profquest2.ui.view.button.PrimaryButton
 
 @Composable
 fun ProfileScreen(navController: NavController) {
