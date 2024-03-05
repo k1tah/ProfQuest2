@@ -1,18 +1,18 @@
 package com.example.profquest2.ui.screens.test
 
+import androidx.annotation.DrawableRes
 import androidx.compose.animation.AnimatedVisibility
 import androidx.compose.animation.core.LinearOutSlowInEasing
 import androidx.compose.animation.core.tween
 import androidx.compose.animation.scaleIn
-import androidx.compose.animation.slideIn
 import androidx.compose.animation.slideInHorizontally
-import androidx.compose.animation.slideInVertically
 import androidx.compose.foundation.ExperimentalFoundationApi
 import androidx.compose.foundation.Image
 import androidx.compose.foundation.clickable
 import androidx.compose.foundation.gestures.detectTapGestures
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Box
+import androidx.compose.foundation.layout.BoxScope
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.Spacer
 import androidx.compose.foundation.layout.fillMaxSize
@@ -26,7 +26,6 @@ import androidx.compose.foundation.pager.rememberPagerState
 import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.automirrored.filled.ArrowForward
-import androidx.compose.material3.Icon
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.LaunchedEffect
@@ -45,9 +44,11 @@ import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.text.style.TextAlign
-import androidx.compose.ui.unit.IntOffset
 import androidx.compose.ui.unit.dp
 import com.example.profquest2.R
+import com.example.profquest2.ui.view.icon.Icon
+import com.example.profquest2.ui.view.text.BodyText
+import com.example.profquest2.ui.view.text.TitleText
 import com.example.profquest2.utils.Results
 import kotlinx.coroutines.delay
 import kotlinx.coroutines.launch
@@ -98,22 +99,25 @@ fun TestResultsScreen(results: Results) {
             })
         }) {
         Spacer(modifier = Modifier.weight(1f))
+
         HorizontalPager(state = pagerState) {
             pages[it].invoke()
         }
+
         Spacer(modifier = Modifier.weight(1f))
+
         LazyRow(
             verticalAlignment = Alignment.CenterVertically,
             horizontalArrangement = Arrangement.spacedBy(2.dp)
         ) {
             items(4) {
                 Icon(
-                    painter = painterResource(id = R.drawable.ic_circle),
-                    contentDescription = null,
+                    icon = R.drawable.ic_circle,
                     modifier = Modifier.size(if (it == pagerState.currentPage) 12.dp else 8.dp)
                 )
             }
         }
+
         Spacer(modifier = Modifier.height(24.dp))
     }
 }
@@ -133,12 +137,14 @@ fun SpecsPage(title: String, specs: String, onNext: () -> Unit) {
             textAlign = TextAlign.Center,
         )
         Spacer(modifier = Modifier.height(16.dp))
+
         Text(
             text = specs,
             textAlign = TextAlign.Center,
         )
         Spacer(modifier = Modifier.height(48.dp))
-        Icon(
+
+        androidx.compose.material3.Icon(
             imageVector = Icons.AutoMirrored.Filled.ArrowForward,
             contentDescription = null,
             modifier = Modifier.clickable { onNext() }
@@ -157,6 +163,7 @@ fun ProfessionsPage(results: Results) {
     var image3Visible by remember {
         mutableStateOf(false)
     }
+
     LaunchedEffect(true) {
         image1Visible = true
         delay(1000)
@@ -164,61 +171,12 @@ fun ProfessionsPage(results: Results) {
         delay(1000)
         image3Visible = true
     }
+
     Box(modifier = Modifier.fillMaxSize()) {
-        AnimatedVisibility(
-            visible = image1Visible,
-            enter = slideInVertically(
-                animationSpec = tween(
-                    durationMillis = 1000,
-                    easing = LinearOutSlowInEasing
-                )
-            ) + scaleIn(),
-            modifier = Modifier
-                .align(Alignment.TopStart)
-                .padding(start = 48.dp, top = 64.dp)
-        ) {
-            RotatedImage(
-                res = results.images[0],
-                rotation = -30f
-            )
-        }
-        AnimatedVisibility(
-            visible = image3Visible,
-            enter = slideInHorizontally(
-                animationSpec = tween(
-                    durationMillis = 1000,
-                    easing = LinearOutSlowInEasing
-                )
-            ) + scaleIn(),
-            modifier = Modifier
-                .align(Alignment.BottomStart)
-                .padding(start = 48.dp, bottom = 128.dp)
-        ) {
-            RotatedImage(
-                res = results.images[1],
-                rotation = 30f
-            )
-        }
-        AnimatedVisibility(
-            visible = image2Visible,
-            enter = slideIn(
-                initialOffset = { s -> IntOffset(s.width, -s.height) },
-                animationSpec = tween(
-                    durationMillis = 1000,
-                    easing = LinearOutSlowInEasing
-                )
-            ) + scaleIn(),
-            modifier = Modifier
-                .align(Alignment.CenterEnd)
-                .padding(
-                    bottom = 256.dp
-                )
-        ) {
-            RotatedImage(
-                res = results.images[2],
-                rotation = 30f
-            )
-        }
+        AnimatedImage(visible = image1Visible, image = results.images[0])
+        AnimatedImage(visible = image3Visible, image = results.images[1])
+        AnimatedImage(visible = image2Visible, image = results.images[2])
+
         Column(
             horizontalAlignment = Alignment.CenterHorizontally,
             modifier = Modifier
@@ -226,18 +184,36 @@ fun ProfessionsPage(results: Results) {
                 .padding(horizontal = 16.dp)
                 .align(Alignment.Center)
         ) {
-            Text(
-                text = stringResource(R.string.professions),
-                fontWeight = FontWeight.Bold,
-                textAlign = TextAlign.Center
-            )
+            TitleText(text = stringResource(R.string.professions))
             Spacer(modifier = Modifier.height(16.dp))
-            Text(
+
+            BodyText(
                 text = results.professions,
                 textAlign = TextAlign.Center
             )
             Spacer(modifier = Modifier.height(48.dp))
         }
+    }
+}
+
+@Composable
+fun BoxScope.AnimatedImage(visible: Boolean, @DrawableRes image: Int) {
+    AnimatedVisibility(
+        visible = visible,
+        enter = slideInHorizontally(
+            animationSpec = tween(
+                durationMillis = 1000,
+                easing = LinearOutSlowInEasing
+            )
+        ) + scaleIn(),
+        modifier = Modifier
+            .align(Alignment.BottomStart)
+            .padding(start = 48.dp, bottom = 128.dp)
+    ) {
+        RotatedImage(
+            res = image,
+            rotation = 30f
+        )
     }
 }
 

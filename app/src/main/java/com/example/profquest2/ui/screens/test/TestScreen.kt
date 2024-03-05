@@ -17,7 +17,6 @@ import androidx.compose.material3.ButtonDefaults
 import androidx.compose.material3.Card
 import androidx.compose.material3.CardDefaults
 import androidx.compose.material3.ExperimentalMaterial3Api
-import androidx.compose.material3.Icon
 import androidx.compose.material3.LinearProgressIndicator
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
@@ -38,6 +37,7 @@ import androidx.navigation.NavController
 import com.example.profquest2.R
 import com.example.profquest2.ui.navigation.Destination
 import com.example.profquest2.ui.theme.ProfQuest2Theme
+import com.example.profquest2.ui.view.icon.Icon
 import com.example.profquest2.utils.getTestResult
 import com.example.profquest2.utils.listVariants
 import com.google.gson.Gson
@@ -89,14 +89,18 @@ fun TestScreen(navController: NavController) {
                 )
             }
             Spacer(modifier = Modifier.height(8.dp))
+
             ProfessionCard(listVariants[currentQuestion].first.image) {
                 addAnswerToList(0)
             }
             Spacer(modifier = Modifier.height(16.dp))
+
             ProfessionCard(listVariants[currentQuestion].second.image) {
                 addAnswerToList(1)
             }
+
             Spacer(modifier = Modifier.weight(1f))
+
             Row(
                 Modifier.padding(horizontal = 8.dp),
                 verticalAlignment = Alignment.CenterVertically
@@ -145,11 +149,10 @@ fun TestScreen(navController: NavController) {
             }
             Spacer(modifier = Modifier.height(16.dp))
         }
+
         Icon(
-            painter = painterResource(id = R.drawable.ic_arrow_left),
-            contentDescription = null,
-            modifier = Modifier.clickable { navController.popBackStack() },
-            tint = ProfQuest2Theme.colors.onSurface
+            icon = R.drawable.ic_arrow_left,
+            modifier = Modifier.clickable { navController.popBackStack() }
         )
     }
 }

@@ -16,18 +16,19 @@ import androidx.compose.foundation.layout.width
 import androidx.compose.foundation.lazy.grid.GridCells
 import androidx.compose.foundation.lazy.grid.LazyVerticalGrid
 import androidx.compose.foundation.lazy.grid.items
-import androidx.compose.material3.Icon
-import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.platform.LocalUriHandler
 import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.res.stringResource
+import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.unit.dp
 import androidx.navigation.NavController
 import com.example.profquest2.R
-import com.example.profquest2.ui.theme.ProfQuest2Theme
+import com.example.profquest2.ui.view.icon.Icon
+import com.example.profquest2.ui.view.text.BodyText
+import com.example.profquest2.ui.view.text.TitleText
 
 @Composable
 fun SelectTestScreen(navController: NavController) {
@@ -62,21 +63,20 @@ fun SelectTestScreen(navController: NavController) {
     ) {
         Row(verticalAlignment = Alignment.CenterVertically) {
             Icon(
-                painter = painterResource(id = R.drawable.ic_arrow_left),
-                contentDescription = null,
+                icon = R.drawable.ic_arrow_left,
                 modifier = Modifier.clickable {
                     navController.popBackStack()
-                }, tint = ProfQuest2Theme.colors.onSurface
+                }
             )
             Spacer(modifier = Modifier.weight(1f))
-            Text(
-                text = stringResource(id = R.string.select_test),
-                style = ProfQuest2Theme.typography.title.copy(color = ProfQuest2Theme.colors.onSurface)
-            )
+
+            TitleText(text = stringResource(id = R.string.select_test))
             Spacer(modifier = Modifier.width(16.dp))
+
             Spacer(modifier = Modifier.weight(1f))
         }
         Spacer(modifier = Modifier.height(24.dp))
+
         LazyVerticalGrid(
             columns = GridCells.Fixed(2),
             contentPadding = PaddingValues(vertical = 16.dp)
@@ -98,11 +98,10 @@ fun TestImage(testItem: TestItem) {
             contentDescription = null,
             modifier = Modifier
                 .size(164.dp)
-                .clickable { testItem.onClick() })
-        Spacer(modifier = Modifier.height(8.dp))
-        Text(
-            text = stringResource(id = testItem.title),
-            style = ProfQuest2Theme.typography.body.copy(color = ProfQuest2Theme.colors.onSurface)
+                .clickable { testItem.onClick() }
         )
+        Spacer(modifier = Modifier.height(8.dp))
+
+        BodyText(text = stringResource(id = testItem.title), textAlign = TextAlign.Center)
     }
 }
