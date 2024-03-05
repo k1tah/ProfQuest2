@@ -13,8 +13,6 @@ import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.size
 import androidx.compose.foundation.layout.width
 import androidx.compose.foundation.shape.RoundedCornerShape
-import androidx.compose.material3.Icon
-import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
@@ -23,12 +21,14 @@ import androidx.compose.ui.layout.ContentScale
 import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.unit.dp
-import androidx.compose.ui.unit.sp
 import androidx.navigation.NavController
 import com.example.profquest2.R
 import com.example.profquest2.ui.navigation.Destination
-import com.example.profquest2.ui.theme.ProfQuest2Theme
 import com.example.profquest2.ui.view.button.PrimaryButton
+import com.example.profquest2.ui.view.icon.Icon
+import com.example.profquest2.ui.view.text.BodyText
+import com.example.profquest2.ui.view.text.SubtitleText
+import com.example.profquest2.ui.view.text.TitleText
 
 @Composable
 fun ProfileScreen(navController: NavController) {
@@ -40,93 +40,68 @@ fun ProfileScreen(navController: NavController) {
     ) {
         Row(verticalAlignment = Alignment.CenterVertically) {
             Spacer(modifier = Modifier.weight(1f))
-            Text(
-                text = stringResource(id = R.string.profile),
-                style = ProfQuest2Theme.typography.title.copy(color = ProfQuest2Theme.colors.onSurface)
-            )
+            TitleText(text = stringResource(id = R.string.profile))
             Spacer(modifier = Modifier.weight(1f))
             Icon(
-                painter = painterResource(id = R.drawable.ic_settings),
-                contentDescription = null,
-                modifier = Modifier.clickable { navController.navigate(Destination.Settings.route) },
-                tint = ProfQuest2Theme.colors.onSurface
+                icon = R.drawable.ic_settings,
+                modifier = Modifier.clickable { navController.navigate(Destination.Settings.route) }
             )
         }
+
         Spacer(modifier = Modifier.height(16.dp))
         Box(Modifier.size(128.dp)) {
             Image(
                 painter = painterResource(id = R.drawable.image),
                 contentDescription = null,
                 modifier = Modifier
-                    .clip(
-                        RoundedCornerShape(100)
-                    )
+                    .clip(RoundedCornerShape(100))
                     .align(Alignment.Center)
                     .size(128.dp),
                 contentScale = ContentScale.Crop
             )
         }
         Spacer(modifier = Modifier.height(16.dp))
+
         Row(verticalAlignment = Alignment.CenterVertically, modifier = Modifier.fillMaxWidth()) {
-            Text(text = "ФИО", style = ProfQuest2Theme.typography.label.copy(fontSize = 16.sp))
+            SubtitleText(text = stringResource(id = R.string.fullname))
             Spacer(modifier = Modifier.width(16.dp))
-            Text(
-                text = "Владимир Владимирович Путин",
-                style = ProfQuest2Theme.typography.body.copy(color = ProfQuest2Theme.colors.onSurface)
-            )
+            BodyText(text = "Владимир Владимирович Путин")
         }
         Spacer(modifier = Modifier.height(16.dp))
+
         Row(verticalAlignment = Alignment.CenterVertically, modifier = Modifier.fillMaxWidth()) {
-            Text(
-                text = "Место учебы",
-                style = ProfQuest2Theme.typography.label.copy(fontSize = 16.sp)
-            )
+            SubtitleText(text = stringResource(id = R.string.education))
             Spacer(modifier = Modifier.width(16.dp))
-            Text(
-                text = "ГАПОУ ПО ПКИПТ (ит-колледж)",
-                style = ProfQuest2Theme.typography.body.copy(color = ProfQuest2Theme.colors.onSurface)
-            )
+            BodyText(text = "ГАПОУ ПО ПКИПТ (ит-колледж)")
         }
         Spacer(modifier = Modifier.height(16.dp))
+
         Row(verticalAlignment = Alignment.CenterVertically, modifier = Modifier.fillMaxWidth()) {
-            Text(text = "Группа", style = ProfQuest2Theme.typography.label.copy(fontSize = 16.sp))
+            SubtitleText(text = stringResource(id = R.string.group))
             Spacer(modifier = Modifier.width(16.dp))
-            Text(
-                text = "22ит17",
-                style = ProfQuest2Theme.typography.body.copy(color = ProfQuest2Theme.colors.onSurface)
-            )
+            BodyText(text = "22ит17")
         }
         Spacer(modifier = Modifier.height(16.dp))
+
         Row(verticalAlignment = Alignment.CenterVertically, modifier = Modifier.fillMaxWidth()) {
-            Text(
-                text = "Номер телефона",
-                style = ProfQuest2Theme.typography.label.copy(fontSize = 16.sp)
-            )
+            SubtitleText(text = stringResource(id = R.string.phone))
             Spacer(modifier = Modifier.width(16.dp))
-            Text(
-                text = "+7 (964) 870-08-95",
-                style = ProfQuest2Theme.typography.body.copy(color = ProfQuest2Theme.colors.onSurface)
-            )
+            BodyText(text = "+7 (964) 870-08-95")
         }
         Spacer(modifier = Modifier.height(16.dp))
+
         Row(verticalAlignment = Alignment.CenterVertically, modifier = Modifier.fillMaxWidth()) {
-            Text(text = "Документ", style = ProfQuest2Theme.typography.label.copy(fontSize = 16.sp))
+            SubtitleText(text = stringResource(id = R.string.document))
             Spacer(modifier = Modifier.width(16.dp))
-            Text(
-                text = "name.docx",
-                style = ProfQuest2Theme.typography.body.copy(color = ProfQuest2Theme.colors.onSurface)
-            )
+            BodyText(text = "name.docx")
         }
         Spacer(modifier = Modifier.height(16.dp))
-        Text(
-            text = "Профессиональная склонность по итогам теста:",
-            style = ProfQuest2Theme.typography.label.copy(fontSize = 16.sp)
-        )
+
+        SubtitleText(text = stringResource(id = R.string.test_results))
         Spacer(modifier = Modifier.height(16.dp))
-        Text(
-            text = "Очень большой текст Очень большой текст Очень большой текст Очень большой текст Очень большой текст Очень большой текст Очень большой текст Очень большой текст Очень большой текст",
-            style = ProfQuest2Theme.typography.body.copy(color = ProfQuest2Theme.colors.onSurface)
-        )
+
+        BodyText(text = "Очень большой текст Очень большой текст Очень большой текст Очень большой текст Очень большой текст Очень большой текст Очень большой текст Очень большой текст Очень большой текст")
+
         Spacer(modifier = Modifier.weight(1f))
         PrimaryButton(
             onClick = {

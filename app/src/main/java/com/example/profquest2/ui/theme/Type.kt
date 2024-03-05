@@ -3,6 +3,7 @@ package com.example.profquest2.ui.theme
 import androidx.compose.ui.text.TextStyle
 import androidx.compose.ui.text.font.FontFamily
 import androidx.compose.ui.text.font.FontWeight
+import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.unit.sp
 
 data class Typography(
@@ -17,10 +18,11 @@ val title = TextStyle(
     fontWeight = FontWeight.Medium,
     fontSize = 22.sp,
     lineHeight = 28.sp,
-    letterSpacing = 0.sp
+    letterSpacing = 0.sp,
+    textAlign = TextAlign.Center
 )
 
-val subtitle = title.copy(fontSize = 16.sp)
+val subtitle = title.copy(fontSize = 14.sp)
 
 val body = TextStyle(
     fontFamily = FontFamily.Default,

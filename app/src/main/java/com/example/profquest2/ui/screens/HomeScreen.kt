@@ -1,6 +1,7 @@
 package com.example.profquest2.ui.screens
 
 import androidx.compose.animation.AnimatedVisibility
+import androidx.compose.animation.expandHorizontally
 import androidx.compose.animation.slideInHorizontally
 import androidx.compose.foundation.BorderStroke
 import androidx.compose.foundation.ExperimentalFoundationApi
@@ -321,7 +322,7 @@ fun Survey(text: String, isSelected: Boolean, onSelect: () -> Unit) {
         ) {
             LabelText(text = "77 голосов")
             Icon(icon = R.drawable.ic_circle)
-            LabelText(text = "7 дней до окончания" )
+            LabelText(text = "7 дней до окончания")
         }
     }
 }
@@ -338,7 +339,9 @@ fun SurveyItem(text: String, votesCount: Int, isSelected: Boolean, onSelect: () 
             .border(1.dp, ProfQuest2Theme.colors.secondary, shape = RoundedCornerShape(4.dp))
     ) {
         AnimatedVisibility(
-            isSelected, modifier = Modifier.align(Alignment.CenterStart)
+            visible = isSelected,
+            modifier = Modifier.align(Alignment.CenterStart),
+            enter = expandHorizontally()
         ) {
             Surface(
                 shape = RoundedCornerShape(4.dp),

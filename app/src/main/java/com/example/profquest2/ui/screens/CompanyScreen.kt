@@ -18,7 +18,6 @@ import androidx.compose.foundation.layout.size
 import androidx.compose.foundation.layout.width
 import androidx.compose.foundation.lazy.LazyColumn
 import androidx.compose.foundation.shape.RoundedCornerShape
-import androidx.compose.material3.Icon
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.getValue
@@ -37,26 +36,31 @@ import androidx.compose.ui.unit.sp
 import androidx.navigation.NavController
 import com.example.profquest2.R
 import com.example.profquest2.ui.theme.ProfQuest2Theme
+import com.example.profquest2.ui.view.icon.Icon
+import com.example.profquest2.ui.view.text.BodyText
+import com.example.profquest2.ui.view.text.LabelText
+import com.example.profquest2.ui.view.text.SubtitleText
+import com.example.profquest2.ui.view.text.TitleText
 
 @Composable
 fun CompanyScreen(navController: NavController) {
     var infoExpanded by rememberSaveable {
         mutableStateOf(false)
     }
+
     Column(
         Modifier
             .fillMaxSize()
             .padding(start = 16.dp, end = 16.dp, top = 16.dp)
     ) {
         Icon(
-            painter = painterResource(id = R.drawable.ic_arrow_left),
-            contentDescription = null,
+            icon = R.drawable.ic_arrow_left,
             modifier = Modifier.clickable {
                 navController.popBackStack()
-            },
-            tint = ProfQuest2Theme.colors.onSurface
+            }
         )
         Spacer(modifier = Modifier.height(16.dp))
+
         Row(verticalAlignment = Alignment.CenterVertically) {
             Image(
                 painter = painterResource(id = R.drawable.avatar),
@@ -70,42 +74,33 @@ fun CompanyScreen(navController: NavController) {
             )
             Spacer(modifier = Modifier.width(16.dp))
             Column {
-                Text(
-                    text = "АО «НИИЭМП»",
-                    style = ProfQuest2Theme.typography.title.copy(color = ProfQuest2Theme.colors.onSurface)
-                )
+                TitleText(text = "АО «НИИЭМП»")
                 Spacer(modifier = Modifier.height(2.dp))
-                Text(
-                    text = "@niiemp",
-                    style = ProfQuest2Theme.typography.label.copy(fontSize = 14.sp)
-                )
+                LabelText(text = "@niiemp")
             }
         }
         Spacer(modifier = Modifier.height(8.dp))
-        Text(
+
+        BodyText(
             text = "Научно-исследовательский институт электронно-механических приборов",
-            style = ProfQuest2Theme.typography.body.copy(color = ProfQuest2Theme.colors.onSurface),
             modifier = Modifier.fillMaxWidth()
         )
         Spacer(modifier = Modifier.height(8.dp))
+
         Row(verticalAlignment = Alignment.CenterVertically) {
             Icon(
-                painter = painterResource(id = R.drawable.ic_calendar),
-                contentDescription = null,
+                icon = R.drawable.ic_calendar,
                 tint = ProfQuest2Theme.colors.secondary,
                 modifier = Modifier.size(16.dp)
             )
             Spacer(modifier = Modifier.width(2.dp))
-            Text(
-                text = "Присоединились в Январе 2024",
-                style = ProfQuest2Theme.typography.label.copy(fontSize = 14.sp)
-            )
+            LabelText(text = "Присоединились в Январе 2024")
         }
         Spacer(modifier = Modifier.height(4.dp))
+
         Row(verticalAlignment = Alignment.CenterVertically) {
             Icon(
-                painter = painterResource(id = R.drawable.ic_location),
-                contentDescription = null,
+                icon = R.drawable.ic_location,
                 tint = ProfQuest2Theme.colors.secondary,
                 modifier = Modifier.size(16.dp)
             )
@@ -120,12 +115,12 @@ fun CompanyScreen(navController: NavController) {
             )
         }
         Spacer(modifier = Modifier.height(24.dp))
+
         Row {
             Column {
                 Row(verticalAlignment = Alignment.CenterVertically) {
                     Icon(
-                        painter = painterResource(id = R.drawable.ic_link),
-                        contentDescription = null,
+                        icon = R.drawable.ic_link,
                         tint = ProfQuest2Theme.colors.secondary,
                         modifier = Modifier.size(16.dp)
                     )
@@ -140,10 +135,10 @@ fun CompanyScreen(navController: NavController) {
                     )
                 }
                 Spacer(modifier = Modifier.height(4.dp))
+
                 Row(verticalAlignment = Alignment.CenterVertically) {
                     Icon(
-                        painter = painterResource(id = R.drawable.ic_link),
-                        contentDescription = null,
+                        icon = R.drawable.ic_link,
                         tint = ProfQuest2Theme.colors.secondary,
                         modifier = Modifier.size(16.dp)
                     )
@@ -158,10 +153,10 @@ fun CompanyScreen(navController: NavController) {
                     )
                 }
                 Spacer(modifier = Modifier.height(4.dp))
+
                 Row(verticalAlignment = Alignment.CenterVertically) {
                     Icon(
-                        painter = painterResource(id = R.drawable.ic_link),
-                        contentDescription = null,
+                        icon = R.drawable.ic_link,
                         tint = ProfQuest2Theme.colors.secondary,
                         modifier = Modifier.size(16.dp)
                     )
@@ -177,11 +172,11 @@ fun CompanyScreen(navController: NavController) {
                 }
             }
             Spacer(modifier = Modifier.width(32.dp))
+
             Column {
                 Row(verticalAlignment = Alignment.CenterVertically) {
                     Icon(
-                        painter = painterResource(id = R.drawable.ic_phone),
-                        contentDescription = null,
+                        icon = R.drawable.ic_phone,
                         modifier = Modifier.size(16.dp)
                     )
                     Spacer(modifier = Modifier.width(2.dp))
@@ -195,80 +190,60 @@ fun CompanyScreen(navController: NavController) {
                     )
                 }
                 Spacer(modifier = Modifier.height(4.dp))
+
                 Row(verticalAlignment = Alignment.CenterVertically) {
                     Icon(
-                        painter = painterResource(id = R.drawable.ic_clock),
-                        contentDescription = null,
+                        icon = R.drawable.ic_clock,
                         modifier = Modifier.size(16.dp)
                     )
                     Spacer(modifier = Modifier.width(2.dp))
-                    Text(
-                        text = "Пн-пт: 08:00–17:00 Перерыв: 12:00–13:00",
-                        style = ProfQuest2Theme.typography.body.copy(color = ProfQuest2Theme.colors.onSurface)
-                    )
+                    BodyText(text = "Пн-пт: 08:00–17:00 Перерыв: 12:00–13:00")
                 }
             }
         }
         Spacer(modifier = Modifier.height(16.dp))
+
         Row(verticalAlignment = Alignment.CenterVertically) {
-            Text(
-                text = "Электронная почта:",
-                style = ProfQuest2Theme.typography.title.copy(
-                    fontSize = 16.sp,
-                    color = ProfQuest2Theme.colors.onSurface
-                )
-            )
+            SubtitleText(text = "Электронная почта:")
             Spacer(modifier = Modifier.width(4.dp))
-            Text(
-                text = "aoNimp@bk.ru",
-                style = ProfQuest2Theme.typography.body.copy(color = ProfQuest2Theme.colors.onSurface)
-            )
+            BodyText(text = "aoNimp@bk.ru")
         }
+
         AnimatedVisibility(visible = infoExpanded) {
             Column {
                 Spacer(modifier = Modifier.height(8.dp))
-                Text(
-                    text = "Краткая информация:",
-                    style = ProfQuest2Theme.typography.title.copy(fontSize = 16.sp)
-                )
+                SubtitleText(text = "Краткая информация:")
                 Spacer(modifier = Modifier.height(4.dp))
-                Text(
+
+                BodyText(
                     text = "НИИЭМП. АО Пензенский научно-исследовательский институт электронно-механических приборов Основание 1959 Основатели СССР. Расположение, Пенза, ул. Каракозова, 44 Отрасль электроника",
-                    style = ProfQuest2Theme.typography.body.copy(color = ProfQuest2Theme.colors.onSurface),
                     modifier = Modifier.fillMaxWidth()
                 )
                 Spacer(modifier = Modifier.height(8.dp))
-                Text(
-                    text = "Основной вид деятельности:",
-                    style = ProfQuest2Theme.typography.title.copy(
-                        fontSize = 16.sp,
-                        color = ProfQuest2Theme.colors.onSurface
-                    )
-                )
+
+                SubtitleText(text = "Основной вид деятельности:")
                 Spacer(modifier = Modifier.height(4.dp))
-                Text(
+
+                BodyText(
                     text = "Научные исследования и разработки в области естественных и технических наук прочие",
-                    style = ProfQuest2Theme.typography.body.copy(color = ProfQuest2Theme.colors.onSurface),
                     modifier = Modifier.fillMaxWidth()
                 )
                 Spacer(modifier = Modifier.height(8.dp))
             }
         }
-        Text(
+
+        LabelText(
             text = if (infoExpanded) "Свернуть" else "Показать больше",
-            style = ProfQuest2Theme.typography.label.copy(fontSize = 16.sp),
             modifier = Modifier.clickable { infoExpanded = !infoExpanded }
         )
         Spacer(modifier = Modifier.height(8.dp))
-        Text(
+
+        SubtitleText(
             text = "Посты",
-            style = ProfQuest2Theme.typography.title.copy(
-                fontSize = 14.sp,
-                color = ProfQuest2Theme.colors.onSurface
-            ),
             modifier = Modifier.padding(start = 8.dp)
         )
         Spacer(modifier = Modifier.height(4.dp))
+
         Box(
             modifier = Modifier
                 .fillMaxWidth()
@@ -298,20 +273,16 @@ fun CompanyNewsItem() {
             )
             Spacer(modifier = Modifier.width(16.dp))
             Column {
-                Text(
-                    text = "НИИЭМП",
-                    style = ProfQuest2Theme.typography.title.copy(color = ProfQuest2Theme.colors.onSurface)
-                )
+                TitleText(text = "НИИЭМП")
                 Spacer(modifier = Modifier.height(2.dp))
-                Text(text = "12.02.2024 09:00", style = ProfQuest2Theme.typography.label)
+                LabelText(text = "12.02.2024 09:00")
             }
         }
         Spacer(modifier = Modifier.height(8.dp))
-        Text(
-            text = "О да! Для вас мы открылись!",
-            style = ProfQuest2Theme.typography.body.copy(color = ProfQuest2Theme.colors.onSurface)
-        )
+
+        BodyText(text = "О да! Для вас мы открылись!")
         Spacer(modifier = Modifier.height(8.dp))
+
         Image(
             painter = painterResource(id = R.drawable.image),
             contentDescription = null,
