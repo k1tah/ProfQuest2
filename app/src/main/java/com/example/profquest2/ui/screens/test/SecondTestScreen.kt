@@ -19,7 +19,6 @@ import androidx.compose.foundation.lazy.LazyRow
 import androidx.compose.foundation.lazy.rememberLazyListState
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.filled.Close
-import androidx.compose.material3.Icon
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.getValue
@@ -31,13 +30,14 @@ import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.layout.ContentScale
 import androidx.compose.ui.res.painterResource
-import androidx.compose.ui.text.font.FontWeight
-import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.unit.dp
-import androidx.compose.ui.unit.sp
 import androidx.navigation.NavController
 import com.example.profquest2.R
+import com.example.profquest2.ui.navigation.Destination
 import com.example.profquest2.ui.theme.ProfQuest2Theme
+import com.example.profquest2.ui.view.icon.Icon
+import com.example.profquest2.ui.view.text.BodyText
+import com.example.profquest2.ui.view.text.TitleText
 import com.example.profquest2.utils.getSecondTestResult
 import com.example.profquest2.utils.questions
 import com.google.gson.Gson
@@ -53,6 +53,7 @@ fun SecondTestScreen(
         mutableIntStateOf(0)
     }
     val listAnswers = rememberSaveable { mutableListOf<Int>() }
+
     fun addAnswerToList(answer: Int) {
         if (currentQuestion != 23) {
             listAnswers.add(answer)
@@ -64,10 +65,11 @@ fun SecondTestScreen(
             navController.navigate(
                 "secondTestResults/${Uri.encode(Gson().toJson(getSecondTestResult(listAnswers)))}"
             ) {
-                popUpTo("selectTest")
+                popUpTo(Destination.SelectTest.route)
             }
         }
     }
+
     Column(
         Modifier
             .padding(start = 16.dp, top = 16.dp, end = 16.dp)
@@ -91,14 +93,16 @@ fun SecondTestScreen(
                 }
             }
             Spacer(modifier = Modifier.weight(1f))
-            Icon(
+            androidx.compose.material3.Icon(
                 imageVector = Icons.Default.Close,
                 contentDescription = null,
                 modifier = Modifier.clickable { navController.popBackStack() },
                 tint = ProfQuest2Theme.colors.onSurface
             )
         }
+
         Spacer(modifier = Modifier.weight(1f))
+
         Column(horizontalAlignment = Alignment.CenterHorizontally) {
             Image(
                 painter = painterResource(questions[currentQuestion].image),
@@ -106,29 +110,33 @@ fun SecondTestScreen(
                 modifier = Modifier.size(height = 305.dp, width = 235.dp),
                 contentScale = ContentScale.Crop
             )
-            Text(
-                text = "${currentQuestion + 1}. ${questions[currentQuestion].title}",
-                style = ProfQuest2Theme.typography.title.copy(color = ProfQuest2Theme.colors.onSurface)
+
+            TitleText(
+                text = "${currentQuestion + 1}. ${questions[currentQuestion].title}"
             )
             Spacer(modifier = Modifier.height(8.dp))
+
             AnswerPickerItem(
                 text = questions[currentQuestion].variants[0]
             ) {
                 addAnswerToList(1)
             }
             Spacer(modifier = Modifier.height(16.dp))
+
             AnswerPickerItem(
                 text = questions[currentQuestion].variants[1]
             ) {
                 addAnswerToList(2)
             }
             Spacer(modifier = Modifier.height(16.dp))
+
             AnswerPickerItem(
                 text = questions[currentQuestion].variants[2]
             ) {
                 addAnswerToList(3)
             }
         }
+
         Spacer(modifier = Modifier.weight(1f))
     }
 }
@@ -163,12 +171,11 @@ fun AnswerPickerItem(text: String, onSelect: () -> Unit) {
             .clickable { onSelect() }
     ) {
         Icon(
-            painter = painterResource(id = R.drawable.ic_circle),
-            contentDescription = null,
-            modifier = Modifier.size(8.dp),
-            tint = ProfQuest2Theme.colors.onSurface
+            icon = R.drawable.ic_circle,
+            modifier = Modifier.size(8.dp)
         )
         Spacer(modifier = Modifier.width(12.dp))
-        Text(text = text, style = ProfQuest2Theme.typography.body.copy(color = ProfQuest2Theme.colors.onSurface))
+
+        BodyText(text = text)
     }
 }

@@ -173,9 +173,9 @@ fun ProfessionsPage(results: Results) {
     }
 
     Box(modifier = Modifier.fillMaxSize()) {
-        AnimatedImage(visible = image1Visible, image = results.images[0])
-        AnimatedImage(visible = image3Visible, image = results.images[1])
-        AnimatedImage(visible = image2Visible, image = results.images[2])
+        AnimatedImage(visible = image1Visible, image = results.images[0], Alignment.BottomStart)
+        AnimatedImage(visible = image3Visible, image = results.images[1], Alignment.CenterEnd)
+        AnimatedImage(visible = image2Visible, image = results.images[2], Alignment.TopStart)
 
         Column(
             horizontalAlignment = Alignment.CenterHorizontally,
@@ -197,7 +197,7 @@ fun ProfessionsPage(results: Results) {
 }
 
 @Composable
-fun BoxScope.AnimatedImage(visible: Boolean, @DrawableRes image: Int) {
+fun BoxScope.AnimatedImage(visible: Boolean, @DrawableRes image: Int, align: Alignment) {
     AnimatedVisibility(
         visible = visible,
         enter = slideInHorizontally(
@@ -207,7 +207,7 @@ fun BoxScope.AnimatedImage(visible: Boolean, @DrawableRes image: Int) {
             )
         ) + scaleIn(),
         modifier = Modifier
-            .align(Alignment.BottomStart)
+            .align(align)
             .padding(start = 48.dp, bottom = 128.dp)
     ) {
         RotatedImage(
