@@ -31,15 +31,38 @@
     <string name="professions">Конкретные профессии</string>
     <string name="next">Далее</string>
 
-    <!-- Sign In Screen -->
+    <!-- Sign In/Up Screen -->
     <string name="sign_in">Вход</string>
     <string name="email">Электронная почта</string>
     <string name="login">Логин</string>
     <string name="password">Пароль</string>
     <string name="forgot_password">Забыли пароль?</string>
+    <string name="sign_up">Регистрация</string>
+    <string name="sign_up_hint">Вы ещё у нас не зарегистрированны?</string>
+    <string name="email_address">Адресс электронной почты</string>
+    <string name="send_code">Отправить код</string>
+    <string name="log_in">Авторизоваться</string>
+    <string name="do_sign_up">Зарегистрироваться</string>
 
     <!-- Test Screen -->
     <string name="test_question">Какая профессия лучше?</string>
+
+    <!-- Select Test Screen -->
+    <string name="test_ticket_in_future">Тест: билет в будущее</string>
+    <string name="second_test">Методика Л.А. Йовайши</string>
+    <string name="golland_test">Тест Д. Голланда</string>
+    <string name="select_test">Bыбор теста</string>
+
+    <!-- Vacancies -->
+    <string name="show_more">Показать больше...</string>
+    <string name="duties">Обязанности</string>
+    <string name="description">Описание Описание Описание Описание Описание Описание</string>
+    <string name="requirements">Требования</string>
+    <string name="hide">Свернуть</string>
+    <string name="address">Адрес</string>
+    <string name="contacts">Контакты</string>
+    <string name="skills">Навыки</string>
+    <string name="working_conditions">Условия труда</string>
 
     <!-- Confirm Code Screen -->
     <string name="we_send_code">Мы отправили код подтверждения на вашу почту</string>
@@ -51,27 +74,5 @@
     <string name="confirm_password">Подтвердите пароль</string>
     <string name="change_password">Изменить пароль</string>
 
-    <!-- Enter Email Screen -->
-    <string name="enter_email">Введите ваш адресс электронной почты для восстановления пароля</string>
-    <string name="email_address">Адресс электронной почты</string>
-    <string name="send_code">Отправить код</string>
-    <string name="log_in">Авторизоваться</string>
-
     <string name="auth_preference_file_key">authPrefs</string>
-    <string name="first_launch_preference_file_key">firstLaunch</string>
-    <string name="test_ticket_in_future">Тест: билет в будущее</string>
-    <string name="second_test">Методика Л.А. Йовайши</string>
-    <string name="golland_test">Тест Д. Голланда</string>
-    <string name="select_test">Bыбор теста</string>
-    <string name="show_more">Показать больше...</string>
-    <string name="duties">Обязанности</string>
-    <string name="description">Описание Описание Описание Описание Описание Описание</string>
-    <string name="requirements">Требования</string>
-    <string name="hide">Свернуть</string>
-    <string name="address">Адрес</string>
-    <string name="contacts">Контакты</string>
-    <string name="skills">Навыки</string>
-    <string name="working_conditions">Условия труда</string>
-    <string name="search">Поиск</string>
-    <string name="cancel_vote">Отменить голос</string>
 </resources>

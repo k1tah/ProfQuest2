@@ -2,22 +2,34 @@ package com.example.profquest2.ui.navigation.graph
 
 import androidx.navigation.NavController
 import androidx.navigation.NavGraphBuilder
+import androidx.navigation.NavType
 import androidx.navigation.compose.composable
+import androidx.navigation.navArgument
 import androidx.navigation.navigation
 import com.example.profquest2.ui.MainViewModel
 import com.example.profquest2.ui.navigation.Destination
-import com.example.profquest2.ui.screens.profile.auth.AuthScreen
-import com.example.profquest2.ui.screens.profile.auth.EmailScreen
-import com.example.profquest2.ui.screens.profile.auth.CodeScreen
 import com.example.profquest2.ui.screens.profile.EditProfileScreen
 import com.example.profquest2.ui.screens.profile.ProfileScreen
-import com.example.profquest2.ui.screens.profile.auth.ResetPasswordScreen
 import com.example.profquest2.ui.screens.profile.SettingsScreen
+import com.example.profquest2.ui.screens.profile.auth.signin.SignInScreen
+import com.example.profquest2.ui.screens.profile.auth.signup.CodeScreen
+import com.example.profquest2.ui.screens.profile.auth.ResetPasswordScreen
+import com.example.profquest2.ui.screens.profile.auth.signup.SignUpScreen
 
-fun NavGraphBuilder.profileGraph(navController: NavController, mainViewModel: MainViewModel) {
-    navigation(route = Graph.ProfileGraph.route, startDestination = Destination.Auth.route) {
+fun NavGraphBuilder.profileGraph(
+    navController: NavController,
+    mainViewModel: MainViewModel
+) {
+    navigation(
+        route = Graph.ProfileGraph.route,
+        startDestination = Destination.Profile.route
+    ) {
         composable(Destination.Profile.route) {
-            ProfileScreen(navController)
+            if (mainViewModel.getUserId() != -1L) {
+                ProfileScreen(navController = navController)
+            } else {
+                SignInScreen(navController = navController)
+            }
         }
 
         composable(Destination.EditProfile.route) {
@@ -25,15 +37,23 @@ fun NavGraphBuilder.profileGraph(navController: NavController, mainViewModel: Ma
         }
 
         composable(Destination.Auth.route) {
-            AuthScreen(navController)
+            SignInScreen(navController)
         }
 
-        composable(Destination.Code.route) {
-            CodeScreen(navController)
+        composable(
+            Destination.Code.route,
+            arguments = listOf(
+                navArgument(name = "email") { type = NavType.StringType },
+                navArgument(name = "password") { type = NavType.StringType }
+            )
+        ) {
+            val email = it.arguments?.getString("email")
+            val password = it.arguments?.getString("password")
+            if (!email.isNullOrBlank() && !password.isNullOrBlank()) CodeScreen(navController, email, password)
         }
 
-        composable(Destination.Email.route) {
-            EmailScreen(navController)
+        composable(Destination.SignUp.route) {
+            SignUpScreen(navController)
         }
 
         composable(Destination.ResetPassword.route) {

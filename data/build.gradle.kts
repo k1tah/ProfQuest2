@@ -3,6 +3,7 @@ plugins {
     id("org.jetbrains.kotlin.android")
     id("com.google.dagger.hilt.android")
     id("com.google.devtools.ksp")
+    kotlin("plugin.serialization") version "1.9.23"
 }
 
 android {
@@ -35,27 +36,25 @@ android {
 }
 
 dependencies {
-    // Retrofit
-    val retrofitVersion = "2.9.0"
-    implementation("com.squareup.retrofit2:retrofit:$retrofitVersion")
-    implementation("org.jetbrains.kotlinx:kotlinx-serialization-json:1.6.0")
-    implementation("com.squareup.retrofit2:converter-gson:$retrofitVersion")
-    implementation ("com.squareup.okhttp3:logging-interceptor:4.11.0")
-
+    implementation("androidx.security:security-crypto-ktx:1.1.0-alpha06")
     val roomVersion = "2.6.1"
     // Room
     implementation("androidx.room:room-runtime:$roomVersion")
     ksp("androidx.room:room-compiler:$roomVersion")
     implementation("androidx.room:room-ktx:$roomVersion")
     //Gson
-    implementation ("com.google.code.gson:gson:2.10")
+    implementation ("com.google.code.gson:gson:2.10.1")
     // Hilt
     implementation("com.google.dagger:hilt-android:2.49")
     ksp("com.google.dagger:hilt-android-compiler:2.48.1")
     implementation("androidx.hilt:hilt-navigation-compose:1.2.0")
     // Ktor
-    implementation("io.ktor:ktor-client-core:1.6.1")
+    val ktorVersion = "2.3.8"
+    implementation("io.ktor:ktor-client-okhttp:$ktorVersion")
+    implementation("io.ktor:ktor-client-core:$ktorVersion")
     implementation("io.ktor:ktor-client-android:1.0.1")
+    implementation("io.ktor:ktor-client-content-negotiation:$ktorVersion")
+    implementation("io.ktor:ktor-serialization-kotlinx-json:$ktorVersion")
 
     implementation("androidx.core:core-ktx:1.12.0")
     implementation("androidx.appcompat:appcompat:1.6.1")

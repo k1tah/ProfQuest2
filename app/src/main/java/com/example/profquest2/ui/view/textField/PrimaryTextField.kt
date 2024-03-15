@@ -14,16 +14,17 @@ import androidx.compose.ui.unit.dp
 import com.example.profquest2.ui.theme.ProfQuest2Theme
 
 @Composable
-fun ProfileInfoField(
+fun PrimaryTextField(
     value: String,
     onValueChange: (String) -> Unit,
     modifier: Modifier = Modifier,
     trailingIcon: @Composable () -> Unit = {},
     label: String = "",
-    showLabel: Boolean = true
+    hint: String = "",
+    enabled: Boolean = true
 ) {
     Column {
-        if (showLabel) {
+        if (label.isNotBlank()) {
             Text(
                 text = label,
                 style = ProfQuest2Theme.typography.body.copy(color = ProfQuest2Theme.colors.onSurface),
@@ -38,16 +39,19 @@ fun ProfileInfoField(
                 focusedBorderColor = ProfQuest2Theme.colors.primary,
                 unfocusedBorderColor = ProfQuest2Theme.colors.primary,
                 focusedContainerColor = ProfQuest2Theme.colors.surface,
-                unfocusedContainerColor = ProfQuest2Theme.colors.surface
+                unfocusedContainerColor = ProfQuest2Theme.colors.surface,
+                disabledBorderColor = ProfQuest2Theme.colors.tertiary,
+                disabledContainerColor = ProfQuest2Theme.colors.surface
             ),
             shape = RoundedCornerShape(8.dp),
             singleLine = true,
             textStyle = ProfQuest2Theme.typography.body,
             placeholder = {
-                Text(text = label, style = ProfQuest2Theme.typography.label)
+                Text(text = hint, style = ProfQuest2Theme.typography.label)
             },
             modifier = modifier.height(48.dp),
-            trailingIcon = { trailingIcon() }
+            trailingIcon = { trailingIcon() },
+            enabled = enabled
         )
     }
 }
