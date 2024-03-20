@@ -16,3 +16,4 @@ dependencyResolutionManagement {
 rootProject.name = "ProfQuest2"
 include(":app")
 include(":data")
+include(":domain")

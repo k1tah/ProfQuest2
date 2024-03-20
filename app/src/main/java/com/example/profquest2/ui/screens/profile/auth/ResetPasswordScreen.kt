@@ -54,8 +54,7 @@ fun ResetPasswordScreen(navController: NavController) {
         Spacer(modifier = Modifier.height(24.dp))
 
         PrimaryTextField(
-            label = stringResource(id = R.string.new_password),
-            showLabel = false,
+            hint = stringResource(id = R.string.new_password),
             value = password,
             onValueChange = {
                 password = it
@@ -64,8 +63,7 @@ fun ResetPasswordScreen(navController: NavController) {
         Spacer(modifier = Modifier.height(16.dp))
 
         PrimaryTextField(
-            label = stringResource(id = R.string.confirm_password),
-            showLabel = false,
+            hint = stringResource(id = R.string.confirm_password),
             value = passwordConfirmation,
             onValueChange = {
                 passwordConfirmation = it

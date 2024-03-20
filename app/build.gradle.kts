@@ -55,6 +55,7 @@ android {
 
 dependencies {
     implementation(project(":data"))
+    implementation(project(":domain"))
 
     // ktor
     val ktorVersion = "2.3.8"

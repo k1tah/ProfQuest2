@@ -8,7 +8,6 @@ import androidx.navigation.navArgument
 import androidx.navigation.navigation
 import com.example.profquest2.ui.MainViewModel
 import com.example.profquest2.ui.navigation.Destination
-import com.example.profquest2.ui.screens.profile.EditProfileScreen
 import com.example.profquest2.ui.screens.profile.ProfileScreen
 import com.example.profquest2.ui.screens.profile.SettingsScreen
 import com.example.profquest2.ui.screens.profile.auth.signin.SignInScreen
@@ -30,10 +29,6 @@ fun NavGraphBuilder.profileGraph(
             } else {
                 SignInScreen(navController = navController)
             }
-        }
-
-        composable(Destination.EditProfile.route) {
-            EditProfileScreen(navController)
         }
 
         composable(Destination.Auth.route) {

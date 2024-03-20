@@ -12,6 +12,7 @@ import androidx.compose.runtime.Composable
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.unit.dp
 import com.example.profquest2.ui.theme.ProfQuest2Theme
+import com.example.profquest2.ui.view.text.LabelText
 
 @Composable
 fun PrimaryTextField(
@@ -41,14 +42,13 @@ fun PrimaryTextField(
                 focusedContainerColor = ProfQuest2Theme.colors.surface,
                 unfocusedContainerColor = ProfQuest2Theme.colors.surface,
                 disabledBorderColor = ProfQuest2Theme.colors.tertiary,
-                disabledContainerColor = ProfQuest2Theme.colors.surface
+                disabledContainerColor = ProfQuest2Theme.colors.surface,
+                disabledTextColor = ProfQuest2Theme.colors.onSurface
             ),
             shape = RoundedCornerShape(8.dp),
             singleLine = true,
             textStyle = ProfQuest2Theme.typography.body,
-            placeholder = {
-                Text(text = hint, style = ProfQuest2Theme.typography.label)
-            },
+            placeholder = { LabelText(text = hint) },
             modifier = modifier.height(48.dp),
             trailingIcon = { trailingIcon() },
             enabled = enabled

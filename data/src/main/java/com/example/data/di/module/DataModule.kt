@@ -3,6 +3,7 @@ package com.example.data.di.module
 import android.content.Context
 import com.example.data.api.ApiService
 import com.example.data.repository.AuthRepository
+import com.example.data.repository.ProfileRepository
 import com.example.data.repository.SettingsRepository
 import com.example.data.store.AuthStore
 import com.example.data.store.SettingsStore
@@ -27,6 +28,14 @@ object DataModule {
     @Singleton
     fun provideAuthRepository(@ApplicationContext context: Context) = AuthRepository(
         ApiService(),
-        AuthStore(context)
+        provideAuthStore(context)
     )
+
+    @Provides
+    @Singleton
+    fun provideAuthStore(@ApplicationContext context: Context) = AuthStore(context)
+
+    @Provides
+    @Singleton
+    fun provideProfileRepository() = ProfileRepository(ApiService())
 }

@@ -36,6 +36,8 @@ android {
 }
 
 dependencies {
+    implementation(project(":domain"))
+
     implementation("androidx.security:security-crypto-ktx:1.1.0-alpha06")
     val roomVersion = "2.6.1"
     // Room

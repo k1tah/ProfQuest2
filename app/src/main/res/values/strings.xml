@@ -18,9 +18,11 @@
 
     <!-- Edit Profile Screen -->
     <string name="fullname">ФИО</string>
+    <string name="photo">Фото</string>
     <string name="education">Место учёбы</string>
     <string name="phone">Номер телефона</string>
     <string name="group">Группа</string>
+    <string name="resume">Выбрать документ</string>
     <string name="select_document">Выбрать документ</string>
     <string name="done">Готово</string>
 
@@ -73,6 +75,10 @@
     <string name="new_password">Новый пароль</string>
     <string name="confirm_password">Подтвердите пароль</string>
     <string name="change_password">Изменить пароль</string>
+
+    <!-- Home Screen -->
+    <string name="cancel_vote">Отменить голос</string>
+    <string name="search">Поиск</string>
 
     <string name="auth_preference_file_key">authPrefs</string>
 </resources>

@@ -21,8 +21,6 @@ sealed class Destination(val route: String) {
 
     data object SignUp: Destination("signUp")
 
-    data object EditProfile: Destination("editProfile")
-
     data object Auth: Destination("auth")
 
     data object Code: Destination("code/{email}/{password}")

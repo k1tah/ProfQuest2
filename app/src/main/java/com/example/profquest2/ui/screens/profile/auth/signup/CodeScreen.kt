@@ -9,6 +9,7 @@ import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.padding
+import androidx.compose.foundation.layout.width
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.LaunchedEffect
@@ -112,9 +113,8 @@ fun CodeScreen(
                 if (code.length == 20) viewModel.signUp(email, password, code)
             },
             modifier = Modifier
-                .height(56.dp)
+                .width(128.dp)
                 .fillMaxWidth()
-                .padding(horizontal = 32.dp)
         )
         Spacer(modifier = Modifier.height(8.dp))
 
