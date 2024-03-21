@@ -31,41 +31,50 @@ class ProfileViewModel @Inject constructor(
     private fun getProfile() = intent {
         val userId = authRepository.getUserId()
         if (userId != -1L) {
-            val response = profileRepository.getProfile(userId)
+            val response = profileRepository.getProfile(userId, authRepository.getAuthToken())
             if (response.status == HttpStatusCode.OK) {
                 val profile = response.body<Profile>()
                 reduce { state.copy(profile = profile) }
+                postSideEffect(ProfileSideEffect.Done)
             } else {
-                postSideEffect(ProfileSideEffect.Error(response.status.description))
+                postSideEffect(ProfileSideEffect.Error(response.status.value.toString()))
             }
         } else {
             postSideEffect(ProfileSideEffect.NotAuthorized)
         }
     }
 
-    fun updateProfile(name: String, photo: String, inputStream: InputStream?, fileName: String?) = intent {
+    fun updateProfile(
+        name: String,
+        fileInputStream: InputStream?,
+        fileName: String?,
+        photoInputStream: InputStream?
+    ) = intent {
+        postSideEffect(ProfileSideEffect.Loading)
         val userId = authRepository.getUserId()
         if (userId != -1L) {
-            state.profile?.let { profile ->
-                var fileId = profile.file?.id
-                if (inputStream != null && fileName != null) {
-                    val response = profileRepository.uploadFile(
-                        inputStream.readBytes(),
-                        fileName,
-                        authRepository.getAuthToken()
-                    )
-                    fileId = response.body<Long>()
-                }
-                val response = profileRepository.updateProfile(
-                    profile.copy(
-                        name = name,
-                        photo = photo,
-                        file = fileId?.let { id -> profile.file?.copy(id = id) }
-                    )
+            var fileId = state.profile?.file?.id
+            var photoId = state.profile?.photo?.id
+            if (fileInputStream != null && fileName != null) {
+                val response = profileRepository.uploadFile(
+                    fileInputStream.readBytes(),
+                    fileName,
+                    authRepository.getAuthToken()
                 )
-                if (response.status != HttpStatusCode.OK) {
-                    postSideEffect(ProfileSideEffect.Error(response.status.description))
-                }
+                fileId = response.body<Long>()
+            }
+            if (photoInputStream != null) {
+                val response = profileRepository.uploadFile(
+                    photoInputStream.readBytes(),
+                    token = authRepository.getAuthToken()
+                )
+                photoId = response.body<Long>()
+            }
+            val response = profileRepository.updateProfile(userId, name, photoId, fileId)
+            if (response.status == HttpStatusCode.OK) {
+                getProfile()
+            } else {
+                postSideEffect(ProfileSideEffect.Error(response.status.description))
             }
         } else {
             postSideEffect(ProfileSideEffect.NotAuthorized)
@@ -76,7 +85,11 @@ class ProfileViewModel @Inject constructor(
 data class ProfileState(val profile: Profile? = null)
 
 sealed class ProfileSideEffect {
+    data object Loading : ProfileSideEffect()
+
     data object NotAuthorized : ProfileSideEffect()
 
     data class Error(val message: String) : ProfileSideEffect()
+
+    data object Done : ProfileSideEffect()
 }

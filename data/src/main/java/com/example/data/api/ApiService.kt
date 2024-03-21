@@ -1,22 +1,18 @@
 package com.example.data.api
 
-import com.example.data.api.body.AuthRequestBody
-import com.example.data.api.body.FileRequestBody
 import com.example.data.api.body.UpdateProfileRequestBody
-import com.example.domain.model.Profile
+import com.example.data.api.body.auth.AuthRequestBody
 import io.ktor.client.HttpClient
 import io.ktor.client.engine.okhttp.OkHttp
 import io.ktor.client.plugins.HttpTimeout
 import io.ktor.client.plugins.contentnegotiation.ContentNegotiation
 import io.ktor.client.request.forms.MultiPartFormDataContent
 import io.ktor.client.request.forms.formData
-import io.ktor.client.request.forms.submitFormWithBinaryData
 import io.ktor.client.request.get
 import io.ktor.client.request.headers
 import io.ktor.client.request.post
 import io.ktor.client.request.put
 import io.ktor.client.request.setBody
-import io.ktor.client.utils.EmptyContent.headers
 import io.ktor.http.ContentType
 import io.ktor.http.Headers
 import io.ktor.http.HttpHeaders
@@ -52,12 +48,17 @@ class ApiService {
         url { parameters.append("email", email) }
     }
 
-    suspend fun getProfile(userId: Long) = client.get(BASE_URL + "user/$userId")
-
-    suspend fun updateProfile(profile: Profile) = client.put(BASE_URL + "user/${profile.id}") {
-        contentType(ContentType.Application.Json)
-        setBody(profile.toUpdateRequestBody())
+    suspend fun getProfile(userId: Long, token: String) = client.get(BASE_URL + "user/$userId") {
+        headers {
+            append(HttpHeaders.Authorization, token)
+        }
     }
+
+    suspend fun updateProfile(userId: Long, name: String, photo: Long?, file: Long?) =
+        client.put(BASE_URL + "user/$userId") {
+            contentType(ContentType.Application.Json)
+            setBody(UpdateProfileRequestBody(name, photo, file))
+        }
 
     suspend fun uploadFile(file: ByteArray, fileName: String, token: String) =
         client.post(BASE_URL + "file/upload") {
@@ -67,19 +68,22 @@ class ApiService {
             setBody(
                 MultiPartFormDataContent(
                     formData {
-                        append("file", file, Headers.build {
-                            append(HttpHeaders.ContentType, "*/*")
-                            append(HttpHeaders.ContentDisposition, "filename=$fileName")
-                        })
+                        append(
+                            "file",
+                            file,
+                            Headers.build {
+                                append(HttpHeaders.ContentType, "*/*")
+                                append(HttpHeaders.ContentDisposition, "filename=$fileName")
+                            }
+                        )
                     },
                     boundary = "WebAppBoundary"
                 )
             )
         }
 
-    private fun Profile.toUpdateRequestBody() = UpdateProfileRequestBody(name, photo, file?.id)
 
     companion object {
-        const val BASE_URL = "http://192.168.199.131:8080/"
+        const val BASE_URL = "http://192.168.206.131:8080/"
     }
 }

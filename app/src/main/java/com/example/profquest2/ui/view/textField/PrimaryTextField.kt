@@ -49,7 +49,7 @@ fun PrimaryTextField(
             singleLine = true,
             textStyle = ProfQuest2Theme.typography.body,
             placeholder = { LabelText(text = hint) },
-            modifier = modifier.height(48.dp),
+            modifier = modifier,
             trailingIcon = { trailingIcon() },
             enabled = enabled
         )

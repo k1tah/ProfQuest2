@@ -57,6 +57,8 @@ dependencies {
     implementation(project(":data"))
     implementation(project(":domain"))
 
+    implementation("io.coil-kt:coil-compose:2.6.0")
+
     // ktor
     val ktorVersion = "2.3.8"
     implementation("io.ktor:ktor-client-core:$ktorVersion")
@@ -64,7 +66,7 @@ dependencies {
     val navVersion = "2.7.7"
     implementation("androidx.navigation:navigation-compose:$navVersion")
     // Coil
-    implementation("io.coil-kt:coil-compose:2.5.0")
+    implementation("io.coil-kt:coil-compose:2.6.0")
     // Orbit
     val orbitVersion = "6.1.0"
     implementation("org.orbit-mvi:orbit-core:$orbitVersion")

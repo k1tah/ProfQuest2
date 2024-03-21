@@ -1,4 +1,4 @@
-package com.example.data.api.body
+package com.example.data.api.body.auth
 
 import kotlinx.serialization.Serializable
 

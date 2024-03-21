@@ -1,16 +1,13 @@
 package com.example.profquest2.ui.screens.profile.auth.signin
 
 import androidx.lifecycle.ViewModel
-import com.example.data.api.body.AuthResponseBody
 import com.example.data.repository.AuthRepository
 import dagger.hilt.android.lifecycle.HiltViewModel
-import io.ktor.client.call.body
 import io.ktor.http.HttpStatusCode
 import org.orbitmvi.orbit.Container
 import org.orbitmvi.orbit.ContainerHost
 import org.orbitmvi.orbit.syntax.simple.intent
 import org.orbitmvi.orbit.syntax.simple.postSideEffect
-import org.orbitmvi.orbit.syntax.simple.reduce
 import org.orbitmvi.orbit.viewmodel.container
 import javax.inject.Inject
 

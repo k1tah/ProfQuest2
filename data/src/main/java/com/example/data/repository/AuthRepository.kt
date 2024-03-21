@@ -1,7 +1,7 @@
 package com.example.data.repository
 
 import com.example.data.api.ApiService
-import com.example.data.api.body.AuthResponseBody
+import com.example.data.api.body.auth.AuthResponseBody
 import com.example.data.store.AuthStore
 import io.ktor.client.call.body
 import io.ktor.client.statement.HttpResponse
