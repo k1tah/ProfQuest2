@@ -12,4 +12,6 @@ class PostRepository @Inject constructor(private val postDataSource: PostDataSou
         size: Int,
         token: String
     ) = postDataSource.getPosts(search, company, address, page, size, token)
+
+    suspend fun like(postId: Long, token: String) = postDataSource.like(postId, token)
 }

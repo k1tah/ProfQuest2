@@ -13,4 +13,6 @@ class PostDataSourceImpl @Inject constructor(private val service: PostService) :
         size: Int,
         token: String
     ): HttpResponse = service.getPosts(search, company, address, page, size, token)
+
+    override suspend fun like(postId: Long, token: String): HttpResponse = service.like(postId, token)
 }

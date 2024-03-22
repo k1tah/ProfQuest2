@@ -52,6 +52,23 @@ class HomeViewModel @Inject constructor(
             postSideEffect(HomeSideEffect.Error(response.status.value.toString()))
         }
     }
+
+    fun like(postId: Long) = intent {
+        val response = postRepository.like(postId, authRepository.getAuthToken())
+        if (response.status == HttpStatusCode.OK) {
+            val likedPost = response.body<Post>()
+            reduce { state.copy(posts = state.posts.update(likedPost)) }
+        } else {
+            postSideEffect(HomeSideEffect.Error(response.status.value.toString()))
+        }
+    }
+}
+
+fun List<Post>.update(item: Post): List<Post> {
+    val itemIndex = indexOf(find { it.id == item.id })
+    val newList = this.toMutableList()
+    newList[itemIndex] = item
+    return newList
 }
 
 data class HomeState(

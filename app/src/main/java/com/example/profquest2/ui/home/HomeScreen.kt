@@ -194,14 +194,7 @@ fun HomeScreen(navController: NavController, viewModel: HomeViewModel = hiltView
                 HorizontalPager(state = pagerState) { page ->
                     when (page) {
                         1 -> {
-                            LazyColumn(
-                                contentPadding = PaddingValues(16.dp),
-                                verticalArrangement = Arrangement.spacedBy(8.dp)
-                            ) {
-                                items(state.posts) {
-                                    Post(post = it)
-                                }
-                            }
+
                         }
 
                         0 -> {
@@ -210,7 +203,11 @@ fun HomeScreen(navController: NavController, viewModel: HomeViewModel = hiltView
                                 verticalArrangement = Arrangement.spacedBy(8.dp)
                             ) {
                                 items(state.posts) {
-                                    Post(post = it)
+                                    Post(
+                                        post = it, onLike = { postId ->
+                                            viewModel.like(postId)
+                                        }
+                                    )
                                 }
                             }
                         }
@@ -244,10 +241,7 @@ fun CompanyItem(onNavigateToCompany: () -> Unit) {
 }
 
 @Composable
-fun Post(post: Post) {
-    var isLiked by rememberSaveable {
-        mutableStateOf(false)
-    }
+fun Post(post: Post, onLike: (Long) -> Unit) {
     var showPopup by rememberSaveable {
         mutableStateOf(false)
     }
@@ -341,8 +335,8 @@ fun Post(post: Post) {
                     modifier = Modifier.padding(start = 4.dp)
                 ) {
                     Icon(
-                        icon = if (isLiked) R.drawable.ic_favorite_fill else R.drawable.ic_favorite,
-                        modifier = Modifier.clickable { isLiked = !isLiked }
+                        icon = if (post.isLiked) R.drawable.ic_favorite_fill else R.drawable.ic_favorite,
+                        modifier = Modifier.clickable { onLike(post.id) }
                     )
                     Spacer(modifier = Modifier.width(4.dp))
                     BodyText(text = post.likes.toString())

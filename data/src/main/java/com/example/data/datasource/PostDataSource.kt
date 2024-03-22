@@ -11,4 +11,6 @@ interface PostDataSource {
         size: Int,
         token: String
     ): HttpResponse
+
+    suspend fun like(postId: Long, token: String): HttpResponse
 }
