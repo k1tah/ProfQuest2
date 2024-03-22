@@ -1,4 +1,4 @@
-package com.example.profquest2.ui.screens
+package com.example.profquest2.ui.home
 
 import androidx.compose.animation.AnimatedVisibility
 import androidx.compose.animation.expandHorizontally
@@ -22,13 +22,17 @@ import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.size
 import androidx.compose.foundation.layout.width
 import androidx.compose.foundation.lazy.LazyColumn
+import androidx.compose.foundation.lazy.items
 import androidx.compose.foundation.pager.HorizontalPager
 import androidx.compose.foundation.pager.rememberPagerState
 import androidx.compose.foundation.shape.RoundedCornerShape
-import androidx.compose.material3.OutlinedButton
-import androidx.compose.material3.Surface
+import androidx.compose.material3.BasicAlertDialog
 import androidx.compose.material3.Card
 import androidx.compose.material3.CardDefaults
+import androidx.compose.material3.CircularProgressIndicator
+import androidx.compose.material3.ExperimentalMaterial3Api
+import androidx.compose.material3.OutlinedButton
+import androidx.compose.material3.Surface
 import androidx.compose.material3.Tab
 import androidx.compose.material3.TabRow
 import androidx.compose.material3.TabRowDefaults.tabIndicatorOffset
@@ -45,12 +49,17 @@ import androidx.compose.ui.draw.clip
 import androidx.compose.ui.graphics.Brush
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.layout.ContentScale
+import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.unit.IntOffset
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.window.Popup
+import androidx.hilt.navigation.compose.hiltViewModel
 import androidx.navigation.NavController
+import coil.compose.SubcomposeAsyncImage
+import com.example.data.api.BASE_URL
+import com.example.domain.model.Post
 import com.example.profquest2.R
 import com.example.profquest2.extensions.toPx
 import com.example.profquest2.ui.navigation.Destination
@@ -61,11 +70,18 @@ import com.example.profquest2.ui.view.text.LabelText
 import com.example.profquest2.ui.view.text.SubtitleText
 import com.example.profquest2.ui.view.text.TitleText
 import com.example.profquest2.ui.view.textField.SearchField
+import com.example.profquest2.utils.showShortToast
+import com.google.accompanist.swiperefresh.SwipeRefresh
+import com.google.accompanist.swiperefresh.rememberSwipeRefreshState
 import kotlinx.coroutines.launch
+import org.orbitmvi.orbit.compose.collectAsState
+import org.orbitmvi.orbit.compose.collectSideEffect
+import java.text.SimpleDateFormat
+import java.util.Locale
 
-@OptIn(ExperimentalFoundationApi::class)
+@OptIn(ExperimentalFoundationApi::class, ExperimentalMaterial3Api::class)
 @Composable
-fun HomeScreen(navController: NavController) {
+fun HomeScreen(navController: NavController, viewModel: HomeViewModel = hiltViewModel()) {
     var isSearchVisible by rememberSaveable {
         mutableStateOf(false)
     }
@@ -75,93 +91,127 @@ fun HomeScreen(navController: NavController) {
     var searchQuery by rememberSaveable {
         mutableStateOf("")
     }
-    Column(Modifier.fillMaxSize()) {
-        Row(
-            modifier = Modifier
-                .padding(horizontal = 16.dp)
-                .height(64.dp)
-        ) {
-            AnimatedVisibility(visible = !isSearchVisible) {
-                Row(verticalAlignment = Alignment.CenterVertically) {
-                    Image(
-                        painter = painterResource(id = ProfQuest2Theme.images.logo),
-                        contentDescription = null,
-                        modifier = Modifier.size(160.dp, 64.dp)
-                    )
-                    Spacer(modifier = Modifier.weight(1f))
-                    Icon(
-                        icon = R.drawable.ic_search,
-                        modifier = Modifier.clickable {
-                            isSearchVisible = true
-                        }
-                    )
-                    Spacer(modifier = Modifier.width(16.dp))
-                    Icon(icon = R.drawable.ic_notification)
-                }
+
+    val state = viewModel.collectAsState().value
+
+    val context = LocalContext.current
+
+    var isLoading by rememberSaveable {
+        mutableStateOf(false)
+    }
+
+    viewModel.collectSideEffect {
+        isLoading = when (it) {
+            is HomeSideEffect.Done -> false
+
+
+            is HomeSideEffect.Error -> {
+                context.showShortToast(it.message)
+                false
             }
-            AnimatedVisibility(visible = isSearchVisible, enter = slideInHorizontally()) {
-                SearchField(
-                    value = searchQuery,
-                    onValueChanged = { searchQuery = it },
-                    onClose = { isSearchVisible = false }
-                )
-            }
+
+            is HomeSideEffect.Loading -> true
         }
-        if (isSearchVisible) {
-            LazyColumn(
-                contentPadding = PaddingValues(16.dp),
-                verticalArrangement = Arrangement.spacedBy(8.dp)
+    }
+
+    if (isLoading) {
+        BasicAlertDialog(onDismissRequest = { }, modifier = Modifier.size(64.dp)) {
+            CircularProgressIndicator(color = ProfQuest2Theme.colors.primary)
+        }
+    }
+    val refreshState = rememberSwipeRefreshState(isRefreshing = isLoading)
+
+    SwipeRefresh(state = refreshState, onRefresh = { viewModel.getPosts() }) {
+        Column(Modifier.fillMaxSize()) {
+            Row(
+                modifier = Modifier
+                    .padding(horizontal = 16.dp)
+                    .height(64.dp)
             ) {
-                items(10) {
-                    CompanyItem {
-                        navController.navigate(Destination.Company.route)
+                AnimatedVisibility(visible = !isSearchVisible) {
+                    Row(verticalAlignment = Alignment.CenterVertically) {
+                        Image(
+                            painter = painterResource(id = ProfQuest2Theme.images.logo),
+                            contentDescription = null,
+                            modifier = Modifier.size(160.dp, 64.dp)
+                        )
+                        Spacer(modifier = Modifier.weight(1f))
+                        Icon(
+                            icon = R.drawable.ic_search,
+                            modifier = Modifier.clickable {
+                                isSearchVisible = true
+                            }
+                        )
+                        Spacer(modifier = Modifier.width(16.dp))
+                        Icon(icon = R.drawable.ic_notification)
                     }
                 }
-            }
-        } else {
-            Spacer(modifier = Modifier.height(32.dp))
-            TabRow(
-                selectedTabIndex = pagerState.currentPage,
-                containerColor = Color.Transparent,
-                contentColor = ProfQuest2Theme.colors.onSurface,
-                indicator = {
-                    Box(
-                        modifier = Modifier
-                            .tabIndicatorOffset(it[pagerState.currentPage])
-                            .height(4.dp)
-                            .clip(RoundedCornerShape(8.dp))
-                            .padding(horizontal = 28.dp)
-                            .background(color = ProfQuest2Theme.colors.primary)
-                    )
-                }) {
-                tabs.forEachIndexed { index, s ->
-                    Tab(
-                        selected = (index == pagerState.currentPage),
-                        onClick = { scope.launch { pagerState.scrollToPage(index) } },
-                        text = { Text(text = s) }
+                AnimatedVisibility(visible = isSearchVisible, enter = slideInHorizontally()) {
+                    SearchField(
+                        value = searchQuery,
+                        onValueChanged = { searchQuery = it },
+                        onClose = { isSearchVisible = false }
                     )
                 }
             }
-            HorizontalPager(state = pagerState) { page ->
-                when (page) {
-                    1 -> {
-                        LazyColumn(
-                            contentPadding = PaddingValues(16.dp),
-                            verticalArrangement = Arrangement.spacedBy(8.dp)
-                        ) {
-                            items(1) {
-                                GoodNewsCard()
+            if (isSearchVisible) {
+                LazyColumn(
+                    contentPadding = PaddingValues(16.dp),
+                    verticalArrangement = Arrangement.spacedBy(8.dp)
+                ) {
+                    items(10) {
+                        CompanyItem {
+                            navController.navigate(Destination.Company.route)
+                        }
+                    }
+                }
+            } else {
+                Spacer(modifier = Modifier.height(32.dp))
+
+                TabRow(
+                    selectedTabIndex = pagerState.currentPage,
+                    containerColor = Color.Transparent,
+                    contentColor = ProfQuest2Theme.colors.onSurface,
+                    indicator = {
+                        Box(
+                            modifier = Modifier
+                                .tabIndicatorOffset(it[pagerState.currentPage])
+                                .height(4.dp)
+                                .clip(RoundedCornerShape(8.dp))
+                                .padding(horizontal = 28.dp)
+                                .background(color = ProfQuest2Theme.colors.primary)
+                        )
+                    }) {
+                    tabs.forEachIndexed { index, s ->
+                        Tab(
+                            selected = (index == pagerState.currentPage),
+                            onClick = { scope.launch { pagerState.scrollToPage(index) } },
+                            text = { Text(text = s) }
+                        )
+                    }
+                }
+
+                HorizontalPager(state = pagerState) { page ->
+                    when (page) {
+                        1 -> {
+                            LazyColumn(
+                                contentPadding = PaddingValues(16.dp),
+                                verticalArrangement = Arrangement.spacedBy(8.dp)
+                            ) {
+                                items(state.posts) {
+                                    Post(post = it)
+                                }
                             }
                         }
-                    }
 
-                    0 -> {
-                        LazyColumn(
-                            contentPadding = PaddingValues(16.dp),
-                            verticalArrangement = Arrangement.spacedBy(8.dp)
-                        ) {
-                            items(5) {
-                                GoodNewsCard()
+                        0 -> {
+                            LazyColumn(
+                                contentPadding = PaddingValues(16.dp),
+                                verticalArrangement = Arrangement.spacedBy(8.dp)
+                            ) {
+                                items(state.posts) {
+                                    Post(post = it)
+                                }
                             }
                         }
                     }
@@ -194,7 +244,7 @@ fun CompanyItem(onNavigateToCompany: () -> Unit) {
 }
 
 @Composable
-fun GoodNewsCard() {
+fun Post(post: Post) {
     var isLiked by rememberSaveable {
         mutableStateOf(false)
     }
@@ -204,6 +254,10 @@ fun GoodNewsCard() {
     var isSelected by rememberSaveable {
         mutableStateOf(false)
     }
+
+    val date = SimpleDateFormat("yyyy-MM-dd'T'HH:mm:ss.SSSXXX", Locale("ru")).parse(post.date)
+    val formattedDate = date?.let { SimpleDateFormat("yyyy.MM.dd HH:mm", Locale("ru")).format(it) }
+
     Card(
         modifier = Modifier.fillMaxWidth(),
         shape = RoundedCornerShape(12.dp),
@@ -241,35 +295,47 @@ fun GoodNewsCard() {
             }
             Column(modifier = Modifier.padding(horizontal = 16.dp, vertical = 12.dp)) {
                 Row(verticalAlignment = Alignment.CenterVertically) {
-                    androidx.compose.material3.Icon(
-                        painter = painterResource(id = R.drawable.niiemp),
+                    SubcomposeAsyncImage(
+                        model = BASE_URL + "file/${post.icon.id}",
                         contentDescription = null,
-                        modifier = Modifier.size(64.dp),
-                        tint = Color.Red
+                        modifier = Modifier
+                            .size(48.dp)
+                            .clip(RoundedCornerShape(100))
+                            .fillMaxWidth(),
+                        contentScale = ContentScale.Crop
                     )
                     Spacer(modifier = Modifier.width(16.dp))
+
                     Column {
-                        TitleText(text = "НИИЭМП")
+                        TitleText(text = post.name)
                         Spacer(modifier = Modifier.height(2.dp))
-                        LabelText(text = "12.02.2024 09:00")
+                        LabelText(text = formattedDate ?: "")
                     }
                 }
                 Spacer(modifier = Modifier.height(16.dp))
-                BodyText(text = "О нет! Мы закрылись!")
+
+                BodyText(text = post.text)
                 Spacer(modifier = Modifier.height(24.dp))
-                Image(
-                    painter = painterResource(id = R.drawable.kotik),
-                    contentDescription = null,
-                    modifier = Modifier
-                        .clip(RoundedCornerShape(16.dp))
-                        .fillMaxWidth(),
-                    contentScale = ContentScale.Crop
-                )
-                Spacer(modifier = Modifier.height(16.dp))
-                Survey("Опросный опрос", isSelected) {
-                    isSelected = true
+
+                if (post.files?.isNotEmpty() == true) {
+                    SubcomposeAsyncImage(
+                        model = BASE_URL + "file/${post.files?.first()?.id}",
+                        contentDescription = null,
+                        modifier = Modifier
+                            .clip(RoundedCornerShape(16.dp))
+                            .fillMaxWidth(),
+                        contentScale = ContentScale.Crop
+                    )
+                    Spacer(modifier = Modifier.height(16.dp))
                 }
-                Spacer(modifier = Modifier.height(16.dp))
+
+                if (post.votes != null && post.variants != null && post.isVoted != null) {
+                    Survey(post.variants!!, post.votes!!, post.isVoted!!) {
+                        isSelected = true
+                    }
+                    Spacer(modifier = Modifier.height(16.dp))
+                }
+
                 Row(
                     verticalAlignment = Alignment.CenterVertically,
                     modifier = Modifier.padding(start = 4.dp)
@@ -279,36 +345,26 @@ fun GoodNewsCard() {
                         modifier = Modifier.clickable { isLiked = !isLiked }
                     )
                     Spacer(modifier = Modifier.width(4.dp))
-                    BodyText(text = "1023")
+                    BodyText(text = post.likes.toString())
                 }
             }
         }
     }
 }
 
-data class Question(
-    val text: String,
-    val count: Int
-)
-
 @Composable
-fun Survey(text: String, isSelected: Boolean, onSelect: () -> Unit) {
-    val questions = listOf(
-        Question("var 1", 10),
-        Question("var 2", 10),
-        Question("var 3", 10)
-    )
+fun Survey(questions: List<String>, votes: List<Int>, isSelected: Boolean, onSelect: () -> Unit) {
     Column {
         Icon(icon = R.drawable.ic_stats)
-        Spacer(modifier = Modifier.height(8.dp))
-        BodyText(text = text)
         Spacer(modifier = Modifier.height(16.dp))
-        questions.forEach {
-            SurveyItem(text = it.text, votesCount = it.count, isSelected) {
+
+        questions.forEachIndexed { index, item ->
+            SurveyItem(text = item, votesCount = votes[index], isSelected) {
                 onSelect()
             }
         }
         Spacer(modifier = Modifier.height(16.dp))
+
         Box(
             Modifier
                 .fillMaxWidth()
@@ -316,11 +372,12 @@ fun Survey(text: String, isSelected: Boolean, onSelect: () -> Unit) {
                 .height(1.dp)
         )
         Spacer(modifier = Modifier.height(4.dp))
+
         Row(
             horizontalArrangement = Arrangement.spacedBy(4.dp),
             verticalAlignment = Alignment.CenterVertically
         ) {
-            LabelText(text = "77 голосов")
+            LabelText(text = "${votes.sum()} голосов")
             Icon(icon = R.drawable.ic_circle)
             LabelText(text = "7 дней до окончания")
         }

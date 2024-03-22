@@ -58,6 +58,7 @@ dependencies {
     implementation(project(":domain"))
 
     implementation("io.coil-kt:coil-compose:2.6.0")
+    implementation ("com.google.accompanist:accompanist-swiperefresh:0.24.13-rc")
 
     // ktor
     val ktorVersion = "2.3.8"
