@@ -62,6 +62,26 @@ class HomeViewModel @Inject constructor(
             postSideEffect(HomeSideEffect.Error(response.status.value.toString()))
         }
     }
+
+    fun vote(postId: Long, variant: Int) = intent {
+        val response = postRepository.vote(postId, variant, authRepository.getAuthToken())
+        if (response.status == HttpStatusCode.OK) {
+            val votedPost = response.body<Post>()
+            reduce { state.copy(posts = state.posts.update(votedPost)) }
+        } else {
+            postSideEffect(HomeSideEffect.Error(response.status.value.toString()))
+        }
+    }
+
+    fun undoVote(postId: Long) = intent {
+        val response = postRepository.undoVote(postId, authRepository.getAuthToken())
+        if (response.status == HttpStatusCode.OK) {
+            val votedPost = response.body<Post>()
+            reduce { state.copy(posts = state.posts.update(votedPost)) }
+        } else {
+            postSideEffect(HomeSideEffect.Error(response.status.value.toString()))
+        }
+    }
 }
 
 fun List<Post>.update(item: Post): List<Post> {

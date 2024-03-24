@@ -15,5 +15,7 @@ data class Post(
     val votes: List<Int>?,
     val likes: Int,
     val isLiked: Boolean,
-    val isVoted: Boolean?
+    val isVoted: Boolean?,
+    val vote: Int?,
+    val expirationDate: String?
 )

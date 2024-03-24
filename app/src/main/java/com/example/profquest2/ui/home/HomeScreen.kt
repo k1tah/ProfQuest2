@@ -27,6 +27,7 @@ import androidx.compose.foundation.pager.HorizontalPager
 import androidx.compose.foundation.pager.rememberPagerState
 import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.material3.BasicAlertDialog
+import androidx.compose.material3.ButtonDefaults
 import androidx.compose.material3.Card
 import androidx.compose.material3.CardDefaults
 import androidx.compose.material3.CircularProgressIndicator
@@ -77,6 +78,7 @@ import kotlinx.coroutines.launch
 import org.orbitmvi.orbit.compose.collectAsState
 import org.orbitmvi.orbit.compose.collectSideEffect
 import java.text.SimpleDateFormat
+import java.util.Date
 import java.util.Locale
 
 @OptIn(ExperimentalFoundationApi::class, ExperimentalMaterial3Api::class)
@@ -204,8 +206,15 @@ fun HomeScreen(navController: NavController, viewModel: HomeViewModel = hiltView
                             ) {
                                 items(state.posts) {
                                     Post(
-                                        post = it, onLike = { postId ->
+                                        post = it,
+                                        onLike = { postId ->
                                             viewModel.like(postId)
+                                        },
+                                        onVote = { postId, variant ->
+                                            viewModel.vote(postId, variant)
+                                        },
+                                        onUndoVote = { postId ->
+                                            viewModel.undoVote(postId)
                                         }
                                     )
                                 }
@@ -241,16 +250,31 @@ fun CompanyItem(onNavigateToCompany: () -> Unit) {
 }
 
 @Composable
-fun Post(post: Post, onLike: (Long) -> Unit) {
+fun Post(
+    post: Post,
+    onLike: (Long) -> Unit,
+    onVote: (Long, Int) -> Unit,
+    onUndoVote: (Long) -> Unit
+) {
     var showPopup by rememberSaveable {
-        mutableStateOf(false)
-    }
-    var isSelected by rememberSaveable {
         mutableStateOf(false)
     }
 
     val date = SimpleDateFormat("yyyy-MM-dd'T'HH:mm:ss.SSSXXX", Locale("ru")).parse(post.date)
     val formattedDate = date?.let { SimpleDateFormat("yyyy.MM.dd HH:mm", Locale("ru")).format(it) }
+
+    var expirationDate: Date?
+    var daysLeft: Int? = null
+    var isExpired: Boolean? = null
+
+    post.expirationDate?.let {
+        expirationDate = SimpleDateFormat(
+            "yyyy-MM-dd'T'HH:mm:ss.SSSXXX",
+            Locale("ru")
+        ).parse(it)
+        daysLeft = (Date(expirationDate!!.time - Date().time).time / 86400000).toInt() - 1
+        isExpired = daysLeft!! < 0
+    }
 
     Card(
         modifier = Modifier.fillMaxWidth(),
@@ -259,13 +283,13 @@ fun Post(post: Post, onLike: (Long) -> Unit) {
         elevation = CardDefaults.cardElevation(4.dp),
     ) {
         Box {
-            if (isSelected) {
+            if (post.isVoted == true && isExpired == false) {
                 Icon(
                     icon = R.drawable.ic_three_dots_horiz,
                     modifier = Modifier
                         .align(Alignment.TopEnd)
                         .padding(16.dp)
-                        .clickable { showPopup = true }
+                        .clickable { showPopup = !showPopup }
                 )
             }
             if (showPopup) {
@@ -276,10 +300,14 @@ fun Post(post: Post, onLike: (Long) -> Unit) {
                 ) {
                     OutlinedButton(
                         onClick = {
-                            isSelected = false
+                            onUndoVote(post.id)
                             showPopup = false
                         },
-                        border = BorderStroke(1.dp, ProfQuest2Theme.colors.secondary)
+                        border = BorderStroke(1.dp, ProfQuest2Theme.colors.secondary),
+                        colors = ButtonDefaults.buttonColors(
+                            containerColor = Color.Transparent,
+                            contentColor = Color.Black
+                        )
                     ) {
                         Icon(icon = R.drawable.ic_close)
                         Spacer(modifier = Modifier.width(4.dp))
@@ -287,6 +315,7 @@ fun Post(post: Post, onLike: (Long) -> Unit) {
                     }
                 }
             }
+
             Column(modifier = Modifier.padding(horizontal = 16.dp, vertical = 12.dp)) {
                 Row(verticalAlignment = Alignment.CenterVertically) {
                     SubcomposeAsyncImage(
@@ -323,10 +352,15 @@ fun Post(post: Post, onLike: (Long) -> Unit) {
                     Spacer(modifier = Modifier.height(16.dp))
                 }
 
-                if (post.votes != null && post.variants != null && post.isVoted != null) {
-                    Survey(post.variants!!, post.votes!!, post.isVoted!!) {
-                        isSelected = true
-                    }
+                if (post.votes != null && post.variants != null && post.isVoted != null && post.expirationDate != null) {
+                    Survey(
+                        post.variants!!,
+                        post.votes!!,
+                        post.isVoted!!,
+                        { onVote(post.id, it) },
+                        isExpired!!,
+                        daysLeft!!
+                    )
                     Spacer(modifier = Modifier.height(16.dp))
                 }
 
@@ -347,15 +381,27 @@ fun Post(post: Post, onLike: (Long) -> Unit) {
 }
 
 @Composable
-fun Survey(questions: List<String>, votes: List<Int>, isSelected: Boolean, onSelect: () -> Unit) {
+fun Survey(
+    questions: List<String>,
+    votes: List<Int>,
+    isSelected: Boolean,
+    onSelect: (Int) -> Unit,
+    isExpired: Boolean,
+    daysLeft: Int
+) {
     Column {
         Icon(icon = R.drawable.ic_stats)
         Spacer(modifier = Modifier.height(16.dp))
 
         questions.forEachIndexed { index, item ->
-            SurveyItem(text = item, votesCount = votes[index], isSelected) {
-                onSelect()
-            }
+            SurveyItem(
+                text = item,
+                votesCount = votes[index],
+                isSelected = isExpired || isSelected,
+                percent = if (votes.sum() != 0) (votes[index].toFloat() / votes.sum()
+                    .toFloat()) else 0f,
+                onSelect = { if (!isExpired) onSelect(index) }
+            )
         }
         Spacer(modifier = Modifier.height(16.dp))
 
@@ -373,13 +419,27 @@ fun Survey(questions: List<String>, votes: List<Int>, isSelected: Boolean, onSel
         ) {
             LabelText(text = "${votes.sum()} голосов")
             Icon(icon = R.drawable.ic_circle)
-            LabelText(text = "7 дней до окончания")
+            LabelText(
+                text = when (daysLeft) {
+                    in 1..Int.MAX_VALUE -> "$daysLeft дней до окончания"
+
+                    0 -> "Сегодня последний день голосования"
+
+                    else -> "Голосование завершено"
+                }
+            )
         }
     }
 }
 
 @Composable
-fun SurveyItem(text: String, votesCount: Int, isSelected: Boolean, onSelect: () -> Unit) {
+fun SurveyItem(
+    text: String,
+    votesCount: Int,
+    isSelected: Boolean,
+    onSelect: () -> Unit,
+    percent: Float
+) {
     Box(
         contentAlignment = Alignment.Center,
         modifier = Modifier
@@ -406,7 +466,7 @@ fun SurveyItem(text: String, votesCount: Int, isSelected: Boolean, onSelect: () 
                         ),
                         shape = RoundedCornerShape(4.dp)
                     )
-                    .fillMaxWidth(0.5f)
+                    .fillMaxWidth(percent)
                     .height(48.dp),
                 content = {},
                 color = Color.Transparent
@@ -419,7 +479,7 @@ fun SurveyItem(text: String, votesCount: Int, isSelected: Boolean, onSelect: () 
         ) {
             BodyText(text = text)
             Spacer(modifier = Modifier.weight(1f))
-            BodyText(text = votesCount.toString())
+            if (isSelected) BodyText(text = votesCount.toString())
         }
     }
 }

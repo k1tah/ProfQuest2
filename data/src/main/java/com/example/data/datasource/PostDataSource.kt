@@ -13,4 +13,8 @@ interface PostDataSource {
     ): HttpResponse
 
     suspend fun like(postId: Long, token: String): HttpResponse
+
+    suspend fun vote(postId: Long, variant: Int, token: String): HttpResponse
+
+    suspend fun undoVote(postId: Long, token: String): HttpResponse
 }
