@@ -47,7 +47,9 @@ class HomeViewModel @Inject constructor(
         if (response.status == HttpStatusCode.OK) {
             postSideEffect(HomeSideEffect.Done)
             val posts = response.body<List<Post>>()
-            reduce { state.copy(posts = posts) }
+            val currentPosts = state.posts.toMutableList()
+            currentPosts.addAll(posts)
+            reduce { state.copy(posts = currentPosts) }
         } else {
             postSideEffect(HomeSideEffect.Error(response.status.value.toString()))
         }

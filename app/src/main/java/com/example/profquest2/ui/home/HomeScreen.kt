@@ -23,6 +23,7 @@ import androidx.compose.foundation.layout.size
 import androidx.compose.foundation.layout.width
 import androidx.compose.foundation.lazy.LazyColumn
 import androidx.compose.foundation.lazy.items
+import androidx.compose.foundation.lazy.rememberLazyListState
 import androidx.compose.foundation.pager.HorizontalPager
 import androidx.compose.foundation.pager.rememberPagerState
 import androidx.compose.foundation.shape.RoundedCornerShape
@@ -40,6 +41,7 @@ import androidx.compose.material3.TabRowDefaults.tabIndicatorOffset
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.getValue
+import androidx.compose.runtime.mutableIntStateOf
 import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.rememberCoroutineScope
 import androidx.compose.runtime.saveable.rememberSaveable
@@ -71,6 +73,7 @@ import com.example.profquest2.ui.view.text.LabelText
 import com.example.profquest2.ui.view.text.SubtitleText
 import com.example.profquest2.ui.view.text.TitleText
 import com.example.profquest2.ui.view.textField.SearchField
+import com.example.profquest2.utils.OnBottomReached
 import com.example.profquest2.utils.showShortToast
 import com.google.accompanist.swiperefresh.SwipeRefresh
 import com.google.accompanist.swiperefresh.rememberSwipeRefreshState
@@ -87,14 +90,20 @@ fun HomeScreen(navController: NavController, viewModel: HomeViewModel = hiltView
     var isSearchVisible by rememberSaveable {
         mutableStateOf(false)
     }
-    val tabs = listOf("Все новости", "Для вас")
-    val pagerState = rememberPagerState(initialPage = 0) { tabs.size }
-    val scope = rememberCoroutineScope()
     var searchQuery by rememberSaveable {
         mutableStateOf("")
     }
 
+    val tabs = listOf("Все новости", "Для вас")
+    val pagerState = rememberPagerState(initialPage = 0) { tabs.size }
+    val scope = rememberCoroutineScope()
+
     val state = viewModel.collectAsState().value
+    val scrollState = rememberLazyListState()
+    var currentPage by rememberSaveable {
+        mutableIntStateOf(0)
+    }
+    scrollState.OnBottomReached { viewModel.getPosts(page = ++currentPage) }
 
     val context = LocalContext.current
 
@@ -202,7 +211,8 @@ fun HomeScreen(navController: NavController, viewModel: HomeViewModel = hiltView
                         0 -> {
                             LazyColumn(
                                 contentPadding = PaddingValues(16.dp),
-                                verticalArrangement = Arrangement.spacedBy(8.dp)
+                                verticalArrangement = Arrangement.spacedBy(8.dp),
+                                state = scrollState
                             ) {
                                 items(state.posts) {
                                     Post(
