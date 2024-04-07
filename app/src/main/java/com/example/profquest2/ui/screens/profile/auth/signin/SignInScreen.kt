@@ -26,10 +26,10 @@ import androidx.navigation.NavController
 import com.example.profquest2.R
 import com.example.profquest2.ui.navigation.Destination
 import com.example.profquest2.ui.theme.ProfQuest2Theme
-import com.example.profquest2.ui.view.button.PrimaryButton
-import com.example.profquest2.ui.view.text.SubtitleText
-import com.example.profquest2.ui.view.text.TitleText
-import com.example.profquest2.ui.view.textField.PrimaryTextField
+import com.example.profquest2.ui.composables.button.PrimaryButton
+import com.example.profquest2.ui.composables.text.SubtitleText
+import com.example.profquest2.ui.composables.text.TitleText
+import com.example.profquest2.ui.composables.textField.PrimaryTextField
 import com.example.profquest2.utils.showShortToast
 import org.orbitmvi.orbit.compose.collectSideEffect
 

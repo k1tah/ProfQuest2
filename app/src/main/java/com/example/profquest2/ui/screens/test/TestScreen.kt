@@ -40,8 +40,8 @@ import androidx.navigation.NavController
 import com.example.profquest2.R
 import com.example.profquest2.ui.navigation.Destination
 import com.example.profquest2.ui.theme.ProfQuest2Theme
-import com.example.profquest2.ui.view.icon.Icon
-import com.example.profquest2.ui.view.text.BodyText
+import com.example.profquest2.ui.composables.icon.Icon
+import com.example.profquest2.ui.composables.text.BodyText
 import com.example.profquest2.utils.getTestResult
 import com.example.profquest2.utils.listVariants
 import com.google.gson.Gson
@@ -88,9 +88,9 @@ fun TestScreen(navController: NavController) {
             horizontalAlignment = Alignment.CenterHorizontally
         ) {
             LinearProgressIndicator(
-                progress = progress,
+                progress = { progress },
                 color = ProfQuest2Theme.colors.primary,
-                trackColor = ProfQuest2Theme.colors.tertiary
+                trackColor = ProfQuest2Theme.colors.tertiary,
             )
             BodyText(text = stringResource(R.string.test_question))
             BodyText(text = "Вопрос ${currentQuestion + 1}/${listVariants.size}")

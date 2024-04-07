@@ -6,7 +6,7 @@ import androidx.navigation.compose.composable
 import androidx.navigation.navigation
 import com.example.profquest2.ui.navigation.Destination
 import com.example.profquest2.ui.screens.CompanyScreen
-import com.example.profquest2.ui.home.HomeScreen
+import com.example.profquest2.ui.screens.home.HomeScreen
 
 fun NavGraphBuilder.homeGraph(navController: NavController) {
     navigation(route = Graph.HomeGraph.route, startDestination = Destination.Home.route) {

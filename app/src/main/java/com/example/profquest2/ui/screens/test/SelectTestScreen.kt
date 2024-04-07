@@ -26,9 +26,9 @@ import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.unit.dp
 import androidx.navigation.NavController
 import com.example.profquest2.R
-import com.example.profquest2.ui.view.icon.Icon
-import com.example.profquest2.ui.view.text.BodyText
-import com.example.profquest2.ui.view.text.TitleText
+import com.example.profquest2.ui.composables.icon.Icon
+import com.example.profquest2.ui.composables.text.BodyText
+import com.example.profquest2.ui.composables.text.TitleText
 
 @Composable
 fun SelectTestScreen(navController: NavController) {

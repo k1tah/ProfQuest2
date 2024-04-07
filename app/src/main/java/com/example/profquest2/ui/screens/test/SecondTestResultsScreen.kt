@@ -10,8 +10,8 @@ import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.unit.dp
-import com.example.profquest2.ui.view.text.BodyText
-import com.example.profquest2.ui.view.text.TitleText
+import com.example.profquest2.ui.composables.text.BodyText
+import com.example.profquest2.ui.composables.text.TitleText
 import com.example.profquest2.utils.SecondTestResults
 
 @Composable

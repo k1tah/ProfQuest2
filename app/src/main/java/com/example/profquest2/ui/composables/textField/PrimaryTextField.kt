@@ -1,4 +1,4 @@
-package com.example.profquest2.ui.view.textField
+package com.example.profquest2.ui.composables.textField
 
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.Spacer
@@ -12,7 +12,7 @@ import androidx.compose.runtime.Composable
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.unit.dp
 import com.example.profquest2.ui.theme.ProfQuest2Theme
-import com.example.profquest2.ui.view.text.LabelText
+import com.example.profquest2.ui.composables.text.LabelText
 
 @Composable
 fun PrimaryTextField(

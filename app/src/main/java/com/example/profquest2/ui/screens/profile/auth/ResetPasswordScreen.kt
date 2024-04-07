@@ -20,10 +20,10 @@ import androidx.compose.ui.unit.dp
 import androidx.navigation.NavController
 import com.example.profquest2.R
 import com.example.profquest2.ui.navigation.Destination
-import com.example.profquest2.ui.view.button.PrimaryButton
-import com.example.profquest2.ui.view.icon.Icon
-import com.example.profquest2.ui.view.text.TitleText
-import com.example.profquest2.ui.view.textField.PrimaryTextField
+import com.example.profquest2.ui.composables.button.PrimaryButton
+import com.example.profquest2.ui.composables.icon.Icon
+import com.example.profquest2.ui.composables.text.TitleText
+import com.example.profquest2.ui.composables.textField.PrimaryTextField
 
 @Composable
 fun ResetPasswordScreen(navController: NavController) {

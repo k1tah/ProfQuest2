@@ -1,4 +1,4 @@
-package com.example.profquest2.ui.view.text
+package com.example.profquest2.ui.composables.text
 
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable

@@ -1,4 +1,4 @@
-package com.example.profquest2.ui.home
+package com.example.profquest2.ui.screens.home
 
 import androidx.lifecycle.ViewModel
 import com.example.data.repository.AuthRepository
@@ -26,6 +26,18 @@ class HomeViewModel @Inject constructor(
 
     init {
         getPosts()
+    }
+
+    fun refreshPosts() = intent {
+        postSideEffect(HomeSideEffect.Loading)
+        val response = postRepository.getPosts("", "", "", 0, 10, authRepository.getAuthToken())
+        if (response.status == HttpStatusCode.OK) {
+            postSideEffect(HomeSideEffect.Done)
+            val posts = response.body<List<Post>>()
+            reduce { state.copy(posts = posts) }
+        } else {
+            postSideEffect(HomeSideEffect.Error(response.status.value.toString()))
+        }
     }
 
     fun getPosts(

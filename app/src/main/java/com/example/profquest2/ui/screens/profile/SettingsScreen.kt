@@ -19,7 +19,7 @@ import androidx.navigation.NavController
 import com.example.profquest2.R
 import com.example.profquest2.ui.MainViewModel
 import com.example.profquest2.ui.theme.ProfQuest2Theme
-import com.example.profquest2.ui.view.mswitch.PrimarySwitch
+import com.example.profquest2.ui.composables.mswitch.PrimarySwitch
 import org.orbitmvi.orbit.compose.collectAsState
 
 @Composable

@@ -32,12 +32,12 @@ import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.unit.dp
 import com.example.profquest2.R
 import com.example.profquest2.ui.theme.ProfQuest2Theme
-import com.example.profquest2.ui.view.icon.Icon
-import com.example.profquest2.ui.view.text.BodyText
-import com.example.profquest2.ui.view.text.LabelText
-import com.example.profquest2.ui.view.text.SubtitleText
-import com.example.profquest2.ui.view.text.TitleText
-import com.example.profquest2.ui.view.textField.SearchField
+import com.example.profquest2.ui.composables.icon.Icon
+import com.example.profquest2.ui.composables.text.BodyText
+import com.example.profquest2.ui.composables.text.LabelText
+import com.example.profquest2.ui.composables.text.SubtitleText
+import com.example.profquest2.ui.composables.text.TitleText
+import com.example.profquest2.ui.composables.textField.SearchField
 
 @Composable
 fun VacanciesScreen() {

@@ -1,12 +1,12 @@
-package com.example.profquest2.ui.view.textField
+package com.example.profquest2.ui.composables.textField
 
 import androidx.compose.foundation.clickable
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.shape.RoundedCornerShape
-import androidx.compose.material.TextField
-import androidx.compose.material.TextFieldDefaults
+import androidx.compose.material3.TextField
+import androidx.compose.material3.TextFieldDefaults
 import androidx.compose.material3.Card
 import androidx.compose.material3.CardDefaults
 import androidx.compose.runtime.Composable
@@ -16,8 +16,8 @@ import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.unit.dp
 import com.example.profquest2.R
 import com.example.profquest2.ui.theme.ProfQuest2Theme
-import com.example.profquest2.ui.view.icon.Icon
-import com.example.profquest2.ui.view.text.LabelText
+import com.example.profquest2.ui.composables.icon.Icon
+import com.example.profquest2.ui.composables.text.LabelText
 
 @Composable
 fun SearchField(value: String, onValueChanged: (String) -> Unit, onClose: () -> Unit) {
@@ -43,7 +43,7 @@ fun SearchField(value: String, onValueChanged: (String) -> Unit, onClose: () -> 
             trailingIcon = {
                 Icon(icon = R.drawable.ic_filter)
             },
-            colors = TextFieldDefaults.textFieldColors(
+            colors = TextFieldDefaults.colors(
                 focusedIndicatorColor = Color.Transparent,
                 unfocusedIndicatorColor = Color.Transparent,
                 cursorColor = ProfQuest2Theme.colors.primary

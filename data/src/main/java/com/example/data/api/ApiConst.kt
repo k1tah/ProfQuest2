@@ -1,3 +1,3 @@
 package com.example.data.api
 
-const val BASE_URL = "http://192.168.163.131:8080/"
+const val BASE_URL = "http://192.168.34.127:8080/"

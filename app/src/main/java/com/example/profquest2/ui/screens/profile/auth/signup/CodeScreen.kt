@@ -29,10 +29,10 @@ import androidx.navigation.NavController
 import com.example.profquest2.R
 import com.example.profquest2.ui.navigation.Destination
 import com.example.profquest2.ui.theme.ProfQuest2Theme
-import com.example.profquest2.ui.view.icon.Icon
-import com.example.profquest2.ui.view.text.BodyText
-import com.example.profquest2.ui.view.text.TitleText
-import com.example.profquest2.ui.view.textField.PrimaryTextField
+import com.example.profquest2.ui.composables.icon.Icon
+import com.example.profquest2.ui.composables.text.BodyText
+import com.example.profquest2.ui.composables.text.TitleText
+import com.example.profquest2.ui.composables.textField.PrimaryTextField
 import com.example.profquest2.utils.showShortToast
 import kotlinx.coroutines.delay
 import org.orbitmvi.orbit.compose.collectSideEffect

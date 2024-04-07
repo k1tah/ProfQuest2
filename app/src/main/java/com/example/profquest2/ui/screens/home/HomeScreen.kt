@@ -1,4 +1,4 @@
-package com.example.profquest2.ui.home
+package com.example.profquest2.ui.screens.home
 
 import androidx.compose.animation.AnimatedVisibility
 import androidx.compose.animation.expandHorizontally
@@ -27,11 +27,12 @@ import androidx.compose.foundation.lazy.rememberLazyListState
 import androidx.compose.foundation.pager.HorizontalPager
 import androidx.compose.foundation.pager.rememberPagerState
 import androidx.compose.foundation.shape.RoundedCornerShape
+import androidx.compose.material.icons.Icons
+import androidx.compose.material.icons.filled.AccountCircle
 import androidx.compose.material3.BasicAlertDialog
 import androidx.compose.material3.ButtonDefaults
 import androidx.compose.material3.Card
 import androidx.compose.material3.CardDefaults
-import androidx.compose.material3.CircularProgressIndicator
 import androidx.compose.material3.ExperimentalMaterial3Api
 import androidx.compose.material3.OutlinedButton
 import androidx.compose.material3.Surface
@@ -51,7 +52,6 @@ import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.clip
 import androidx.compose.ui.graphics.Brush
 import androidx.compose.ui.graphics.Color
-import androidx.compose.ui.layout.ContentScale
 import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.res.stringResource
@@ -60,19 +60,19 @@ import androidx.compose.ui.unit.dp
 import androidx.compose.ui.window.Popup
 import androidx.hilt.navigation.compose.hiltViewModel
 import androidx.navigation.NavController
-import coil.compose.SubcomposeAsyncImage
-import com.example.data.api.BASE_URL
+import com.example.domain.model.File
 import com.example.domain.model.Post
 import com.example.profquest2.R
 import com.example.profquest2.extensions.toPx
+import com.example.profquest2.ui.composables.icon.Icon
+import com.example.profquest2.ui.composables.images.RemoteImage
+import com.example.profquest2.ui.composables.text.BodyText
+import com.example.profquest2.ui.composables.text.LabelText
+import com.example.profquest2.ui.composables.text.SubtitleText
+import com.example.profquest2.ui.composables.text.TitleText
+import com.example.profquest2.ui.composables.textField.SearchField
 import com.example.profquest2.ui.navigation.Destination
 import com.example.profquest2.ui.theme.ProfQuest2Theme
-import com.example.profquest2.ui.view.icon.Icon
-import com.example.profquest2.ui.view.text.BodyText
-import com.example.profquest2.ui.view.text.LabelText
-import com.example.profquest2.ui.view.text.SubtitleText
-import com.example.profquest2.ui.view.text.TitleText
-import com.example.profquest2.ui.view.textField.SearchField
 import com.example.profquest2.utils.OnBottomReached
 import com.example.profquest2.utils.showShortToast
 import com.google.accompanist.swiperefresh.SwipeRefresh
@@ -84,7 +84,7 @@ import java.text.SimpleDateFormat
 import java.util.Date
 import java.util.Locale
 
-@OptIn(ExperimentalFoundationApi::class, ExperimentalMaterial3Api::class)
+@OptIn(ExperimentalFoundationApi::class)
 @Composable
 fun HomeScreen(navController: NavController, viewModel: HomeViewModel = hiltViewModel()) {
     var isSearchVisible by rememberSaveable {
@@ -94,7 +94,7 @@ fun HomeScreen(navController: NavController, viewModel: HomeViewModel = hiltView
         mutableStateOf("")
     }
 
-    val tabs = listOf("Все новости", "Для вас")
+    val tabs = listOf(stringResource(R.string.all_news), stringResource(R.string.for_you))
     val pagerState = rememberPagerState(initialPage = 0) { tabs.size }
     val scope = rememberCoroutineScope()
 
@@ -125,14 +125,9 @@ fun HomeScreen(navController: NavController, viewModel: HomeViewModel = hiltView
         }
     }
 
-    if (isLoading) {
-        BasicAlertDialog(onDismissRequest = { }, modifier = Modifier.size(64.dp)) {
-            CircularProgressIndicator(color = ProfQuest2Theme.colors.primary)
-        }
-    }
     val refreshState = rememberSwipeRefreshState(isRefreshing = isLoading)
 
-    SwipeRefresh(state = refreshState, onRefresh = { viewModel.getPosts() }) {
+    SwipeRefresh(state = refreshState, onRefresh = { viewModel.refreshPosts() }) {
         Column(Modifier.fillMaxSize()) {
             Row(
                 modifier = Modifier
@@ -153,8 +148,6 @@ fun HomeScreen(navController: NavController, viewModel: HomeViewModel = hiltView
                                 isSearchVisible = true
                             }
                         )
-                        Spacer(modifier = Modifier.width(16.dp))
-                        Icon(icon = R.drawable.ic_notification)
                     }
                 }
                 AnimatedVisibility(visible = isSearchVisible, enter = slideInHorizontally()) {
@@ -259,6 +252,7 @@ fun CompanyItem(onNavigateToCompany: () -> Unit) {
     }
 }
 
+@OptIn(ExperimentalFoundationApi::class, ExperimentalMaterial3Api::class)
 @Composable
 fun Post(
     post: Post,
@@ -267,6 +261,10 @@ fun Post(
     onUndoVote: (Long) -> Unit
 ) {
     var showPopup by rememberSaveable {
+        mutableStateOf(false)
+    }
+
+    var showImages by rememberSaveable {
         mutableStateOf(false)
     }
 
@@ -321,22 +319,14 @@ fun Post(
                     ) {
                         Icon(icon = R.drawable.ic_close)
                         Spacer(modifier = Modifier.width(4.dp))
-                        BodyText(text = stringResource(R.string.cancel_vote))
+                        BodyText(text = stringResource(R.string.vote_cancel))
                     }
                 }
             }
 
             Column(modifier = Modifier.padding(horizontal = 16.dp, vertical = 12.dp)) {
                 Row(verticalAlignment = Alignment.CenterVertically) {
-                    SubcomposeAsyncImage(
-                        model = BASE_URL + "file/${post.icon.id}",
-                        contentDescription = null,
-                        modifier = Modifier
-                            .size(48.dp)
-                            .clip(RoundedCornerShape(100))
-                            .fillMaxWidth(),
-                        contentScale = ContentScale.Crop
-                    )
+                    PostIcon(fileId = post.icon?.id.toString())
                     Spacer(modifier = Modifier.width(16.dp))
 
                     Column {
@@ -351,14 +341,24 @@ fun Post(
                 Spacer(modifier = Modifier.height(24.dp))
 
                 if (post.files?.isNotEmpty() == true) {
-                    SubcomposeAsyncImage(
-                        model = BASE_URL + "file/${post.files?.first()?.id}",
-                        contentDescription = null,
-                        modifier = Modifier
-                            .clip(RoundedCornerShape(16.dp))
-                            .fillMaxWidth(),
-                        contentScale = ContentScale.Crop
-                    )
+                    val images = post.files!!
+                    if (showImages) {
+                        BasicAlertDialog(onDismissRequest = { showImages = false }) {
+                            HorizontalPager(
+                                state = rememberPagerState(initialPage = 0) { images.size },
+                                contentPadding = PaddingValues(horizontal = 16.dp)
+                            ) {
+                                RemoteImage(
+                                    fileId = images[it].id.toString(),
+                                    modifier = Modifier
+                                        .padding(horizontal = 16.dp)
+                                        .fillMaxWidth()
+                                        .height(400.dp)
+                                )
+                            }
+                        }
+                    }
+                    PostImages(images = images, onClick = { showImages = true })
                     Spacer(modifier = Modifier.height(16.dp))
                 }
 
@@ -384,6 +384,86 @@ fun Post(
                     )
                     Spacer(modifier = Modifier.width(4.dp))
                     BodyText(text = post.likes.toString())
+                }
+            }
+        }
+    }
+}
+
+@Composable
+fun PostImages(images: List<File>, onClick: () -> Unit) {
+    Box(modifier = Modifier.clickable { onClick() }, contentAlignment = Alignment.Center) {
+        when (images.size) {
+            1 -> PostImage(fileId = images.first().id.toString())
+
+
+            2 -> {
+                Row(verticalAlignment = Alignment.CenterVertically) {
+                    PostImage(
+                        fileId = images.first().id.toString(),
+                        modifier = Modifier.weight(0.5f)
+                    )
+
+                    Spacer(modifier = Modifier.width(8.dp))
+
+                    PostImage(
+                        fileId = images[1].id.toString(),
+                        modifier = Modifier.weight(0.5f)
+                    )
+                }
+            }
+
+            3 -> {
+                Column {
+                    PostImage(fileId = images[0].id.toString(), modifier = Modifier.fillMaxWidth())
+
+                    Spacer(modifier = Modifier.height(8.dp))
+
+                    Row(
+                        verticalAlignment = Alignment.CenterVertically,
+                        modifier = Modifier.fillMaxWidth()
+                    ) {
+                        PostImage(
+                            fileId = images[1].id.toString(),
+                            modifier = Modifier.weight(0.5f)
+                        )
+
+                        Spacer(modifier = Modifier.width(8.dp))
+
+                        PostImage(
+                            fileId = images[2].id.toString(),
+                            modifier = Modifier.weight(0.5f)
+                        )
+                    }
+                }
+            }
+
+            else -> {
+                Column {
+                    PostImage(fileId = images[0].id.toString(), modifier = Modifier.fillMaxWidth())
+
+                    Spacer(modifier = Modifier.height(8.dp))
+
+                    Row(
+                        verticalAlignment = Alignment.CenterVertically,
+                        modifier = Modifier.fillMaxWidth()
+                    ) {
+                        PostImage(
+                            fileId = images[1].id.toString(),
+                            modifier = Modifier.weight(0.5f)
+                        )
+
+                        Spacer(modifier = Modifier.width(8.dp))
+
+                        PostImage(
+                            fileId = images[2].id.toString(),
+                            modifier = Modifier.weight(0.5f)
+                        )
+                    }
+
+                    Spacer(modifier = Modifier.height(8.dp))
+
+                    Text(text = "+${images.size - 3}")
                 }
             }
         }
@@ -427,15 +507,15 @@ fun Survey(
             horizontalArrangement = Arrangement.spacedBy(4.dp),
             verticalAlignment = Alignment.CenterVertically
         ) {
-            LabelText(text = "${votes.sum()} голосов")
+            LabelText(text = votes.sum().toString() + stringResource(R.string.votes))
             Icon(icon = R.drawable.ic_circle)
             LabelText(
                 text = when (daysLeft) {
-                    in 1..Int.MAX_VALUE -> "$daysLeft дней до окончания"
+                    in 1..Int.MAX_VALUE -> daysLeft.toString() + stringResource(R.string.vote_days_left)
 
-                    0 -> "Сегодня последний день голосования"
+                    0 -> stringResource(R.string.vote_last_day)
 
-                    else -> "Голосование завершено"
+                    else -> stringResource(R.string.vote_end)
                 }
             )
         }
@@ -493,3 +573,29 @@ fun SurveyItem(
         }
     }
 }
+
+@Composable
+fun PostImage(fileId: String, modifier: Modifier = Modifier) =
+    RemoteImage(
+        fileId = fileId,
+        modifier = modifier.clip(RoundedCornerShape(16.dp)),
+        loadingDialogSize = 32.dp
+    )
+
+@Composable
+fun PostIcon(fileId: String, modifier: Modifier = Modifier) =
+    RemoteImage(
+        fileId = fileId,
+        modifier = modifier
+            .size(48.dp)
+            .clip(RoundedCornerShape(100)),
+        onError = {
+            androidx.compose.material3.Icon(
+                imageVector = Icons.Default.AccountCircle,
+                contentDescription = null,
+                tint = ProfQuest2Theme.colors.tertiary,
+                modifier = Modifier.size(48.dp)
+            )
+        }
+    )
+

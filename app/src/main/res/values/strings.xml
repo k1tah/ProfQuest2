@@ -22,7 +22,7 @@
     <string name="education">Место учёбы</string>
     <string name="phone">Номер телефона</string>
     <string name="group">Группа</string>
-    <string name="resume">Выбрать документ</string>
+    <string name="resume">Резюме</string>
     <string name="select_document">Выбрать документ</string>
     <string name="done">Готово</string>
 
@@ -77,8 +77,14 @@
     <string name="change_password">Изменить пароль</string>
 
     <!-- Home Screen -->
-    <string name="cancel_vote">Отменить голос</string>
+    <string name="vote_cancel">Отменить голос</string>
     <string name="search">Поиск</string>
+    <string name="vote_end">Голосование завершено</string>
+    <string name="vote_last_day">Сегодня последний день голосования</string>
+    <string name="vote_days_left"> дней до завершения</string>
+    <string name="votes"> голосов</string>
+    <string name="all_news">Все новости</string>
+    <string name="for_you">Для вас</string>
 
     <string name="auth_preference_file_key">authPrefs</string>
 </resources>

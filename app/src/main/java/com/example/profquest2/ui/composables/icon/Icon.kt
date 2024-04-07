@@ -1,4 +1,4 @@
-package com.example.profquest2.ui.view.icon
+package com.example.profquest2.ui.composables.icon
 
 import androidx.annotation.DrawableRes
 import androidx.compose.runtime.Composable
