@@ -89,7 +89,7 @@ fun SignInScreen(navController: NavController, viewModel: SignInViewModel = hilt
                 textDecoration = TextDecoration.Underline,
                 modifier = Modifier
                     .padding(end = 56.dp)
-                    .clickable { }
+                    .clickable { navController.navigate(Destination.ResetPasswordEmail.route) }
             )
         }
 

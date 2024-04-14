@@ -30,6 +30,8 @@ class AuthRepository @Inject constructor(
 
     suspend fun sendCode(email: String) = apiService.sendCode(email)
 
+    suspend fun resetPassword(email: String, code: String, password: String) = apiService.resetPassword(email, code, password)
+
     fun getAuthToken() = authStore.getAuthToken()
 
     fun getUserId() = authStore.getUserId()

@@ -33,21 +33,8 @@ import com.example.profquest2.ui.composables.text.TitleText
 @Composable
 fun SelectTestScreen(navController: NavController) {
     val uriHandler = LocalUriHandler.current
+
     val tests = listOf(
-        TestItem(R.drawable.test_1, { navController.navigate("test") }, R.string.golland_test),
-        TestItem(R.drawable.test_2, { navController.navigate("secondTest") }, R.string.second_test),
-        TestItem(
-            R.drawable.test_3,
-            { uriHandler.openUri("https://bvbinfo.ru/suits") },
-            R.string.test_ticket_in_future
-        ),
-        TestItem(R.drawable.test_1, { navController.navigate("test") }, R.string.golland_test),
-        TestItem(R.drawable.test_2, { navController.navigate("secondTest") }, R.string.second_test),
-        TestItem(
-            R.drawable.test_3,
-            { uriHandler.openUri("https://bvbinfo.ru/suits") },
-            R.string.test_ticket_in_future
-        ),
         TestItem(R.drawable.test_1, { navController.navigate("test") }, R.string.golland_test),
         TestItem(R.drawable.test_2, { navController.navigate("secondTest") }, R.string.second_test),
         TestItem(
@@ -56,6 +43,7 @@ fun SelectTestScreen(navController: NavController) {
             R.string.test_ticket_in_future
         )
     )
+
     Column(
         modifier = Modifier
             .fillMaxSize()

@@ -75,6 +75,8 @@
     <string name="new_password">Новый пароль</string>
     <string name="confirm_password">Подтвердите пароль</string>
     <string name="change_password">Изменить пароль</string>
+    <string name="reset_code">Код для восстановления пароля отправлен на почту</string>
+    <string name="email_for_reset">Почта для восстановления пароля</string>
 
     <!-- Home Screen -->
     <string name="vote_cancel">Отменить голос</string>

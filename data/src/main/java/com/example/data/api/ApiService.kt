@@ -1,11 +1,15 @@
 package com.example.data.api
 
+import android.util.Log
 import com.example.data.api.body.UpdateProfileRequestBody
 import com.example.data.api.body.auth.AuthRequestBody
 import io.ktor.client.HttpClient
 import io.ktor.client.engine.okhttp.OkHttp
 import io.ktor.client.plugins.HttpTimeout
 import io.ktor.client.plugins.contentnegotiation.ContentNegotiation
+import io.ktor.client.plugins.logging.LogLevel
+import io.ktor.client.plugins.logging.Logger
+import io.ktor.client.plugins.logging.Logging
 import io.ktor.client.request.forms.MultiPartFormDataContent
 import io.ktor.client.request.forms.formData
 import io.ktor.client.request.get
@@ -26,6 +30,14 @@ class ApiService {
             requestTimeoutMillis = 100000
             socketTimeoutMillis = 100000
             connectTimeoutMillis = 100000
+        }
+        install(Logging) {
+            logger = object : Logger {
+                override fun log(message: String) {
+                    Log.d("TAG", "Ktor: $message \n ------------------------------ \n")
+                }
+            }
+            level = LogLevel.BODY
         }
     }
 
@@ -81,4 +93,12 @@ class ApiService {
                 )
             )
         }
+
+    suspend fun resetPassword(email: String, code: String, password: String) = client.post(BASE_URL + "user/reset") {
+        url {
+            parameters.append("email", email)
+            parameters.append("token", code)
+            parameters.append("password", password)
+        }
+    }
 }
