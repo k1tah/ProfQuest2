@@ -2,7 +2,9 @@ package com.example.profquest2.ui.screens.home
 
 import androidx.lifecycle.ViewModel
 import com.example.data.repository.AuthRepository
+import com.example.data.repository.CompanyRepository
 import com.example.data.repository.PostRepository
+import com.example.domain.model.Company
 import com.example.domain.model.Post
 import dagger.hilt.android.lifecycle.HiltViewModel
 import io.ktor.client.call.body
@@ -18,6 +20,7 @@ import javax.inject.Inject
 @HiltViewModel
 class HomeViewModel @Inject constructor(
     private val postRepository: PostRepository,
+    private val companyRepository: CompanyRepository,
     private val authRepository: AuthRepository
 ) : ContainerHost<HomeState, HomeSideEffect>, ViewModel() {
 
@@ -67,6 +70,18 @@ class HomeViewModel @Inject constructor(
         }
     }
 
+    fun getCompanies() = intent {
+        postSideEffect(HomeSideEffect.Loading)
+        val response = companyRepository.getCompanies(authRepository.getAuthToken())
+        if (response.status == HttpStatusCode.OK) {
+            postSideEffect(HomeSideEffect.Done)
+            val companies = response.body<List<Company>>()
+            reduce { state.copy(companies = companies) }
+        } else {
+            postSideEffect(HomeSideEffect.Error(response.status.value.toString()))
+        }
+    }
+
     fun like(postId: Long) = intent {
         val response = postRepository.like(postId, authRepository.getAuthToken())
         if (response.status == HttpStatusCode.OK) {
@@ -106,7 +121,8 @@ fun List<Post>.update(item: Post): List<Post> {
 }
 
 data class HomeState(
-    val posts: List<Post>
+    val posts: List<Post> = listOf(),
+    val companies: List<Company> = listOf()
 )
 
 sealed class HomeSideEffect {

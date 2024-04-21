@@ -31,7 +31,7 @@ class ProfileViewModel @Inject constructor(
     private fun getProfile() = intent {
         val userId = authRepository.getUserId()
         if (userId != -1L) {
-            val response = profileRepository.getProfile(userId, authRepository.getAuthToken())
+            val response = profileRepository.getProfile(authRepository.getAuthToken())
             if (response.status == HttpStatusCode.OK) {
                 val profile = response.body<Profile>()
                 reduce { state.copy(profile = profile) }
@@ -70,7 +70,7 @@ class ProfileViewModel @Inject constructor(
                 )
                 photoId = response.body<Long>()
             }
-            val response = profileRepository.updateProfile(userId, name, photoId, fileId)
+            val response = profileRepository.updateProfile(name, photoId, fileId, authRepository.getAuthToken())
             if (response.status == HttpStatusCode.OK) {
                 getProfile()
             } else {

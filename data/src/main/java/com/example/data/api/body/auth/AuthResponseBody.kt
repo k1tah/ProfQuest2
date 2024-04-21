@@ -3,4 +3,4 @@ package com.example.data.api.body.auth
 import kotlinx.serialization.Serializable
 
 @Serializable
-data class AuthResponseBody(val id: Long)
+data class AuthResponseBody(val id: Long, val role: String)

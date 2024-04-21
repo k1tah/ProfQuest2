@@ -1,18 +1,13 @@
 package com.example.data.api
 
-import android.util.Log
 import com.example.data.api.body.UpdateProfileRequestBody
 import com.example.data.api.body.auth.AuthRequestBody
+import com.example.data.utils.getBasicToken
 import io.ktor.client.HttpClient
-import io.ktor.client.engine.okhttp.OkHttp
-import io.ktor.client.plugins.HttpTimeout
-import io.ktor.client.plugins.contentnegotiation.ContentNegotiation
-import io.ktor.client.plugins.logging.LogLevel
-import io.ktor.client.plugins.logging.Logger
-import io.ktor.client.plugins.logging.Logging
 import io.ktor.client.request.forms.MultiPartFormDataContent
 import io.ktor.client.request.forms.formData
 import io.ktor.client.request.get
+import io.ktor.client.request.header
 import io.ktor.client.request.headers
 import io.ktor.client.request.post
 import io.ktor.client.request.put
@@ -21,29 +16,13 @@ import io.ktor.http.ContentType
 import io.ktor.http.Headers
 import io.ktor.http.HttpHeaders
 import io.ktor.http.contentType
-import io.ktor.serialization.kotlinx.json.json
+import javax.inject.Inject
 
-class ApiService {
-    private val client = HttpClient(OkHttp) {
-        install(ContentNegotiation) { json() }
-        install(HttpTimeout) {
-            requestTimeoutMillis = 100000
-            socketTimeoutMillis = 100000
-            connectTimeoutMillis = 100000
-        }
-        install(Logging) {
-            logger = object : Logger {
-                override fun log(message: String) {
-                    Log.d("TAG", "Ktor: $message \n ------------------------------ \n")
-                }
-            }
-            level = LogLevel.BODY
-        }
-    }
+class ApiService @Inject constructor(private val client: HttpClient) {
 
     suspend fun signIn(login: String, password: String) = client.post(BASE_URL + "user/signin") {
         contentType(ContentType.Application.Json)
-        setBody(AuthRequestBody(login, password))
+        header(HttpHeaders.Authorization, getBasicToken(login, password))
     }
 
     suspend fun signUp(email: String, password: String, code: String) =
@@ -60,15 +39,14 @@ class ApiService {
         url { parameters.append("email", email) }
     }
 
-    suspend fun getProfile(userId: Long, token: String) = client.get(BASE_URL + "user/$userId") {
-        headers {
-            append(HttpHeaders.Authorization, token)
-        }
+    suspend fun getProfile(token: String) = client.get(BASE_URL + "user") {
+        header(HttpHeaders.Authorization, token)
     }
 
-    suspend fun updateProfile(userId: Long, name: String, photo: Long?, file: Long?) =
-        client.put(BASE_URL + "user/$userId") {
+    suspend fun updateProfile(name: String, photo: Long?, file: Long?, token: String) =
+        client.put(BASE_URL + "user") {
             contentType(ContentType.Application.Json)
+            header(HttpHeaders.Authorization, token)
             setBody(UpdateProfileRequestBody(name, photo, file))
         }
 
@@ -94,11 +72,12 @@ class ApiService {
             )
         }
 
-    suspend fun resetPassword(email: String, code: String, password: String) = client.post(BASE_URL + "user/reset") {
-        url {
-            parameters.append("email", email)
-            parameters.append("token", code)
-            parameters.append("password", password)
+    suspend fun resetPassword(email: String, code: String, password: String) =
+        client.put(BASE_URL + "user/reset") {
+            url {
+                parameters.append("email", email)
+                parameters.append("token", code)
+                parameters.append("password", password)
+            }
         }
-    }
 }

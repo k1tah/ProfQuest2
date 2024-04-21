@@ -1,10 +1,13 @@
 package com.example.domain.model
 
+import kotlinx.serialization.SerialName
 import kotlinx.serialization.Serializable
 
 @Serializable
 data class Post(
     val id: Long,
+    @SerialName("user_id")
+    val userId: Long?,
     val name: String,
     val nickname: String,
     val icon: File?,

@@ -34,7 +34,7 @@ class ResetPasswordViewModel @Inject constructor(
         val response = authRepository.resetPassword(email, code, password)
         postSideEffect(
             if (response.status == HttpStatusCode.OK) {
-                ResetPasswordSideEffect.SuccessCodeSend
+                ResetPasswordSideEffect.SuccessReset
             } else {
                 ResetPasswordSideEffect.Error(response.status.description)
             }

@@ -1,11 +1,16 @@
 package com.example.data.di.module
 
 import android.content.Context
+import android.util.Log
 import com.example.data.api.ApiService
+import com.example.data.api.company.CompanyService
 import com.example.data.api.post.PostService
+import com.example.data.datasource.CompanyDataSource
+import com.example.data.datasource.CompanyDataSourceImpl
 import com.example.data.datasource.PostDataSource
 import com.example.data.datasource.PostDataSourceImpl
 import com.example.data.repository.AuthRepository
+import com.example.data.repository.CompanyRepository
 import com.example.data.repository.PostRepository
 import com.example.data.repository.ProfileRepository
 import com.example.data.repository.SettingsRepository
@@ -20,6 +25,9 @@ import io.ktor.client.HttpClient
 import io.ktor.client.engine.okhttp.OkHttp
 import io.ktor.client.plugins.HttpTimeout
 import io.ktor.client.plugins.contentnegotiation.ContentNegotiation
+import io.ktor.client.plugins.logging.LogLevel
+import io.ktor.client.plugins.logging.Logger
+import io.ktor.client.plugins.logging.Logging
 import io.ktor.serialization.kotlinx.json.json
 import javax.inject.Singleton
 
@@ -35,7 +43,7 @@ object DataModule {
     @Provides
     @Singleton
     fun provideAuthRepository(@ApplicationContext context: Context) = AuthRepository(
-        ApiService(),
+        ApiService(provideHttpClient()),
         provideAuthStore(context)
     )
 
@@ -45,7 +53,7 @@ object DataModule {
 
     @Provides
     @Singleton
-    fun provideProfileRepository() = ProfileRepository(ApiService())
+    fun provideProfileRepository() = ProfileRepository(ApiService(provideHttpClient()))
 
     @Provides
     @Singleton
@@ -53,11 +61,23 @@ object DataModule {
 
     @Provides
     @Singleton
+    fun provideCompanyRepository() = CompanyRepository(provideCompanyDataSource())
+
+    @Provides
+    @Singleton
     fun providePostDataSource(): PostDataSource = PostDataSourceImpl(providePostService())
 
     @Provides
     @Singleton
+    fun provideCompanyDataSource(): CompanyDataSource = CompanyDataSourceImpl(provideCompanyService())
+
+    @Provides
+    @Singleton
     fun providePostService() = PostService(provideHttpClient())
+
+    @Provides
+    @Singleton
+    fun provideCompanyService() = CompanyService(provideHttpClient())
 
     @Provides
     @Singleton
@@ -67,6 +87,14 @@ object DataModule {
             requestTimeoutMillis = 100000
             socketTimeoutMillis = 100000
             connectTimeoutMillis = 100000
+        }
+        install(Logging) {
+            logger = object : Logger {
+                override fun log(message: String) {
+                    Log.d("Ktor", "Ktor: $message \n ------------------------------ \n")
+                }
+            }
+            level = LogLevel.BODY
         }
     }
 }

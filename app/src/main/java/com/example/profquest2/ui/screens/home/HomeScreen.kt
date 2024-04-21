@@ -1,13 +1,11 @@
 package com.example.profquest2.ui.screens.home
 
 import androidx.compose.animation.AnimatedVisibility
-import androidx.compose.animation.expandHorizontally
 import androidx.compose.animation.slideInHorizontally
 import androidx.compose.foundation.BorderStroke
 import androidx.compose.foundation.ExperimentalFoundationApi
 import androidx.compose.foundation.Image
 import androidx.compose.foundation.background
-import androidx.compose.foundation.border
 import androidx.compose.foundation.clickable
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Box
@@ -27,20 +25,18 @@ import androidx.compose.foundation.lazy.rememberLazyListState
 import androidx.compose.foundation.pager.HorizontalPager
 import androidx.compose.foundation.pager.rememberPagerState
 import androidx.compose.foundation.shape.RoundedCornerShape
-import androidx.compose.material.icons.Icons
-import androidx.compose.material.icons.filled.AccountCircle
 import androidx.compose.material3.BasicAlertDialog
 import androidx.compose.material3.ButtonDefaults
 import androidx.compose.material3.Card
 import androidx.compose.material3.CardDefaults
 import androidx.compose.material3.ExperimentalMaterial3Api
 import androidx.compose.material3.OutlinedButton
-import androidx.compose.material3.Surface
 import androidx.compose.material3.Tab
 import androidx.compose.material3.TabRow
 import androidx.compose.material3.TabRowDefaults.tabIndicatorOffset
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
+import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.mutableIntStateOf
 import androidx.compose.runtime.mutableStateOf
@@ -50,7 +46,6 @@ import androidx.compose.runtime.setValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.clip
-import androidx.compose.ui.graphics.Brush
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.res.painterResource
@@ -60,12 +55,16 @@ import androidx.compose.ui.unit.dp
 import androidx.compose.ui.window.Popup
 import androidx.hilt.navigation.compose.hiltViewModel
 import androidx.navigation.NavController
-import com.example.domain.model.File
+import com.example.domain.model.Company
 import com.example.domain.model.Post
 import com.example.profquest2.R
+import com.example.profquest2.extensions.formatDate
 import com.example.profquest2.extensions.toPx
 import com.example.profquest2.ui.composables.icon.Icon
 import com.example.profquest2.ui.composables.images.RemoteImage
+import com.example.profquest2.ui.composables.post.PostIcon
+import com.example.profquest2.ui.composables.post.PostImages
+import com.example.profquest2.ui.composables.post.Survey
 import com.example.profquest2.ui.composables.text.BodyText
 import com.example.profquest2.ui.composables.text.LabelText
 import com.example.profquest2.ui.composables.text.SubtitleText
@@ -99,6 +98,7 @@ fun HomeScreen(navController: NavController, viewModel: HomeViewModel = hiltView
     val scope = rememberCoroutineScope()
 
     val state = viewModel.collectAsState().value
+
     val scrollState = rememberLazyListState()
     var currentPage by rememberSaveable {
         mutableIntStateOf(0)
@@ -127,81 +127,86 @@ fun HomeScreen(navController: NavController, viewModel: HomeViewModel = hiltView
 
     val refreshState = rememberSwipeRefreshState(isRefreshing = isLoading)
 
-    SwipeRefresh(state = refreshState, onRefresh = { viewModel.refreshPosts() }) {
-        Column(Modifier.fillMaxSize()) {
-            Row(
-                modifier = Modifier
-                    .padding(horizontal = 16.dp)
-                    .height(64.dp)
-            ) {
-                AnimatedVisibility(visible = !isSearchVisible) {
-                    Row(verticalAlignment = Alignment.CenterVertically) {
-                        Image(
-                            painter = painterResource(id = ProfQuest2Theme.images.logo),
-                            contentDescription = null,
-                            modifier = Modifier.size(160.dp, 64.dp)
-                        )
-                        Spacer(modifier = Modifier.weight(1f))
-                        Icon(
-                            icon = R.drawable.ic_search,
-                            modifier = Modifier.clickable {
-                                isSearchVisible = true
-                            }
-                        )
-                    }
-                }
-                AnimatedVisibility(visible = isSearchVisible, enter = slideInHorizontally()) {
-                    SearchField(
-                        value = searchQuery,
-                        onValueChanged = { searchQuery = it },
-                        onClose = { isSearchVisible = false }
+    Column(Modifier.fillMaxSize()) {
+        Row(
+            modifier = Modifier
+                .padding(horizontal = 16.dp)
+                .height(64.dp)
+        ) {
+            AnimatedVisibility(visible = !isSearchVisible) {
+                Row(verticalAlignment = Alignment.CenterVertically) {
+                    Image(
+                        painter = painterResource(id = ProfQuest2Theme.images.logo),
+                        contentDescription = null,
+                        modifier = Modifier.size(160.dp, 64.dp)
+                    )
+                    Spacer(modifier = Modifier.weight(1f))
+                    Icon(
+                        icon = R.drawable.ic_search,
+                        modifier = Modifier.clickable {
+                            isSearchVisible = true
+                        }
                     )
                 }
             }
-            if (isSearchVisible) {
-                LazyColumn(
-                    contentPadding = PaddingValues(16.dp),
-                    verticalArrangement = Arrangement.spacedBy(8.dp)
-                ) {
-                    items(10) {
-                        CompanyItem {
-                            navController.navigate(Destination.Company.route)
+            AnimatedVisibility(visible = isSearchVisible, enter = slideInHorizontally()) {
+                SearchField(
+                    value = searchQuery,
+                    onValueChanged = { searchQuery = it },
+                    onClose = { isSearchVisible = false }
+                )
+            }
+        }
+        if (isSearchVisible) {
+            LaunchedEffect(Unit) { viewModel.getCompanies() }
+
+            LazyColumn(
+                contentPadding = PaddingValues(16.dp),
+                verticalArrangement = Arrangement.spacedBy(8.dp)
+            ) {
+                items(state.companies.filter { it.name.contains(searchQuery, ignoreCase = true) }) { company ->
+                    CompanyItem(
+                        company,
+                        onCompanyClick = {
+                            navController.navigate(Destination.Company.route + "/${company.id}")
                         }
-                    }
+                    )
                 }
-            } else {
-                Spacer(modifier = Modifier.height(32.dp))
+            }
+        } else {
+            Spacer(modifier = Modifier.height(32.dp))
 
-                TabRow(
-                    selectedTabIndex = pagerState.currentPage,
-                    containerColor = Color.Transparent,
-                    contentColor = ProfQuest2Theme.colors.onSurface,
-                    indicator = {
-                        Box(
-                            modifier = Modifier
-                                .tabIndicatorOffset(it[pagerState.currentPage])
-                                .height(4.dp)
-                                .clip(RoundedCornerShape(8.dp))
-                                .padding(horizontal = 28.dp)
-                                .background(color = ProfQuest2Theme.colors.primary)
-                        )
-                    }) {
-                    tabs.forEachIndexed { index, s ->
-                        Tab(
-                            selected = (index == pagerState.currentPage),
-                            onClick = { scope.launch { pagerState.scrollToPage(index) } },
-                            text = { Text(text = s) }
-                        )
-                    }
+            TabRow(
+                selectedTabIndex = pagerState.currentPage,
+                containerColor = Color.Transparent,
+                contentColor = ProfQuest2Theme.colors.onSurface,
+                indicator = {
+                    Box(
+                        modifier = Modifier
+                            .tabIndicatorOffset(it[pagerState.currentPage])
+                            .height(4.dp)
+                            .clip(RoundedCornerShape(8.dp))
+                            .padding(horizontal = 28.dp)
+                            .background(color = ProfQuest2Theme.colors.primary)
+                    )
+                }) {
+                tabs.forEachIndexed { index, s ->
+                    Tab(
+                        selected = (index == pagerState.currentPage),
+                        onClick = { scope.launch { pagerState.scrollToPage(index) } },
+                        text = { Text(text = s) }
+                    )
                 }
+            }
 
-                HorizontalPager(state = pagerState) { page ->
-                    when (page) {
-                        1 -> {
+            HorizontalPager(state = pagerState) { page ->
+                when (page) {
+                    1 -> {
 
-                        }
+                    }
 
-                        0 -> {
+                    0 -> {
+                        SwipeRefresh(state = refreshState, onRefresh = { viewModel.refreshPosts() }) {
                             LazyColumn(
                                 contentPadding = PaddingValues(16.dp),
                                 verticalArrangement = Arrangement.spacedBy(8.dp),
@@ -231,23 +236,21 @@ fun HomeScreen(navController: NavController, viewModel: HomeViewModel = hiltView
 }
 
 @Composable
-fun CompanyItem(onNavigateToCompany: () -> Unit) {
+fun CompanyItem(company: Company, onCompanyClick: () -> Unit) {
     Row(
         verticalAlignment = Alignment.CenterVertically,
         modifier = Modifier
             .fillMaxWidth()
-            .clickable { onNavigateToCompany() }
+            .clickable { onCompanyClick() }
     ) {
-        androidx.compose.material3.Icon(
-            painter = painterResource(id = R.drawable.niiemp),
-            contentDescription = null,
-            tint = ProfQuest2Theme.colors.primary
-        )
+        PostIcon(fileId = company.image?.id.toString())
         Spacer(modifier = Modifier.width(8.dp))
         Column {
-            SubtitleText(text = "НИИЭМП")
-            Spacer(modifier = Modifier.height(2.dp))
-            LabelText(text = "Пенза, ул. Каракозова 88")
+            SubtitleText(text = company.name)
+            company.address?.let {
+                Spacer(modifier = Modifier.height(2.dp))
+                LabelText(text = it)
+            }
         }
     }
 }
@@ -267,9 +270,6 @@ fun Post(
     var showImages by rememberSaveable {
         mutableStateOf(false)
     }
-
-    val date = SimpleDateFormat("yyyy-MM-dd'T'HH:mm:ss.SSSXXX", Locale("ru")).parse(post.date)
-    val formattedDate = date?.let { SimpleDateFormat("yyyy.MM.dd HH:mm", Locale("ru")).format(it) }
 
     var expirationDate: Date?
     var daysLeft: Int? = null
@@ -332,7 +332,7 @@ fun Post(
                     Column {
                         TitleText(text = post.name)
                         Spacer(modifier = Modifier.height(2.dp))
-                        LabelText(text = formattedDate ?: "")
+                        LabelText(text = post.date.formatDate() ?: "")
                     }
                 }
                 Spacer(modifier = Modifier.height(16.dp))
@@ -390,212 +390,7 @@ fun Post(
     }
 }
 
-@Composable
-fun PostImages(images: List<File>, onClick: () -> Unit) {
-    Box(modifier = Modifier.clickable { onClick() }, contentAlignment = Alignment.Center) {
-        when (images.size) {
-            1 -> PostImage(fileId = images.first().id.toString())
 
 
-            2 -> {
-                Row(verticalAlignment = Alignment.CenterVertically) {
-                    PostImage(
-                        fileId = images.first().id.toString(),
-                        modifier = Modifier.weight(0.5f)
-                    )
 
-                    Spacer(modifier = Modifier.width(8.dp))
-
-                    PostImage(
-                        fileId = images[1].id.toString(),
-                        modifier = Modifier.weight(0.5f)
-                    )
-                }
-            }
-
-            3 -> {
-                Column {
-                    PostImage(fileId = images[0].id.toString(), modifier = Modifier.fillMaxWidth())
-
-                    Spacer(modifier = Modifier.height(8.dp))
-
-                    Row(
-                        verticalAlignment = Alignment.CenterVertically,
-                        modifier = Modifier.fillMaxWidth()
-                    ) {
-                        PostImage(
-                            fileId = images[1].id.toString(),
-                            modifier = Modifier.weight(0.5f)
-                        )
-
-                        Spacer(modifier = Modifier.width(8.dp))
-
-                        PostImage(
-                            fileId = images[2].id.toString(),
-                            modifier = Modifier.weight(0.5f)
-                        )
-                    }
-                }
-            }
-
-            else -> {
-                Column {
-                    PostImage(fileId = images[0].id.toString(), modifier = Modifier.fillMaxWidth())
-
-                    Spacer(modifier = Modifier.height(8.dp))
-
-                    Row(
-                        verticalAlignment = Alignment.CenterVertically,
-                        modifier = Modifier.fillMaxWidth()
-                    ) {
-                        PostImage(
-                            fileId = images[1].id.toString(),
-                            modifier = Modifier.weight(0.5f)
-                        )
-
-                        Spacer(modifier = Modifier.width(8.dp))
-
-                        PostImage(
-                            fileId = images[2].id.toString(),
-                            modifier = Modifier.weight(0.5f)
-                        )
-                    }
-
-                    Spacer(modifier = Modifier.height(8.dp))
-
-                    Text(text = "+${images.size - 3}")
-                }
-            }
-        }
-    }
-}
-
-@Composable
-fun Survey(
-    questions: List<String>,
-    votes: List<Int>,
-    isSelected: Boolean,
-    onSelect: (Int) -> Unit,
-    isExpired: Boolean,
-    daysLeft: Int
-) {
-    Column {
-        Icon(icon = R.drawable.ic_stats)
-        Spacer(modifier = Modifier.height(16.dp))
-
-        questions.forEachIndexed { index, item ->
-            SurveyItem(
-                text = item,
-                votesCount = votes[index],
-                isSelected = isExpired || isSelected,
-                percent = if (votes.sum() != 0) (votes[index].toFloat() / votes.sum()
-                    .toFloat()) else 0f,
-                onSelect = { if (!isExpired) onSelect(index) }
-            )
-        }
-        Spacer(modifier = Modifier.height(16.dp))
-
-        Box(
-            Modifier
-                .fillMaxWidth()
-                .background(color = ProfQuest2Theme.colors.secondary)
-                .height(1.dp)
-        )
-        Spacer(modifier = Modifier.height(4.dp))
-
-        Row(
-            horizontalArrangement = Arrangement.spacedBy(4.dp),
-            verticalAlignment = Alignment.CenterVertically
-        ) {
-            LabelText(text = votes.sum().toString() + stringResource(R.string.votes))
-            Icon(icon = R.drawable.ic_circle)
-            LabelText(
-                text = when (daysLeft) {
-                    in 1..Int.MAX_VALUE -> daysLeft.toString() + stringResource(R.string.vote_days_left)
-
-                    0 -> stringResource(R.string.vote_last_day)
-
-                    else -> stringResource(R.string.vote_end)
-                }
-            )
-        }
-    }
-}
-
-@Composable
-fun SurveyItem(
-    text: String,
-    votesCount: Int,
-    isSelected: Boolean,
-    onSelect: () -> Unit,
-    percent: Float
-) {
-    Box(
-        contentAlignment = Alignment.Center,
-        modifier = Modifier
-            .fillMaxWidth()
-            .clickable { onSelect() }
-            .padding(vertical = 8.dp)
-            .height(48.dp)
-            .border(1.dp, ProfQuest2Theme.colors.secondary, shape = RoundedCornerShape(4.dp))
-    ) {
-        AnimatedVisibility(
-            visible = isSelected,
-            modifier = Modifier.align(Alignment.CenterStart),
-            enter = expandHorizontally()
-        ) {
-            Surface(
-                shape = RoundedCornerShape(4.dp),
-                modifier = Modifier
-                    .background(
-                        brush = Brush.horizontalGradient(
-                            colors = listOf(
-                                ProfQuest2Theme.colors.tertiary,
-                                ProfQuest2Theme.colors.surface
-                            )
-                        ),
-                        shape = RoundedCornerShape(4.dp)
-                    )
-                    .fillMaxWidth(percent)
-                    .height(48.dp),
-                content = {},
-                color = Color.Transparent
-            )
-        }
-        Row(
-            verticalAlignment = Alignment.CenterVertically, modifier = Modifier
-                .fillMaxWidth()
-                .padding(8.dp)
-        ) {
-            BodyText(text = text)
-            Spacer(modifier = Modifier.weight(1f))
-            if (isSelected) BodyText(text = votesCount.toString())
-        }
-    }
-}
-
-@Composable
-fun PostImage(fileId: String, modifier: Modifier = Modifier) =
-    RemoteImage(
-        fileId = fileId,
-        modifier = modifier.clip(RoundedCornerShape(16.dp)),
-        loadingDialogSize = 32.dp
-    )
-
-@Composable
-fun PostIcon(fileId: String, modifier: Modifier = Modifier) =
-    RemoteImage(
-        fileId = fileId,
-        modifier = modifier
-            .size(48.dp)
-            .clip(RoundedCornerShape(100)),
-        onError = {
-            androidx.compose.material3.Icon(
-                imageVector = Icons.Default.AccountCircle,
-                contentDescription = null,
-                tint = ProfQuest2Theme.colors.tertiary,
-                modifier = Modifier.size(48.dp)
-            )
-        }
-    )
 

@@ -1,10 +1,9 @@
 package com.example.data.store
 
 import android.content.Context
-import android.util.Base64
 import androidx.security.crypto.EncryptedSharedPreferences
 import androidx.security.crypto.MasterKey
-import java.io.UnsupportedEncodingException
+import com.example.data.utils.getBasicToken
 
 class AuthStore (context: Context) {
     private val masterKey = MasterKey.Builder(context).apply {
@@ -37,15 +36,7 @@ class AuthStore (context: Context) {
 
     private fun getPassword() = prefs.getString(PASSWORD_KEY, null)
 
-    fun getAuthToken(): String {
-        var data = ByteArray(0)
-        try {
-            data = ("${getLogin()}:${getPassword()}").toByteArray(charset("UTF-8"))
-        } catch (e: UnsupportedEncodingException) {
-            e.printStackTrace()
-        }
-        return "Basic " + Base64.encodeToString(data, Base64.NO_WRAP)
-    }
+    fun getAuthToken() = getBasicToken(getLogin(), getPassword())
 
 
     private companion object {
