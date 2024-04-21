@@ -3,6 +3,10 @@ package com.example.profquest2.ui.navigation
 sealed class Destination(val route: String) {
     data object Home: Destination("home")
 
+    data object Schools: Destination("schools")
+
+    data object School: Destination("school")
+
     data object Company: Destination("company")
 
     data object Vacancies: Destination("vacancies")

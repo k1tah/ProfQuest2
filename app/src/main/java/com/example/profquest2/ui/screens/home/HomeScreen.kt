@@ -328,7 +328,6 @@ fun Post(
                 Row(verticalAlignment = Alignment.CenterVertically) {
                     PostIcon(fileId = post.icon?.id.toString())
                     Spacer(modifier = Modifier.width(16.dp))
-
                     Column {
                         TitleText(text = post.name)
                         Spacer(modifier = Modifier.height(2.dp))

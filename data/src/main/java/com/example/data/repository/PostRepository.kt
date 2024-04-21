@@ -1,6 +1,6 @@
 package com.example.data.repository
 
-import com.example.data.datasource.PostDataSource
+import com.example.data.datasource.post.PostDataSource
 import javax.inject.Inject
 
 class PostRepository @Inject constructor(private val postDataSource: PostDataSource) {

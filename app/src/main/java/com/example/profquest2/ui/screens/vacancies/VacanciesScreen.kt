@@ -1,4 +1,4 @@
-package com.example.profquest2.ui.screens
+package com.example.profquest2.ui.screens.vacancies
 
 import androidx.compose.animation.AnimatedVisibility
 import androidx.compose.animation.slideInHorizontally
@@ -12,13 +12,12 @@ import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.padding
-import androidx.compose.foundation.layout.size
 import androidx.compose.foundation.layout.width
 import androidx.compose.foundation.lazy.LazyColumn
+import androidx.compose.foundation.lazy.items
 import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.material3.Card
 import androidx.compose.material3.CardDefaults
-import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.mutableStateOf
@@ -26,27 +25,49 @@ import androidx.compose.runtime.saveable.rememberSaveable
 import androidx.compose.runtime.setValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
-import androidx.compose.ui.graphics.Color
-import androidx.compose.ui.res.painterResource
+import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.unit.dp
+import androidx.hilt.navigation.compose.hiltViewModel
+import androidx.navigation.NavController
+import com.example.domain.model.Company
+import com.example.domain.model.Vacancy
 import com.example.profquest2.R
-import com.example.profquest2.ui.theme.ProfQuest2Theme
+import com.example.profquest2.extensions.formatDate
 import com.example.profquest2.ui.composables.icon.Icon
+import com.example.profquest2.ui.composables.post.PostIcon
 import com.example.profquest2.ui.composables.text.BodyText
 import com.example.profquest2.ui.composables.text.LabelText
 import com.example.profquest2.ui.composables.text.SubtitleText
 import com.example.profquest2.ui.composables.text.TitleText
 import com.example.profquest2.ui.composables.textField.SearchField
+import com.example.profquest2.ui.navigation.Destination
+import com.example.profquest2.ui.theme.ProfQuest2Theme
+import com.example.profquest2.utils.showShortToast
+import org.orbitmvi.orbit.compose.collectAsState
+import org.orbitmvi.orbit.compose.collectSideEffect
 
 @Composable
-fun VacanciesScreen() {
+fun VacanciesScreen(navController: NavController, viewModel: VacanciesViewModel = hiltViewModel()) {
     var isSearchVisible by rememberSaveable {
         mutableStateOf(false)
     }
     var searchQuery by rememberSaveable {
         mutableStateOf("")
     }
+
+    val context = LocalContext.current
+
+    viewModel.collectSideEffect {
+        when (it) {
+            is VacanciesSideEffect.Error -> context.showShortToast(it.message)
+
+            else -> {}
+        }
+    }
+
+    val state = viewModel.collectAsState().value
+
     Column(
         Modifier
             .fillMaxSize()
@@ -61,6 +82,11 @@ fun VacanciesScreen() {
             AnimatedVisibility(visible = !isSearchVisible) {
                 Row(verticalAlignment = Alignment.CenterVertically) {
                     Icon(icon = R.drawable.ic_favorites)
+                    Spacer(modifier = Modifier.width(16.dp))
+                    Icon(
+                        icon = R.drawable.ic_school,
+                        modifier = Modifier.clickable { navController.navigate(Destination.Schools.route) }
+                    )
                     Spacer(modifier = Modifier.weight(1f))
                     TitleText(text = stringResource(id = R.string.vacansies))
                     Spacer(modifier = Modifier.weight(1f))
@@ -86,21 +112,22 @@ fun VacanciesScreen() {
             contentPadding = PaddingValues(16.dp),
             verticalArrangement = Arrangement.spacedBy(8.dp)
         ) {
-            items(5) {
-                VacancyCard()
+            items(state.vacancies) { vacancy ->
+                state.companies.find { it.id == vacancy.company }?.let { VacancyItem(vacancy, it) }
             }
         }
     }
 }
 
 @Composable
-fun VacancyCard() {
+fun VacancyItem(vacancy: Vacancy, company: Company) {
     var expanded by rememberSaveable {
         mutableStateOf(false)
     }
     var isFavorite by rememberSaveable {
         mutableStateOf(false)
     }
+
     Card(
         modifier = Modifier.fillMaxWidth(),
         shape = RoundedCornerShape(12.dp),
@@ -109,31 +136,18 @@ fun VacancyCard() {
     ) {
         Column(modifier = Modifier.padding(horizontal = 16.dp, vertical = 12.dp)) {
             Row(verticalAlignment = Alignment.CenterVertically) {
-                androidx.compose.material3.Icon(
-                    painter = painterResource(id = R.drawable.niiemp),
-                    contentDescription = null,
-                    modifier = Modifier.size(64.dp),
-                    tint = Color.Red
-                )
+                PostIcon(fileId = company.image?.id.toString())
                 Spacer(modifier = Modifier.width(16.dp))
                 Column {
-                    TitleText(text = "НИИЭМП")
+                    TitleText(text = company.name)
                     Spacer(modifier = Modifier.height(2.dp))
-                    LabelText(text = "12.02.2024 09:00")
+                    LabelText(text = vacancy.date.formatDate() ?: "")
                 }
             }
             Spacer(modifier = Modifier.height(16.dp))
-            TitleText(text = "Прораммист-техник")
+            TitleText(text = vacancy.name)
             Spacer(modifier = Modifier.height(4.dp))
-            TitleText(text = "500000 Р")
-            Spacer(modifier = Modifier.height(16.dp))
-            SubtitleText(text = "Описание")
-            Spacer(modifier = Modifier.height(4.dp))
-            Text(
-                text = "Описание Описание Описание Описание Описание Описание",
-                style = ProfQuest2Theme.typography.body.copy(color = ProfQuest2Theme.colors.onSurface),
-                maxLines = if (!expanded) 1 else 100
-            )
+
             Spacer(modifier = Modifier.height(16.dp))
             if (!expanded) {
                 Row(verticalAlignment = Alignment.CenterVertically) {
@@ -150,34 +164,14 @@ fun VacancyCard() {
             }
             AnimatedVisibility(visible = expanded) {
                 Column {
-                    SubtitleText(text = stringResource(R.string.duties))
+                    SubtitleText(text = stringResource(R.string.description))
                     Spacer(modifier = Modifier.height(4.dp))
-                    BodyText(text = stringResource(R.string.description))
-                    Spacer(modifier = Modifier.height(8.dp))
-
-                    SubtitleText(text = stringResource(R.string.requirements))
-                    Spacer(modifier = Modifier.height(4.dp))
-                    BodyText(text = stringResource(R.string.description))
-                    Spacer(modifier = Modifier.height(8.dp))
-
-                    SubtitleText(text = stringResource(R.string.working_conditions))
-                    Spacer(modifier = Modifier.height(4.dp))
-                    BodyText(text = stringResource(R.string.description))
-                    Spacer(modifier = Modifier.height(8.dp))
-
-                    SubtitleText(text = stringResource(R.string.skills))
-                    Spacer(modifier = Modifier.height(4.dp))
-                    BodyText(text = stringResource(R.string.description))
+                    BodyText(text = vacancy.description)
                     Spacer(modifier = Modifier.height(8.dp))
 
                     SubtitleText(text = stringResource(R.string.contacts))
                     Spacer(modifier = Modifier.height(4.dp))
-                    BodyText(text = stringResource(R.string.description))
-                    Spacer(modifier = Modifier.height(8.dp))
-
-                    SubtitleText(text = stringResource(R.string.address))
-                    Spacer(modifier = Modifier.height(4.dp))
-                    BodyText(text = stringResource(R.string.description) )
+                    BodyText(text = vacancy.email)
                     Spacer(modifier = Modifier.height(8.dp))
 
                     LabelText(

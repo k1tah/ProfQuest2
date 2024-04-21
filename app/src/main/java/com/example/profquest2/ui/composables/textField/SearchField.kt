@@ -40,9 +40,6 @@ fun SearchField(value: String, onValueChanged: (String) -> Unit, onClose: () -> 
                     modifier = Modifier.clickable { onClose() }
                 )
             },
-            trailingIcon = {
-                Icon(icon = R.drawable.ic_filter)
-            },
             colors = TextFieldDefaults.colors(
                 focusedIndicatorColor = Color.Transparent,
                 unfocusedIndicatorColor = Color.Transparent,

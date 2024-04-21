@@ -73,8 +73,8 @@ fun MainScreen(viewModel: MainViewModel) {
             NavHost(navController = navController, startDestination = Graph.HomeGraph.route) {
                 homeGraph(navController = navController)
                 testGraph(navController = navController)
-                profileGraph(navController = navController, viewModel)
                 vacanciesGraph(navController = navController)
+                profileGraph(navController = navController, viewModel)
             }
         }
     }
@@ -86,7 +86,7 @@ fun BottomNavigationBar(navController: NavHostController) {
         Navigation.items.forEach {
             val selected = Navigation.isSelected(navController = navController, route = it.route)
             BottomNavigationItem(
-                alwaysShowLabel = true,
+                alwaysShowLabel = false,
                 selected = selected,
                 onClick = {
                     navController.navigate(it.route) {

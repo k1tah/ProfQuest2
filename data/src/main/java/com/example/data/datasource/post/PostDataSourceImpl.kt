@@ -1,4 +1,4 @@
-package com.example.data.datasource
+package com.example.data.datasource.post
 
 import com.example.data.api.post.PostService
 import io.ktor.client.statement.HttpResponse

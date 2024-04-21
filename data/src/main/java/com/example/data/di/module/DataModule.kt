@@ -5,15 +5,19 @@ import android.util.Log
 import com.example.data.api.ApiService
 import com.example.data.api.company.CompanyService
 import com.example.data.api.post.PostService
-import com.example.data.datasource.CompanyDataSource
-import com.example.data.datasource.CompanyDataSourceImpl
-import com.example.data.datasource.PostDataSource
-import com.example.data.datasource.PostDataSourceImpl
+import com.example.data.api.vacancies.VacanciesService
+import com.example.data.datasource.company.CompanyDataSource
+import com.example.data.datasource.company.CompanyDataSourceImpl
+import com.example.data.datasource.post.PostDataSource
+import com.example.data.datasource.post.PostDataSourceImpl
+import com.example.data.datasource.vacancies.VacanciesDataSource
+import com.example.data.datasource.vacancies.VacanciesDataSourceImpl
 import com.example.data.repository.AuthRepository
 import com.example.data.repository.CompanyRepository
 import com.example.data.repository.PostRepository
 import com.example.data.repository.ProfileRepository
 import com.example.data.repository.SettingsRepository
+import com.example.data.repository.VacanciesRepository
 import com.example.data.store.AuthStore
 import com.example.data.store.SettingsStore
 import dagger.Module
@@ -65,6 +69,10 @@ object DataModule {
 
     @Provides
     @Singleton
+    fun provideVacanciesRepository() = VacanciesRepository(provideVacanciesDataSource())
+
+    @Provides
+    @Singleton
     fun providePostDataSource(): PostDataSource = PostDataSourceImpl(providePostService())
 
     @Provides
@@ -73,11 +81,19 @@ object DataModule {
 
     @Provides
     @Singleton
+    fun provideVacanciesDataSource(): VacanciesDataSource = VacanciesDataSourceImpl(provideVacanciesService())
+
+    @Provides
+    @Singleton
     fun providePostService() = PostService(provideHttpClient())
 
     @Provides
     @Singleton
     fun provideCompanyService() = CompanyService(provideHttpClient())
+
+    @Provides
+    @Singleton
+    fun provideVacanciesService() = VacanciesService(provideHttpClient())
 
     @Provides
     @Singleton

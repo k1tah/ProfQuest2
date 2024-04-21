@@ -19,7 +19,7 @@
     <!-- Edit Profile Screen -->
     <string name="fullname">ФИО</string>
     <string name="photo">Фото</string>
-    <string name="education">Место учёбы</string>
+    <string name="education_place">Место учёбы</string>
     <string name="phone">Номер телефона</string>
     <string name="group">Группа</string>
     <string name="resume">Резюме</string>
@@ -55,10 +55,14 @@
     <string name="golland_test">Тест Д. Голланда</string>
     <string name="select_test">Bыбор теста</string>
 
-    <!-- Vacancies -->
+
+    <!-- School Screen -->
+    <string name="education">Обучение</string>
+
+    <!-- Vacancies Screen -->
     <string name="show_more">Показать больше...</string>
     <string name="duties">Обязанности</string>
-    <string name="description">Описание Описание Описание Описание Описание Описание</string>
+    <string name="description">Описание</string>
     <string name="requirements">Требования</string>
     <string name="hide">Свернуть</string>
     <string name="address">Адрес</string>

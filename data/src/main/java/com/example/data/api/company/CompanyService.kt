@@ -8,7 +8,15 @@ import io.ktor.http.HttpHeaders
 import javax.inject.Inject
 
 class CompanyService @Inject constructor(private val client: HttpClient) {
-    suspend fun getCompaniesList(token: String) = client.get(BASE_URL + "company") {
+    suspend fun getCompanies(token: String) = client.get(BASE_URL + "company") {
+        header(HttpHeaders.Authorization, token)
+    }
+
+    suspend fun getSchools(token: String) = client.get(BASE_URL + "institution") {
+        header(HttpHeaders.Authorization, token)
+    }
+
+    suspend fun getSchool(token: String, id: Long) = client.get(BASE_URL + "institution/$id") {
         header(HttpHeaders.Authorization, token)
     }
 
