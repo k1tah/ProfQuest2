@@ -30,10 +30,12 @@ import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.unit.dp
 import androidx.hilt.navigation.compose.hiltViewModel
 import androidx.navigation.NavController
+import androidx.navigation.NavGraph.Companion.findStartDestination
 import com.example.domain.model.Company
 import com.example.domain.model.Vacancy
 import com.example.profquest2.R
 import com.example.profquest2.extensions.formatDate
+import com.example.profquest2.ui.composables.button.PrimaryButton
 import com.example.profquest2.ui.composables.icon.Icon
 import com.example.profquest2.ui.composables.post.PostIcon
 import com.example.profquest2.ui.composables.text.BodyText
@@ -43,7 +45,6 @@ import com.example.profquest2.ui.composables.text.TitleText
 import com.example.profquest2.ui.composables.textField.SearchField
 import com.example.profquest2.ui.navigation.Destination
 import com.example.profquest2.ui.theme.ProfQuest2Theme
-import com.example.profquest2.utils.showShortToast
 import org.orbitmvi.orbit.compose.collectAsState
 import org.orbitmvi.orbit.compose.collectSideEffect
 
@@ -58,62 +59,106 @@ fun VacanciesScreen(navController: NavController, viewModel: VacanciesViewModel 
 
     val context = LocalContext.current
 
+    var unauthorized by rememberSaveable {
+        mutableStateOf(false)
+    }
+    var isLoading by rememberSaveable {
+        mutableStateOf(false)
+    }
+
     viewModel.collectSideEffect {
         when (it) {
-            is VacanciesSideEffect.Error -> context.showShortToast(it.message)
+            is VacanciesSideEffect.Unauthorized -> {
+                unauthorized = true
+                isLoading = false
+            }
 
-            else -> {}
+            is VacanciesSideEffect.Loading -> isLoading = true
+
+
+            is VacanciesSideEffect.Done -> {
+                unauthorized = false
+                isLoading = false
+            }
+
+            is VacanciesSideEffect.Error -> isLoading = false
         }
     }
 
     val state = viewModel.collectAsState().value
 
-    Column(
-        Modifier
-            .fillMaxSize()
-            .padding(start = 8.dp, end = 8.dp, top = 16.dp),
-        horizontalAlignment = Alignment.CenterHorizontally
-    ) {
-        Row(
-            modifier = Modifier
-                .padding(horizontal = 16.dp)
-                .height(64.dp)
+    if (unauthorized) {
+        Column(
+            Modifier.fillMaxSize(),
+            verticalArrangement = Arrangement.Center,
+            horizontalAlignment = Alignment.CenterHorizontally
         ) {
-            AnimatedVisibility(visible = !isSearchVisible) {
-                Row(verticalAlignment = Alignment.CenterVertically) {
-                    Icon(icon = R.drawable.ic_favorites)
-                    Spacer(modifier = Modifier.width(16.dp))
-                    Icon(
-                        icon = R.drawable.ic_school,
-                        modifier = Modifier.clickable { navController.navigate(Destination.Schools.route) }
-                    )
-                    Spacer(modifier = Modifier.weight(1f))
-                    TitleText(text = stringResource(id = R.string.vacansies))
-                    Spacer(modifier = Modifier.weight(1f))
-                    Spacer(modifier = Modifier.width(16.dp))
-                    Icon(
-                        icon = R.drawable.ic_search,
-                        modifier = Modifier.clickable {
-                            isSearchVisible = true
+            TitleText(text = stringResource(id = R.string.unauthorized))
+
+            Spacer(modifier = Modifier.height(8.dp))
+
+            PrimaryButton(
+                onClick = {
+                    navController.navigate(Destination.Profile.route) {
+                        popUpTo(navController.graph.findStartDestination().id) {
+                            saveState = true
                         }
+                        launchSingleTop = true
+                        restoreState = true
+                    }
+                },
+                text = stringResource(id = R.string.сontinue)
+            )
+        }
+    } else {
+        Column(
+            Modifier
+                .fillMaxSize()
+                .padding(start = 8.dp, end = 8.dp, top = 16.dp),
+            horizontalAlignment = Alignment.CenterHorizontally
+        ) {
+            Row(
+                modifier = Modifier
+                    .padding(horizontal = 16.dp)
+                    .height(64.dp)
+            ) {
+                AnimatedVisibility(visible = !isSearchVisible) {
+                    Row(verticalAlignment = Alignment.CenterVertically) {
+                        Icon(icon = R.drawable.ic_favorites)
+                        Spacer(modifier = Modifier.width(16.dp))
+                        Icon(
+                            icon = R.drawable.ic_school,
+                            modifier = Modifier.clickable { navController.navigate(Destination.Schools.route) }
+                        )
+                        Spacer(modifier = Modifier.weight(1f))
+                        TitleText(text = stringResource(id = R.string.vacansies))
+                        Spacer(modifier = Modifier.weight(1f))
+                        Spacer(modifier = Modifier.width(16.dp))
+                        Icon(
+                            icon = R.drawable.ic_search,
+                            modifier = Modifier.clickable {
+                                isSearchVisible = true
+                            }
+                        )
+                    }
+                }
+                AnimatedVisibility(visible = isSearchVisible, enter = slideInHorizontally()) {
+                    SearchField(
+                        value = searchQuery,
+                        onValueChanged = { searchQuery = it },
+                        onClose = { isSearchVisible = false }
                     )
                 }
             }
-            AnimatedVisibility(visible = isSearchVisible, enter = slideInHorizontally()) {
-                SearchField(
-                    value = searchQuery,
-                    onValueChanged = { searchQuery = it },
-                    onClose = { isSearchVisible = false }
-                )
-            }
-        }
-        Spacer(modifier = Modifier.height(8.dp))
-        LazyColumn(
-            contentPadding = PaddingValues(16.dp),
-            verticalArrangement = Arrangement.spacedBy(8.dp)
-        ) {
-            items(state.vacancies) { vacancy ->
-                state.companies.find { it.id == vacancy.company }?.let { VacancyItem(vacancy, it) }
+            Spacer(modifier = Modifier.height(8.dp))
+            LazyColumn(
+                contentPadding = PaddingValues(16.dp),
+                verticalArrangement = Arrangement.spacedBy(8.dp)
+            ) {
+                items(state.vacancies) { vacancy ->
+                    state.companies.find { it.id == vacancy.company }
+                        ?.let { VacancyItem(vacancy, it) }
+                }
             }
         }
     }

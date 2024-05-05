@@ -26,6 +26,7 @@ class ProfileViewModel @Inject constructor(
 
     init {
         getProfile()
+        getTestResults()
     }
 
     private fun getProfile() = intent {
@@ -80,9 +81,16 @@ class ProfileViewModel @Inject constructor(
             postSideEffect(ProfileSideEffect.NotAuthorized)
         }
     }
+
+    fun getTestResults() = intent {
+        reduce { state.copy(testResults = profileRepository.getTestResults()) }
+    }
 }
 
-data class ProfileState(val profile: Profile? = null)
+data class ProfileState(
+    val profile: Profile? = null,
+    val testResults: Pair<String?, String?> = Pair(null, null)
+)
 
 sealed class ProfileSideEffect {
     data object Loading : ProfileSideEffect()

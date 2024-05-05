@@ -13,13 +13,16 @@ import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.size
+import androidx.compose.foundation.rememberScrollState
 import androidx.compose.foundation.shape.RoundedCornerShape
+import androidx.compose.foundation.verticalScroll
 import androidx.compose.material3.CircularProgressIndicator
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.filled.AccountCircle
 import androidx.compose.material3.BasicAlertDialog
 import androidx.compose.material3.ExperimentalMaterial3Api
 import androidx.compose.runtime.Composable
+import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.remember
@@ -38,6 +41,7 @@ import androidx.navigation.NavController
 import coil.compose.SubcomposeAsyncImage
 import com.example.data.api.BASE_URL
 import com.example.profquest2.R
+import com.example.profquest2.extensions.replaceAll
 import com.example.profquest2.ui.navigation.Destination
 import com.example.profquest2.ui.theme.ProfQuest2Theme
 import com.example.profquest2.ui.composables.button.PrimaryButton
@@ -57,17 +61,21 @@ fun ProfileScreen(
     navController: NavController,
     viewModel: ProfileViewModel = hiltViewModel()
 ) {
+    LaunchedEffect(true) {
+        viewModel.getTestResults()
+    }
+
     var isEditMode by rememberSaveable {
         mutableStateOf(false)
     }
 
-    val state = viewModel.collectAsState().value.profile
+    val state = viewModel.collectAsState().value
 
-    var fullname by rememberSaveable(state?.name) {
-        mutableStateOf(state?.name ?: "")
+    var fullname by rememberSaveable(state.profile?.name) {
+        mutableStateOf(state.profile?.name ?: "")
     }
-    var fileName by rememberSaveable(state?.file) {
-        mutableStateOf(state?.file?.name ?: "")
+    var fileName by rememberSaveable(state.profile?.file) {
+        mutableStateOf(state.profile?.file?.name ?: "")
     }
     var isLoading by rememberSaveable {
         mutableStateOf(false)
@@ -95,7 +103,7 @@ fun ProfileScreen(
     viewModel.collectSideEffect {
         isLoading = when (it) {
             is ProfileSideEffect.NotAuthorized -> {
-                context.showShortToast("Не авторизован")
+                navController.replaceAll(Destination.Auth.route)
                 false
             }
 
@@ -119,9 +127,11 @@ fun ProfileScreen(
     Column(
         Modifier
             .fillMaxSize()
-            .padding(horizontal = 32.dp, vertical = 16.dp),
+            .padding(start = 16.dp, end = 16.dp)
+            .verticalScroll(rememberScrollState()),
         horizontalAlignment = Alignment.CenterHorizontally
     ) {
+        Spacer(modifier = Modifier.height(32.dp))
         Row(verticalAlignment = Alignment.CenterVertically) {
             Spacer(modifier = Modifier.weight(1f))
             TitleText(text = stringResource(id = R.string.profile))
@@ -135,7 +145,7 @@ fun ProfileScreen(
         Spacer(modifier = Modifier.height(16.dp))
         Box(Modifier.size(128.dp)) {
             SubcomposeAsyncImage(
-                model = if (photoUri != null) photoUri else BASE_URL + "file/${state?.photo?.id}",
+                model = if (photoUri != null) photoUri else BASE_URL + "file/${state.profile?.photo?.id}",
                 contentDescription = null,
                 modifier = Modifier
                     .clip(RoundedCornerShape(100))
@@ -158,7 +168,7 @@ fun ProfileScreen(
         Spacer(modifier = Modifier.height(16.dp))
 
         PrimaryTextField(
-            value = if (isEditMode) fullname else state?.name ?: "",
+            value = if (isEditMode) fullname else state.profile?.name ?: "",
             onValueChange = { fullname = it },
             hint = stringResource(id = R.string.fullname),
             label = stringResource(id = R.string.fullname),
@@ -168,7 +178,7 @@ fun ProfileScreen(
         Spacer(modifier = Modifier.height(16.dp))
 
         PrimaryTextField(
-            value = if (isEditMode) fileName else state?.file?.name ?: "",
+            value = if (isEditMode) fileName else state.profile?.file?.name ?: "",
             onValueChange = { },
             hint = stringResource(id = R.string.select_document),
             label = stringResource(id = R.string.resume),
@@ -189,9 +199,33 @@ fun ProfileScreen(
         SubtitleText(text = stringResource(id = R.string.test_results))
         Spacer(modifier = Modifier.height(16.dp))
 
-        BodyText(text = "Очень большой текст Очень большой текст Очень большой текст Очень большой текст Очень большой текст Очень большой текст Очень большой текст Очень большой текст Очень большой текст")
+        TitleText(text = stringResource(id = R.string.golland_test))
+        Spacer(modifier = Modifier.height(8.dp))
+        if (!state.testResults.first.isNullOrBlank()) {
+            BodyText(text = state.testResults.first!!)
+        } else {
+            PrimaryButton(
+                onClick = { navController.replaceAll(Destination.Test.route) },
+                text = stringResource(id = R.string.go_to_test)
+            )
+        }
 
+        Spacer(modifier = Modifier.height(16.dp))
+
+        TitleText(text = stringResource(id = R.string.second_test))
+        Spacer(modifier = Modifier.height(8.dp))
+        if (!state.testResults.second.isNullOrBlank()) {
+            BodyText(text = state.testResults.second!!)
+        } else {
+            PrimaryButton(
+                onClick = { navController.replaceAll(Destination.SecondTest.route) },
+                text = stringResource(id = R.string.go_to_test)
+            )
+        }
+
+        Spacer(modifier = Modifier.height(24.dp))
         Spacer(modifier = Modifier.weight(1f))
+
         PrimaryButton(
             onClick = {
                 isEditMode = if (isEditMode) {
@@ -211,5 +245,6 @@ fun ProfileScreen(
                 .fillMaxWidth()
                 .height(56.dp)
         )
+        Spacer(modifier = Modifier.height(32.dp))
     }
 }

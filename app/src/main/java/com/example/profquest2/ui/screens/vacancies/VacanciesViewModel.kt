@@ -47,21 +47,30 @@ class VacanciesViewModel @Inject constructor(
             size,
             authRepository.getAuthToken()
         )
-        if (response.status == HttpStatusCode.OK) {
-            val vacancies = response.body<List<Vacancy>>()
-            reduce { state.copy(vacancies = vacancies) }
-        } else {
-            postSideEffect(VacanciesSideEffect.Error(response.status.value.toString()))
+        when (response.status) {
+            HttpStatusCode.OK -> {
+                val vacancies = response.body<List<Vacancy>>()
+                reduce { state.copy(vacancies = vacancies) }
+            }
+
+            HttpStatusCode.Unauthorized -> postSideEffect(VacanciesSideEffect.Unauthorized)
+
+            else ->  postSideEffect(VacanciesSideEffect.Error(response.status.value.toString()))
         }
     }
 
     fun getCompanies() = intent {
+        postSideEffect(VacanciesSideEffect.Loading)
         val response = companyRepository.getCompanies(authRepository.getAuthToken())
-        if (response.status == HttpStatusCode.OK) {
-            val companies = response.body<List<Company>>()
-            reduce { state.copy(companies = companies) }
-        } else {
-            postSideEffect(VacanciesSideEffect.Error(response.status.value.toString()))
+        when (response.status) {
+            HttpStatusCode.OK -> {
+                val companies = response.body<List<Company>>()
+                reduce { state.copy(companies = companies) }
+            }
+
+            HttpStatusCode.Unauthorized -> postSideEffect(VacanciesSideEffect.Unauthorized)
+
+            else -> postSideEffect(VacanciesSideEffect.Error(response.status.value.toString()))
         }
     }
 }
@@ -71,12 +80,12 @@ data class VacanciesState(
     val companies: List<Company> = listOf()
 )
 
-sealed class VacanciesSideEffect {
-    data object Loading : VacanciesSideEffect()
+sealed interface VacanciesSideEffect {
+    data object Loading : VacanciesSideEffect
 
-    data object NotAuthorized : VacanciesSideEffect()
+    data object Unauthorized : VacanciesSideEffect
 
-    data class Error(val message: String) : VacanciesSideEffect()
+    data class Error(val message: String) : VacanciesSideEffect
 
-    data object Done : VacanciesSideEffect()
+    data object Done : VacanciesSideEffect
 }

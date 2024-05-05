@@ -26,7 +26,6 @@ import androidx.compose.foundation.pager.rememberPagerState
 import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.automirrored.filled.ArrowForward
-import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.runtime.getValue
@@ -42,9 +41,9 @@ import androidx.compose.ui.input.pointer.pointerInput
 import androidx.compose.ui.layout.ContentScale
 import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.res.stringResource
-import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.unit.dp
+import androidx.hilt.navigation.compose.hiltViewModel
 import com.example.profquest2.R
 import com.example.profquest2.ui.composables.icon.Icon
 import com.example.profquest2.ui.composables.text.BodyText
@@ -55,11 +54,15 @@ import kotlinx.coroutines.launch
 
 @OptIn(ExperimentalFoundationApi::class)
 @Composable
-fun TestResultsScreen(results: Results) {
+fun TestResultsScreen(results: Results, testsViewModel: TestsViewModel = hiltViewModel()) {
     val scope = rememberCoroutineScope()
     val pagerState = rememberPagerState(0, pageCount = { 5 })
     fun moveToPage(page: Int) = scope.launch {
         pagerState.animateScrollToPage(page)
+    }
+
+    LaunchedEffect(true) {
+        testsViewModel.setGollandTestResult(results.type + results.specs + results.orientation + results.professionalEnvironment)
     }
 
     val pages =
@@ -131,17 +134,10 @@ fun SpecsPage(title: String, specs: String, onNext: () -> Unit) {
             .fillMaxWidth()
             .padding(horizontal = 16.dp)
     ) {
-        Text(
-            text = title,
-            fontWeight = FontWeight.Bold,
-            textAlign = TextAlign.Center,
-        )
+        TitleText(text = title)
         Spacer(modifier = Modifier.height(16.dp))
 
-        Text(
-            text = specs,
-            textAlign = TextAlign.Center,
-        )
+        BodyText(text = specs, textAlign = TextAlign.Center)
         Spacer(modifier = Modifier.height(48.dp))
 
         androidx.compose.material3.Icon(

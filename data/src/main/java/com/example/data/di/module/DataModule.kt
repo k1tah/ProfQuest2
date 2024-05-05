@@ -20,6 +20,7 @@ import com.example.data.repository.SettingsRepository
 import com.example.data.repository.VacanciesRepository
 import com.example.data.store.AuthStore
 import com.example.data.store.SettingsStore
+import com.example.data.store.TestsLocalStore
 import dagger.Module
 import dagger.Provides
 import dagger.hilt.InstallIn
@@ -57,7 +58,11 @@ object DataModule {
 
     @Provides
     @Singleton
-    fun provideProfileRepository() = ProfileRepository(ApiService(provideHttpClient()))
+    fun provideTestsStore(@ApplicationContext context: Context) = TestsLocalStore(context)
+
+    @Provides
+    @Singleton
+    fun provideProfileRepository(@ApplicationContext context: Context) = ProfileRepository(ApiService(provideHttpClient()), provideTestsStore(context))
 
     @Provides
     @Singleton

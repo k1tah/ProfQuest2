@@ -47,6 +47,7 @@ import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.clip
 import androidx.compose.ui.graphics.Color
+import androidx.compose.ui.layout.ContentScale
 import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.res.stringResource
@@ -55,11 +56,13 @@ import androidx.compose.ui.unit.dp
 import androidx.compose.ui.window.Popup
 import androidx.hilt.navigation.compose.hiltViewModel
 import androidx.navigation.NavController
+import androidx.navigation.NavGraph.Companion.findStartDestination
 import com.example.domain.model.Company
 import com.example.domain.model.Post
 import com.example.profquest2.R
 import com.example.profquest2.extensions.formatDate
 import com.example.profquest2.extensions.toPx
+import com.example.profquest2.ui.composables.button.PrimaryButton
 import com.example.profquest2.ui.composables.icon.Icon
 import com.example.profquest2.ui.composables.images.RemoteImage
 import com.example.profquest2.ui.composables.post.PostIcon
@@ -111,9 +114,16 @@ fun HomeScreen(navController: NavController, viewModel: HomeViewModel = hiltView
         mutableStateOf(false)
     }
 
+    var unauthorized by rememberSaveable {
+        mutableStateOf(false)
+    }
+
     viewModel.collectSideEffect {
         isLoading = when (it) {
-            is HomeSideEffect.Done -> false
+            is HomeSideEffect.Done -> {
+                unauthorized = false
+                false
+            }
 
 
             is HomeSideEffect.Error -> {
@@ -122,109 +132,145 @@ fun HomeScreen(navController: NavController, viewModel: HomeViewModel = hiltView
             }
 
             is HomeSideEffect.Loading -> true
+
+            is HomeSideEffect.Unauthorized -> {
+                unauthorized = true
+                false
+            }
         }
     }
 
     val refreshState = rememberSwipeRefreshState(isRefreshing = isLoading)
 
-    Column(Modifier.fillMaxSize()) {
-        Row(
-            modifier = Modifier
-                .padding(horizontal = 16.dp)
-                .height(64.dp)
+    if (unauthorized) {
+        Column(
+            Modifier.fillMaxSize(), verticalArrangement = Arrangement.Center,
+            horizontalAlignment = Alignment.CenterHorizontally
         ) {
-            AnimatedVisibility(visible = !isSearchVisible) {
-                Row(verticalAlignment = Alignment.CenterVertically) {
-                    Image(
-                        painter = painterResource(id = ProfQuest2Theme.images.logo),
-                        contentDescription = null,
-                        modifier = Modifier.size(160.dp, 64.dp)
-                    )
-                    Spacer(modifier = Modifier.weight(1f))
-                    Icon(
-                        icon = R.drawable.ic_search,
-                        modifier = Modifier.clickable {
-                            isSearchVisible = true
+            TitleText(text = stringResource(id = R.string.unauthorized))
+
+            Spacer(modifier = Modifier.height(8.dp))
+
+            PrimaryButton(
+                onClick = {
+                    navController.navigate(Destination.Profile.route) {
+                        popUpTo(navController.graph.findStartDestination().id) {
+                            saveState = true
                         }
-                    )
-                }
-            }
-            AnimatedVisibility(visible = isSearchVisible, enter = slideInHorizontally()) {
-                SearchField(
-                    value = searchQuery,
-                    onValueChanged = { searchQuery = it },
-                    onClose = { isSearchVisible = false }
-                )
-            }
-        }
-        if (isSearchVisible) {
-            LaunchedEffect(Unit) { viewModel.getCompanies() }
-
-            LazyColumn(
-                contentPadding = PaddingValues(16.dp),
-                verticalArrangement = Arrangement.spacedBy(8.dp)
-            ) {
-                items(state.companies.filter { it.name.contains(searchQuery, ignoreCase = true) }) { company ->
-                    CompanyItem(
-                        company,
-                        onCompanyClick = {
-                            navController.navigate(Destination.Company.route + "/${company.id}")
-                        }
-                    )
-                }
-            }
-        } else {
-            Spacer(modifier = Modifier.height(32.dp))
-
-            TabRow(
-                selectedTabIndex = pagerState.currentPage,
-                containerColor = Color.Transparent,
-                contentColor = ProfQuest2Theme.colors.onSurface,
-                indicator = {
-                    Box(
-                        modifier = Modifier
-                            .tabIndicatorOffset(it[pagerState.currentPage])
-                            .height(4.dp)
-                            .clip(RoundedCornerShape(8.dp))
-                            .padding(horizontal = 28.dp)
-                            .background(color = ProfQuest2Theme.colors.primary)
-                    )
-                }) {
-                tabs.forEachIndexed { index, s ->
-                    Tab(
-                        selected = (index == pagerState.currentPage),
-                        onClick = { scope.launch { pagerState.scrollToPage(index) } },
-                        text = { Text(text = s) }
-                    )
-                }
-            }
-
-            HorizontalPager(state = pagerState) { page ->
-                when (page) {
-                    1 -> {
-
+                        launchSingleTop = true
+                        restoreState = true
                     }
+                },
+                text = stringResource(id = R.string.сontinue)
+            )
+        }
+    } else {
+        Column(Modifier.fillMaxSize()) {
+            Row(
+                modifier = Modifier
+                    .padding(horizontal = 16.dp)
+                    .height(64.dp)
+            ) {
+                AnimatedVisibility(visible = !isSearchVisible) {
+                    Row(verticalAlignment = Alignment.CenterVertically) {
+                        Image(
+                            painter = painterResource(id = ProfQuest2Theme.images.logo),
+                            contentDescription = null,
+                            modifier = Modifier.size(160.dp, 64.dp)
+                        )
+                        Spacer(modifier = Modifier.weight(1f))
+                        Icon(
+                            icon = R.drawable.ic_search,
+                            modifier = Modifier.clickable {
+                                isSearchVisible = true
+                            }
+                        )
+                    }
+                }
+                AnimatedVisibility(visible = isSearchVisible, enter = slideInHorizontally()) {
+                    SearchField(
+                        value = searchQuery,
+                        onValueChanged = { searchQuery = it },
+                        onClose = { isSearchVisible = false }
+                    )
+                }
+            }
+            if (isSearchVisible) {
+                LaunchedEffect(Unit) { viewModel.getCompanies() }
 
-                    0 -> {
-                        SwipeRefresh(state = refreshState, onRefresh = { viewModel.refreshPosts() }) {
-                            LazyColumn(
-                                contentPadding = PaddingValues(16.dp),
-                                verticalArrangement = Arrangement.spacedBy(8.dp),
-                                state = scrollState
-                            ) {
-                                items(state.posts) {
-                                    Post(
-                                        post = it,
-                                        onLike = { postId ->
-                                            viewModel.like(postId)
-                                        },
-                                        onVote = { postId, variant ->
-                                            viewModel.vote(postId, variant)
-                                        },
-                                        onUndoVote = { postId ->
-                                            viewModel.undoVote(postId)
-                                        }
-                                    )
+                LazyColumn(
+                    contentPadding = PaddingValues(16.dp),
+                    verticalArrangement = Arrangement.spacedBy(8.dp)
+                ) {
+                    items(state.companies.filter {
+                        it.name.contains(
+                            searchQuery,
+                            ignoreCase = true
+                        )
+                    }) { company ->
+                        CompanyItem(
+                            company,
+                            onCompanyClick = {
+                                navController.navigate(Destination.Company.route + "/${company.id}")
+                            }
+                        )
+                    }
+                }
+            } else {
+                Spacer(modifier = Modifier.height(32.dp))
+
+                TabRow(
+                    selectedTabIndex = pagerState.currentPage,
+                    containerColor = Color.Transparent,
+                    contentColor = ProfQuest2Theme.colors.onSurface,
+                    indicator = {
+                        Box(
+                            modifier = Modifier
+                                .tabIndicatorOffset(it[pagerState.currentPage])
+                                .height(4.dp)
+                                .clip(RoundedCornerShape(8.dp))
+                                .padding(horizontal = 28.dp)
+                                .background(color = ProfQuest2Theme.colors.primary)
+                        )
+                    }) {
+                    tabs.forEachIndexed { index, s ->
+                        Tab(
+                            selected = (index == pagerState.currentPage),
+                            onClick = { scope.launch { pagerState.scrollToPage(index) } },
+                            text = { Text(text = s) }
+                        )
+                    }
+                }
+
+                HorizontalPager(state = pagerState) { page ->
+                    when (page) {
+                        1 -> {
+
+                        }
+
+                        0 -> {
+                            SwipeRefresh(
+                                state = refreshState,
+                                onRefresh = { viewModel.refreshPosts() }) {
+                                LazyColumn(
+                                    contentPadding = PaddingValues(16.dp),
+                                    verticalArrangement = Arrangement.spacedBy(8.dp),
+                                    state = scrollState
+                                ) {
+                                    items(state.posts) {
+                                        Post(
+                                            post = it,
+                                            onLike = { postId ->
+                                                viewModel.like(postId)
+                                            },
+                                            onVote = { postId, variant ->
+                                                viewModel.vote(postId, variant)
+                                            },
+                                            onUndoVote = { postId ->
+                                                viewModel.undoVote(postId)
+                                            }
+                                        )
+                                    }
                                 }
                             }
                         }
@@ -344,15 +390,12 @@ fun Post(
                     if (showImages) {
                         BasicAlertDialog(onDismissRequest = { showImages = false }) {
                             HorizontalPager(
-                                state = rememberPagerState(initialPage = 0) { images.size },
-                                contentPadding = PaddingValues(horizontal = 16.dp)
+                                state = rememberPagerState(initialPage = 0) { images.size }
                             ) {
                                 RemoteImage(
                                     fileId = images[it].id.toString(),
-                                    modifier = Modifier
-                                        .padding(horizontal = 16.dp)
-                                        .fillMaxWidth()
-                                        .height(400.dp)
+                                    contentScale = ContentScale.Fit,
+                                    modifier = Modifier.fillMaxWidth()
                                 )
                             }
                         }

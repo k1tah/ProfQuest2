@@ -41,6 +41,7 @@ import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.clip
 import androidx.compose.ui.graphics.Color
+import androidx.compose.ui.layout.ContentScale
 import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.res.stringResource
@@ -407,10 +408,8 @@ fun CompanyPostItem(
                         ) {
                             RemoteImage(
                                 fileId = images[it].id.toString(),
-                                modifier = Modifier
-                                    .padding(horizontal = 16.dp)
-                                    .fillMaxWidth()
-                                    .height(400.dp)
+                                contentScale = ContentScale.Fit,
+                                modifier = Modifier.fillMaxWidth()
                             )
                         }
                     }

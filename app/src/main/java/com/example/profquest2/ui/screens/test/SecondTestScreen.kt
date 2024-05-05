@@ -65,7 +65,9 @@ fun SecondTestScreen(
             navController.navigate(
                 "secondTestResults/${Uri.encode(Gson().toJson(getSecondTestResult(listAnswers)))}"
             ) {
-                popUpTo(Destination.SelectTest.route)
+                popUpTo(Destination.SecondTest.route) {
+                    inclusive = true
+                }
             }
         }
     }

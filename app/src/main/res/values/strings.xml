@@ -15,6 +15,7 @@
     <string name="edit_profile">Редактировать профиль</string>
     <string name="document">Документ</string>
     <string name="test_results">Профессиональная склонность по итогам теста:</string>
+    <string name="go_to_test">Пройти тест</string>
 
     <!-- Edit Profile Screen -->
     <string name="fullname">ФИО</string>
@@ -91,6 +92,8 @@
     <string name="votes"> голосов</string>
     <string name="all_news">Все новости</string>
     <string name="for_you">Для вас</string>
+    <string name="unauthorized">Войдите или зарегистрируйтесь чтобы продолжить</string>
+    <string name="сontinue">Продолжить</string>
 
     <string name="auth_preference_file_key">authPrefs</string>
 </resources>

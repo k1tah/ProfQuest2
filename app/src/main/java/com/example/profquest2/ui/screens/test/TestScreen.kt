@@ -67,7 +67,9 @@ fun TestScreen(navController: NavController) {
         } else {
             listAnswers.add(answer)
             navController.navigate("testResults/${Uri.encode(Gson().toJson(getTestResult(listAnswers)))}") {
-                popUpTo(Destination.SelectTest.route)
+                popUpTo(Destination.Test.route) {
+                    inclusive = true
+                }
             }
         }
     }

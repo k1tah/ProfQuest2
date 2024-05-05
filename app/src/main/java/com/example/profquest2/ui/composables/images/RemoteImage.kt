@@ -15,14 +15,15 @@ fun RemoteImage(
     fileId: String,
     modifier: Modifier = Modifier,
     loadingDialogSize: Dp = 64.dp,
+    contentScale: ContentScale = ContentScale.Crop,
     onError: @Composable () -> Unit = {}
 ) {
     SubcomposeAsyncImage(
         model = BASE_URL + "file/$fileId",
         contentDescription = null,
         modifier = modifier,
-        contentScale = ContentScale.Crop,
-        loading = { LoadingDialog(modifier = modifier.size(loadingDialogSize)) },
+        contentScale = contentScale,
+        loading = { LoadingDialog(modifier = Modifier.size(loadingDialogSize)) },
         error = { onError() }
     )
 }
