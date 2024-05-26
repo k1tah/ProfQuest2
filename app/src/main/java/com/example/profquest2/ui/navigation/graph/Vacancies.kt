@@ -9,6 +9,7 @@ import androidx.navigation.navigation
 import com.example.profquest2.ui.navigation.Destination
 import com.example.profquest2.ui.screens.schools.SchoolScreen
 import com.example.profquest2.ui.screens.schools.SchoolsScreen
+import com.example.profquest2.ui.screens.vacancies.FavouritesVacanciesScreen
 import com.example.profquest2.ui.screens.vacancies.VacanciesScreen
 
 fun NavGraphBuilder.vacanciesGraph(navController: NavController) {
@@ -22,6 +23,10 @@ fun NavGraphBuilder.vacanciesGraph(navController: NavController) {
             arguments = listOf(navArgument("id") { type = NavType.LongType })
         ) {
             SchoolScreen(navController = navController, id = it.arguments?.getLong("id") ?: -1L)
+        }
+
+        composable(Destination.FavouritesVacancies.route) {
+            FavouritesVacanciesScreen(navController = navController)
         }
     }
 }

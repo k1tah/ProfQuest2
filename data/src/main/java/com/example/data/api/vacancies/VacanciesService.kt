@@ -27,6 +27,12 @@ class VacanciesService @Inject constructor(private val client: HttpClient) {
         header(HttpHeaders.Authorization, token)
     }
 
+    suspend fun getFavouritesVacancies(
+        token: String
+    ) = client.get(BASE_URL + "vacancy/favorites") {
+        header(HttpHeaders.Authorization, token)
+    }
+
     suspend fun updateIsFavourite(id: Long, token: String) = client.put(BASE_URL + "vacancy/$id/favourite") {
         header(HttpHeaders.ContentType, ContentType.Application.Json)
         header(HttpHeaders.Authorization, token)

@@ -12,5 +12,7 @@ interface VacanciesDataSource {
         token: String
     ): HttpResponse
 
+    suspend fun getFavouritesVacancies(token: String): HttpResponse
+
     suspend fun updateIsFavourite(id: Long, token: String): HttpResponse
 }

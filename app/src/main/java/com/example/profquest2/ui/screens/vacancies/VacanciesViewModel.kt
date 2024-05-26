@@ -59,6 +59,22 @@ class VacanciesViewModel @Inject constructor(
         }
     }
 
+    fun getFavouritesVacancies() = intent {
+        postSideEffect(VacanciesSideEffect.Loading)
+        val response = vacanciesRepository.getFavouritesVacancies(authRepository.getAuthToken())
+        when (response.status) {
+            HttpStatusCode.OK -> {
+                val vacancies = response.body<List<Vacancy>>()
+                reduce { state.copy(favouritesVacancies = vacancies) }
+                postSideEffect(VacanciesSideEffect.Done)
+            }
+
+            HttpStatusCode.Unauthorized -> postSideEffect(VacanciesSideEffect.Unauthorized)
+
+            else ->  postSideEffect(VacanciesSideEffect.Error(response.status.value.toString()))
+        }
+    }
+
     fun updateIsFavourite(id: Long) = intent {
         val response = vacanciesRepository.updateIsFavourite(id, authRepository.getAuthToken())
 
@@ -99,7 +115,8 @@ fun List<Vacancy>.update(item: Vacancy): List<Vacancy> {
 
 data class VacanciesState(
     val vacancies: List<Vacancy> = listOf(),
-    val companies: List<Company> = listOf()
+    val companies: List<Company> = listOf(),
+    val favouritesVacancies: List<Vacancy> = listOf()
 )
 
 sealed interface VacanciesSideEffect {

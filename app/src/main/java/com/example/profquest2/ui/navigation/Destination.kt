@@ -11,6 +11,8 @@ sealed class Destination(val route: String) {
 
     data object Vacancies: Destination("vacancies")
 
+    data object FavouritesVacancies: Destination("favouritesVacancies")
+
     data object SelectTest: Destination("selectTest")
 
     data object Test: Destination("test")

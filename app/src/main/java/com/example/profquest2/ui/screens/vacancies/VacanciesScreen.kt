@@ -45,6 +45,7 @@ import com.example.profquest2.ui.composables.text.TitleText
 import com.example.profquest2.ui.composables.textField.SearchField
 import com.example.profquest2.ui.navigation.Destination
 import com.example.profquest2.ui.theme.ProfQuest2Theme
+import com.example.profquest2.utils.showShortToast
 import org.orbitmvi.orbit.compose.collectAsState
 import org.orbitmvi.orbit.compose.collectSideEffect
 
@@ -81,7 +82,10 @@ fun VacanciesScreen(navController: NavController, viewModel: VacanciesViewModel 
                 isLoading = false
             }
 
-            is VacanciesSideEffect.Error -> isLoading = false
+            is VacanciesSideEffect.Error -> {
+                isLoading = false
+                context.showShortToast(it.message)
+            }
         }
     }
 
@@ -124,7 +128,10 @@ fun VacanciesScreen(navController: NavController, viewModel: VacanciesViewModel 
             ) {
                 AnimatedVisibility(visible = !isSearchVisible) {
                     Row(verticalAlignment = Alignment.CenterVertically) {
-                        Icon(icon = R.drawable.ic_favorites)
+                        Icon(
+                            icon = R.drawable.ic_favorites,
+                            modifier = Modifier.clickable { navController.navigate(Destination.FavouritesVacancies.route) }
+                        )
                         Spacer(modifier = Modifier.width(16.dp))
                         Icon(
                             icon = R.drawable.ic_school,
@@ -224,6 +231,17 @@ fun VacancyItem(vacancy: Vacancy, company: Company, onFavouriteClick: () -> Unit
                         text = stringResource(R.string.hide),
                         modifier = Modifier.clickable { expanded = !expanded }
                     )
+                    Row(verticalAlignment = Alignment.CenterVertically) {
+                        LabelText(
+                            text = stringResource(R.string.show_more),
+                            modifier = Modifier.clickable { expanded = !expanded }
+                        )
+                        Spacer(modifier = Modifier.weight(1f))
+                        Icon(
+                            icon = if (vacancy.isFavourite) R.drawable.ic_favorite_fill else R.drawable.ic_favorite,
+                            modifier = Modifier.clickable { onFavouriteClick() }
+                        )
+                    }
                 }
             }
         }
