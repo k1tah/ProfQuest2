@@ -9,6 +9,11 @@ import com.example.domain.model.Vacancy
 import dagger.hilt.android.lifecycle.HiltViewModel
 import io.ktor.client.call.body
 import io.ktor.http.HttpStatusCode
+import kotlinx.coroutines.CoroutineScope
+import kotlinx.coroutines.Dispatchers
+import kotlinx.coroutines.Job
+import kotlinx.coroutines.delay
+import kotlinx.coroutines.launch
 import org.orbitmvi.orbit.Container
 import org.orbitmvi.orbit.ContainerHost
 import org.orbitmvi.orbit.syntax.simple.intent
@@ -26,6 +31,8 @@ class VacanciesViewModel @Inject constructor(
 
     override val container: Container<VacanciesState, VacanciesSideEffect> =
         container(VacanciesState())
+
+    private var delayJob: Job? = null
 
     init {
         getCompanies()
@@ -56,6 +63,14 @@ class VacanciesViewModel @Inject constructor(
             HttpStatusCode.Unauthorized -> postSideEffect(VacanciesSideEffect.Unauthorized)
 
             else ->  postSideEffect(VacanciesSideEffect.Error(response.status.value.toString()))
+        }
+    }
+
+    fun searchVacancies(query: String) {
+        if (delayJob?.isActive == true) delayJob?.cancel()
+        delayJob = CoroutineScope(Dispatchers.IO).launch {
+            delay(300L)
+            getVacancies(query = query)
         }
     }
 
@@ -90,7 +105,7 @@ class VacanciesViewModel @Inject constructor(
         }
     }
 
-    fun getCompanies() = intent {
+    private fun getCompanies() = intent {
         postSideEffect(VacanciesSideEffect.Loading)
         val response = companyRepository.getCompanies(authRepository.getAuthToken())
         when (response.status) {

@@ -152,8 +152,14 @@ fun VacanciesScreen(navController: NavController, viewModel: VacanciesViewModel 
                 AnimatedVisibility(visible = isSearchVisible, enter = slideInHorizontally()) {
                     SearchField(
                         value = searchQuery,
-                        onValueChanged = { searchQuery = it },
-                        onClose = { isSearchVisible = false }
+                        onValueChanged = {
+                            searchQuery = it
+                            if (searchQuery.length >= 2) viewModel.searchVacancies(searchQuery)
+                        },
+                        onClose = {
+                            isSearchVisible = false
+                            viewModel.getVacancies()
+                        }
                     )
                 }
             }
