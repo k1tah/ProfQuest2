@@ -157,7 +157,11 @@ fun VacanciesScreen(navController: NavController, viewModel: VacanciesViewModel 
             ) {
                 items(state.vacancies) { vacancy ->
                     state.companies.find { it.id == vacancy.company }
-                        ?.let { VacancyItem(vacancy, it) }
+                        ?.let {
+                            VacancyItem(vacancy, it) {
+                                viewModel.updateIsFavourite(vacancy.id)
+                            }
+                        }
                 }
             }
         }
@@ -165,11 +169,8 @@ fun VacanciesScreen(navController: NavController, viewModel: VacanciesViewModel 
 }
 
 @Composable
-fun VacancyItem(vacancy: Vacancy, company: Company) {
+fun VacancyItem(vacancy: Vacancy, company: Company, onFavouriteClick: () -> Unit) {
     var expanded by rememberSaveable {
-        mutableStateOf(false)
-    }
-    var isFavorite by rememberSaveable {
         mutableStateOf(false)
     }
 
@@ -190,7 +191,7 @@ fun VacancyItem(vacancy: Vacancy, company: Company) {
                 }
             }
             Spacer(modifier = Modifier.height(16.dp))
-            TitleText(text = vacancy.name)
+            TitleText(text = vacancy.vacancyName)
             Spacer(modifier = Modifier.height(4.dp))
 
             Spacer(modifier = Modifier.height(16.dp))
@@ -202,8 +203,8 @@ fun VacancyItem(vacancy: Vacancy, company: Company) {
                     )
                     Spacer(modifier = Modifier.weight(1f))
                     Icon(
-                        icon = if (isFavorite) R.drawable.ic_favorite_fill else R.drawable.ic_favorite,
-                        modifier = Modifier.clickable { isFavorite = !isFavorite }
+                        icon = if (vacancy.isFavourite) R.drawable.ic_favorite_fill else R.drawable.ic_favorite,
+                        modifier = Modifier.clickable { onFavouriteClick() }
                     )
                 }
             }

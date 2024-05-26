@@ -13,4 +13,6 @@ class VacanciesDataSourceImpl @Inject constructor(private val service: Vacancies
         size: Int,
         token: String
     ): HttpResponse = service.getVacancies(query, address, name, page, size, token)
+
+    override suspend fun updateIsFavourite(id: Long, token: String) = service.updateIsFavourite(id, token)
 }

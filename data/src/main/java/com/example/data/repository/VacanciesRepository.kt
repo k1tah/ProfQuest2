@@ -11,4 +11,6 @@ class VacanciesRepository(private val dataSource: VacanciesDataSource) {
         size: Int,
         token: String
     ) = dataSource.getVacancies(query, address, name, page, size, token)
+
+    suspend fun updateIsFavourite(id: Long, token: String) = dataSource.updateIsFavourite(id, token)
 }

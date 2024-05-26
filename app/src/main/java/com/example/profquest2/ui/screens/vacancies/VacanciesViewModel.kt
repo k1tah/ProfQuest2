@@ -59,6 +59,21 @@ class VacanciesViewModel @Inject constructor(
         }
     }
 
+    fun updateIsFavourite(id: Long) = intent {
+        val response = vacanciesRepository.updateIsFavourite(id, authRepository.getAuthToken())
+
+        when (response.status) {
+            HttpStatusCode.OK -> {
+                val likedPost = response.body<Vacancy>()
+                reduce { state.copy(vacancies = state.vacancies.update(likedPost)) }
+            }
+
+            HttpStatusCode.Unauthorized -> postSideEffect(VacanciesSideEffect.Unauthorized)
+
+            else -> postSideEffect(VacanciesSideEffect.Error(response.status.value.toString()))
+        }
+    }
+
     fun getCompanies() = intent {
         postSideEffect(VacanciesSideEffect.Loading)
         val response = companyRepository.getCompanies(authRepository.getAuthToken())
@@ -73,6 +88,13 @@ class VacanciesViewModel @Inject constructor(
             else -> postSideEffect(VacanciesSideEffect.Error(response.status.value.toString()))
         }
     }
+}
+
+fun List<Vacancy>.update(item: Vacancy): List<Vacancy> {
+    val itemIndex = indexOf(find { it.id == item.id })
+    val newList = this.toMutableList()
+    newList[itemIndex] = item
+    return newList
 }
 
 data class VacanciesState(

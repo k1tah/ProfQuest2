@@ -11,4 +11,6 @@ interface VacanciesDataSource {
         size: Int,
         token: String
     ): HttpResponse
+
+    suspend fun updateIsFavourite(id: Long, token: String): HttpResponse
 }

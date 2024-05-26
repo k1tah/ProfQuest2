@@ -9,6 +9,7 @@ data class Post(
     @SerialName("user_id")
     val userId: Long?,
     val name: String,
+    val voteName: String?,
     val nickname: String,
     val icon: File?,
     val text: String,
