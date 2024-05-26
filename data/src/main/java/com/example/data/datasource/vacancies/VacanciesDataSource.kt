@@ -17,4 +17,6 @@ interface VacanciesDataSource {
     suspend fun updateIsFavourite(id: Long, token: String): HttpResponse
 
     suspend fun sendResume(id: Long, token: String): HttpResponse
+
+    suspend fun getCompanyVacancies(id: Long, token: String): HttpResponse
 }

@@ -8,6 +8,7 @@ import androidx.navigation.navArgument
 import androidx.navigation.navigation
 import com.example.profquest2.ui.navigation.Destination
 import com.example.profquest2.ui.screens.company.CompanyScreen
+import com.example.profquest2.ui.screens.company.CompanyVacanciesScreen
 import com.example.profquest2.ui.screens.home.HomeScreen
 
 fun NavGraphBuilder.homeGraph(navController: NavController) {
@@ -21,6 +22,13 @@ fun NavGraphBuilder.homeGraph(navController: NavController) {
             arguments = listOf(navArgument("id") { type = NavType.LongType })
         ) {
             CompanyScreen(navController, it.arguments?.getLong("id") ?: -1L)
+        }
+
+        composable(
+            Destination.CompanyVacancies.route + "/{id}",
+            arguments = listOf(navArgument("id") { type = NavType.LongType })
+        ) {
+            CompanyVacanciesScreen(id = it.arguments?.getLong("id") ?: -1L, navController = navController)
         }
     }
 }

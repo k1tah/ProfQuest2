@@ -56,6 +56,7 @@ import com.example.domain.model.Post
 import com.example.profquest2.R
 import com.example.profquest2.extensions.formatDate
 import com.example.profquest2.extensions.toPx
+import com.example.profquest2.ui.composables.button.PrimaryButton
 import com.example.profquest2.ui.composables.dialog.LoadingDialog
 import com.example.profquest2.ui.composables.icon.Icon
 import com.example.profquest2.ui.composables.images.RemoteImage
@@ -65,6 +66,7 @@ import com.example.profquest2.ui.composables.text.BodyText
 import com.example.profquest2.ui.composables.text.LabelText
 import com.example.profquest2.ui.composables.text.SubtitleText
 import com.example.profquest2.ui.composables.text.TitleText
+import com.example.profquest2.ui.navigation.Destination
 import com.example.profquest2.ui.theme.ProfQuest2Theme
 import com.example.profquest2.utils.OnBottomReached
 import com.example.profquest2.utils.showShortToast
@@ -258,6 +260,19 @@ fun CompanyScreen(
                 modifier = Modifier.clickable { infoExpanded = !infoExpanded }
             )
             Spacer(modifier = Modifier.height(8.dp))
+
+            Row(
+                modifier = Modifier.fillMaxWidth(),
+                horizontalArrangement = Arrangement.spacedBy(8.dp)
+            ) {
+                PrimaryButton(
+                    onClick = { navController.navigate(Destination.CompanyVacancies.route + "/${state.company.id}") },
+                    text = stringResource(id = R.string.vacansies),
+                    modifier = Modifier.fillMaxWidth(0.33f)
+                )
+            }
+
+            Spacer(modifier = Modifier.height(16.dp))
 
             SubtitleText(
                 text = "Посты",

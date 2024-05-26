@@ -17,4 +17,6 @@ class VacanciesRepository(private val dataSource: VacanciesDataSource) {
     suspend fun updateIsFavourite(id: Long, token: String) = dataSource.updateIsFavourite(id, token)
 
     suspend fun sendResume(id: Long, token: String) = dataSource.sendResume(id, token)
+
+    suspend fun getCompanyVacancies(id: Long, token: String) = dataSource.getCompanyVacancies(id, token)
 }

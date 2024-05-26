@@ -72,6 +72,7 @@
     <string name="working_conditions">Условия труда</string>
     <string name="favourites">Избранные</string>
     <string name="send_resume">Откликнуться</string>
+    <string name="company_vacancies">Вакансии компании</string>
 
     <!-- Confirm Code Screen -->
     <string name="we_send_code">Мы отправили код подтверждения на вашу почту</string>

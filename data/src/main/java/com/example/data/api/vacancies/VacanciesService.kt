@@ -42,4 +42,8 @@ class VacanciesService @Inject constructor(private val client: HttpClient) {
     suspend fun sendResume(id: Long, token: String) = client.post(BASE_URL + "vacancy/$id/resume") {
         header(HttpHeaders.Authorization, token)
     }
+
+    suspend fun getCompanyVacancies(id: Long, token: String) = client.get(BASE_URL + "company/$id/vacancies") {
+        header(HttpHeaders.Authorization, token)
+    }
 }

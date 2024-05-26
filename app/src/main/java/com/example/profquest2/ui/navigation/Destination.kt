@@ -13,6 +13,8 @@ sealed class Destination(val route: String) {
 
     data object FavouritesVacancies: Destination("favouritesVacancies")
 
+    data object CompanyVacancies: Destination("companyVacancies")
+
     data object SelectTest: Destination("selectTest")
 
     data object Test: Destination("test")

@@ -19,4 +19,6 @@ class VacanciesDataSourceImpl @Inject constructor(private val service: Vacancies
     override suspend fun updateIsFavourite(id: Long, token: String) = service.updateIsFavourite(id, token)
 
     override suspend fun sendResume(id: Long, token: String) = service.sendResume(id, token)
+
+    override suspend fun getCompanyVacancies(id: Long, token: String): HttpResponse = service.getCompanyVacancies(id, token)
 }

@@ -62,7 +62,7 @@ class VacanciesViewModel @Inject constructor(
 
             HttpStatusCode.Unauthorized -> postSideEffect(VacanciesSideEffect.Unauthorized)
 
-            else ->  postSideEffect(VacanciesSideEffect.Error(response.status.value.toString()))
+            else -> postSideEffect(VacanciesSideEffect.Error(response.status.value.toString()))
         }
     }
 
@@ -83,7 +83,7 @@ class VacanciesViewModel @Inject constructor(
 
             HttpStatusCode.Unauthorized -> postSideEffect(VacanciesSideEffect.Unauthorized)
 
-            else ->  postSideEffect(VacanciesSideEffect.Error(response.status.value.toString()))
+            else -> postSideEffect(VacanciesSideEffect.Error(response.status.value.toString()))
         }
     }
 
@@ -99,7 +99,23 @@ class VacanciesViewModel @Inject constructor(
 
             HttpStatusCode.Unauthorized -> postSideEffect(VacanciesSideEffect.Unauthorized)
 
-            else ->  postSideEffect(VacanciesSideEffect.Error(response.status.value.toString()))
+            else -> postSideEffect(VacanciesSideEffect.Error(response.status.value.toString()))
+        }
+    }
+
+    fun getCompanyVacancies(id: Long) = intent {
+        postSideEffect(VacanciesSideEffect.Loading)
+        val response = vacanciesRepository.getCompanyVacancies(id, authRepository.getAuthToken())
+        when (response.status) {
+            HttpStatusCode.OK -> {
+                val vacancies = response.body<List<Vacancy>>()
+                reduce { state.copy(companyVacancies = vacancies) }
+                postSideEffect(VacanciesSideEffect.Done)
+            }
+
+            HttpStatusCode.Unauthorized -> postSideEffect(VacanciesSideEffect.Unauthorized)
+
+            else -> postSideEffect(VacanciesSideEffect.Error(response.status.value.toString()))
         }
     }
 
@@ -144,7 +160,8 @@ fun List<Vacancy>.update(item: Vacancy): List<Vacancy> {
 data class VacanciesState(
     val vacancies: List<Vacancy> = listOf(),
     val companies: List<Company> = listOf(),
-    val favouritesVacancies: List<Vacancy> = listOf()
+    val favouritesVacancies: List<Vacancy> = listOf(),
+    val companyVacancies: List<Vacancy> = listOf()
 )
 
 sealed interface VacanciesSideEffect {
