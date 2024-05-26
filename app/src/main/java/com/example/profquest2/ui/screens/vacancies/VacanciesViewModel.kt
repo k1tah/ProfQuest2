@@ -56,8 +56,11 @@ class VacanciesViewModel @Inject constructor(
         )
         when (response.status) {
             HttpStatusCode.OK -> {
+                postSideEffect(VacanciesSideEffect.Done)
                 val vacancies = response.body<List<Vacancy>>()
-                reduce { state.copy(vacancies = vacancies) }
+                val currentVacancies = state.vacancies.toMutableList()
+                currentVacancies.addAll(vacancies)
+                reduce { state.copy(vacancies = currentVacancies) }
             }
 
             HttpStatusCode.Unauthorized -> postSideEffect(VacanciesSideEffect.Unauthorized)

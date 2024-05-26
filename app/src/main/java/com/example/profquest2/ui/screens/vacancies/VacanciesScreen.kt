@@ -2,6 +2,7 @@ package com.example.profquest2.ui.screens.vacancies
 
 import androidx.compose.animation.AnimatedVisibility
 import androidx.compose.animation.slideInHorizontally
+import androidx.compose.foundation.BorderStroke
 import androidx.compose.foundation.clickable
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Column
@@ -18,13 +19,17 @@ import androidx.compose.foundation.lazy.items
 import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.material3.Card
 import androidx.compose.material3.CardDefaults
+import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.getValue
+import androidx.compose.runtime.mutableIntStateOf
 import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.saveable.rememberSaveable
 import androidx.compose.runtime.setValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
+import androidx.compose.ui.graphics.Brush
+import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.unit.dp
@@ -65,6 +70,11 @@ fun VacanciesScreen(navController: NavController, viewModel: VacanciesViewModel 
     }
     var isLoading by rememberSaveable {
         mutableStateOf(false)
+    }
+
+
+    var currentPage by rememberSaveable {
+        mutableIntStateOf(0)
     }
 
     viewModel.collectSideEffect {
@@ -184,6 +194,12 @@ fun VacanciesScreen(navController: NavController, viewModel: VacanciesViewModel 
                             )
                         }
                 }
+                item {
+                    viewModel.getVacancies(
+                        page = ++currentPage,
+                        query = if (isSearchVisible) searchQuery else ""
+                    )
+                }
             }
         }
     }
@@ -204,9 +220,14 @@ fun VacancyItem(
         modifier = Modifier.fillMaxWidth(),
         shape = RoundedCornerShape(12.dp),
         colors = CardDefaults.cardColors(containerColor = ProfQuest2Theme.colors.surface),
-        elevation = CardDefaults.cardElevation(4.dp)
+        elevation = CardDefaults.cardElevation(4.dp),
+        border = if (vacancy.isStroke) BorderStroke(1.dp, Brush.linearGradient(listOf(Color.Red, Color.White))) else null
     ) {
         Column(modifier = Modifier.padding(horizontal = 16.dp, vertical = 12.dp)) {
+            if (vacancy.isStroke) {
+                BodyText(text = "Рекомендуем:")
+                Spacer(modifier = Modifier.height(8.dp))
+            }
             Row(verticalAlignment = Alignment.CenterVertically) {
                 PostIcon(fileId = company.image?.id.toString())
                 Spacer(modifier = Modifier.width(16.dp))
