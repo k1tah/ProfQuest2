@@ -16,6 +16,8 @@ import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.width
 import androidx.compose.foundation.lazy.LazyColumn
 import androidx.compose.foundation.lazy.items
+import androidx.compose.foundation.lazy.rememberLazyListState
+import androidx.compose.foundation.rememberScrollState
 import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.material3.Card
 import androidx.compose.material3.CardDefaults
@@ -50,6 +52,7 @@ import com.example.profquest2.ui.composables.text.TitleText
 import com.example.profquest2.ui.composables.textField.SearchField
 import com.example.profquest2.ui.navigation.Destination
 import com.example.profquest2.ui.theme.ProfQuest2Theme
+import com.example.profquest2.utils.OnBottomReached
 import com.example.profquest2.utils.showShortToast
 import org.orbitmvi.orbit.compose.collectAsState
 import org.orbitmvi.orbit.compose.collectSideEffect
@@ -75,6 +78,14 @@ fun VacanciesScreen(navController: NavController, viewModel: VacanciesViewModel 
 
     var currentPage by rememberSaveable {
         mutableIntStateOf(0)
+    }
+
+    val scrollState = rememberLazyListState()
+    scrollState.OnBottomReached {
+        viewModel.getVacancies(
+            page = ++currentPage,
+            query = if (isSearchVisible) searchQuery else ""
+        )
     }
 
     viewModel.collectSideEffect {
@@ -194,12 +205,6 @@ fun VacanciesScreen(navController: NavController, viewModel: VacanciesViewModel 
                             )
                         }
                 }
-                item {
-                    viewModel.getVacancies(
-                        page = ++currentPage,
-                        query = if (isSearchVisible) searchQuery else ""
-                    )
-                }
             }
         }
     }
@@ -221,7 +226,10 @@ fun VacancyItem(
         shape = RoundedCornerShape(12.dp),
         colors = CardDefaults.cardColors(containerColor = ProfQuest2Theme.colors.surface),
         elevation = CardDefaults.cardElevation(4.dp),
-        border = if (vacancy.isStroke) BorderStroke(1.dp, Brush.linearGradient(listOf(Color.Red, Color.White))) else null
+        border = if (vacancy.isStroke) BorderStroke(
+            1.dp,
+            Brush.linearGradient(listOf(Color.Red, Color.White))
+        ) else null
     ) {
         Column(modifier = Modifier.padding(horizontal = 16.dp, vertical = 12.dp)) {
             if (vacancy.isStroke) {

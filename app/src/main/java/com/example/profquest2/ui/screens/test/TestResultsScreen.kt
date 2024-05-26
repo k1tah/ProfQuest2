@@ -48,6 +48,7 @@ import com.example.profquest2.R
 import com.example.profquest2.ui.composables.icon.Icon
 import com.example.profquest2.ui.composables.text.BodyText
 import com.example.profquest2.ui.composables.text.TitleText
+import com.example.profquest2.ui.theme.ProfQuest2Theme
 import com.example.profquest2.utils.Results
 import kotlinx.coroutines.delay
 import kotlinx.coroutines.launch
@@ -143,7 +144,8 @@ fun SpecsPage(title: String, specs: String, onNext: () -> Unit) {
         androidx.compose.material3.Icon(
             imageVector = Icons.AutoMirrored.Filled.ArrowForward,
             contentDescription = null,
-            modifier = Modifier.clickable { onNext() }
+            modifier = Modifier.clickable { onNext() },
+            tint = ProfQuest2Theme.colors.onSurface
         )
     }
 }

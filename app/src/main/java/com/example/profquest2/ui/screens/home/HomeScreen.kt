@@ -219,60 +219,27 @@ fun HomeScreen(navController: NavController, viewModel: HomeViewModel = hiltView
             } else {
                 Spacer(modifier = Modifier.height(32.dp))
 
-                TabRow(
-                    selectedTabIndex = pagerState.currentPage,
-                    containerColor = Color.Transparent,
-                    contentColor = ProfQuest2Theme.colors.onSurface,
-                    indicator = {
-                        Box(
-                            modifier = Modifier
-                                .tabIndicatorOffset(it[pagerState.currentPage])
-                                .height(4.dp)
-                                .clip(RoundedCornerShape(8.dp))
-                                .padding(horizontal = 28.dp)
-                                .background(color = ProfQuest2Theme.colors.primary)
-                        )
-                    }) {
-                    tabs.forEachIndexed { index, s ->
-                        Tab(
-                            selected = (index == pagerState.currentPage),
-                            onClick = { scope.launch { pagerState.scrollToPage(index) } },
-                            text = { Text(text = s) }
-                        )
-                    }
-                }
-
-                HorizontalPager(state = pagerState) { page ->
-                    when (page) {
-                        1 -> {
-
-                        }
-
-                        0 -> {
-                            SwipeRefresh(
-                                state = refreshState,
-                                onRefresh = { viewModel.refreshPosts() }) {
-                                LazyColumn(
-                                    contentPadding = PaddingValues(16.dp),
-                                    verticalArrangement = Arrangement.spacedBy(8.dp),
-                                    state = scrollState
-                                ) {
-                                    items(state.posts) {
-                                        Post(
-                                            post = it,
-                                            onLike = { postId ->
-                                                viewModel.like(postId)
-                                            },
-                                            onVote = { postId, variant ->
-                                                viewModel.vote(postId, variant)
-                                            },
-                                            onUndoVote = { postId ->
-                                                viewModel.undoVote(postId)
-                                            }
-                                        )
-                                    }
+                SwipeRefresh(
+                    state = refreshState,
+                    onRefresh = { viewModel.refreshPosts() }) {
+                    LazyColumn(
+                        contentPadding = PaddingValues(16.dp),
+                        verticalArrangement = Arrangement.spacedBy(8.dp),
+                        state = scrollState
+                    ) {
+                        items(state.posts) {
+                            Post(
+                                post = it,
+                                onLike = { postId ->
+                                    viewModel.like(postId)
+                                },
+                                onVote = { postId, variant ->
+                                    viewModel.vote(postId, variant)
+                                },
+                                onUndoVote = { postId ->
+                                    viewModel.undoVote(postId)
                                 }
-                            }
+                            )
                         }
                     }
                 }
