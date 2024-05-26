@@ -74,6 +74,19 @@ class VacanciesViewModel @Inject constructor(
         }
     }
 
+    fun sendResume(id: Long) = intent {
+        postSideEffect(VacanciesSideEffect.Loading)
+        val response = vacanciesRepository.sendResume(id, authRepository.getAuthToken())
+        when (response.status) {
+            HttpStatusCode.Continue -> postSideEffect(VacanciesSideEffect.ResumeSended)
+
+
+            HttpStatusCode.Unauthorized -> postSideEffect(VacanciesSideEffect.Unauthorized)
+
+            else ->  postSideEffect(VacanciesSideEffect.Error(response.status.value.toString()))
+        }
+    }
+
     fun getFavouritesVacancies() = intent {
         postSideEffect(VacanciesSideEffect.Loading)
         val response = vacanciesRepository.getFavouritesVacancies(authRepository.getAuthToken())
@@ -142,4 +155,6 @@ sealed interface VacanciesSideEffect {
     data class Error(val message: String) : VacanciesSideEffect
 
     data object Done : VacanciesSideEffect
+
+    data object ResumeSended : VacanciesSideEffect
 }

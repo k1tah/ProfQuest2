@@ -76,6 +76,7 @@ fun VacanciesScreen(navController: NavController, viewModel: VacanciesViewModel 
 
             is VacanciesSideEffect.Loading -> isLoading = true
 
+            is VacanciesSideEffect.ResumeSended -> context.showShortToast("Резюме отправлено!")
 
             is VacanciesSideEffect.Done -> {
                 unauthorized = false
@@ -170,10 +171,17 @@ fun VacanciesScreen(navController: NavController, viewModel: VacanciesViewModel 
             ) {
                 items(state.vacancies) { vacancy ->
                     state.companies.find { it.id == vacancy.company }
-                        ?.let {
-                            VacancyItem(vacancy, it) {
-                                viewModel.updateIsFavourite(vacancy.id)
-                            }
+                        ?.let { company ->
+                            VacancyItem(
+                                vacancy,
+                                company,
+                                onFavouriteClick = {
+                                    viewModel.updateIsFavourite(vacancy.id)
+                                },
+                                onSendResume = {
+                                    viewModel.sendResume(vacancy.id)
+                                }
+                            )
                         }
                 }
             }
@@ -182,7 +190,12 @@ fun VacanciesScreen(navController: NavController, viewModel: VacanciesViewModel 
 }
 
 @Composable
-fun VacancyItem(vacancy: Vacancy, company: Company, onFavouriteClick: () -> Unit) {
+fun VacancyItem(
+    vacancy: Vacancy,
+    company: Company,
+    onFavouriteClick: () -> Unit,
+    onSendResume: () -> Unit
+) {
     var expanded by rememberSaveable {
         mutableStateOf(false)
     }
@@ -250,6 +263,8 @@ fun VacancyItem(vacancy: Vacancy, company: Company, onFavouriteClick: () -> Unit
                     }
                 }
             }
+            Spacer(modifier = Modifier.height(8.dp))
+            PrimaryButton(onClick = { onSendResume() }, text = stringResource(R.string.send_resume))
         }
     }
 }
