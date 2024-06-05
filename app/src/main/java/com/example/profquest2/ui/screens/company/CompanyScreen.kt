@@ -22,6 +22,7 @@ import androidx.compose.foundation.lazy.items
 import androidx.compose.foundation.lazy.rememberLazyListState
 import androidx.compose.foundation.pager.HorizontalPager
 import androidx.compose.foundation.pager.rememberPagerState
+import androidx.compose.foundation.selection.selectableGroup
 import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.filled.AccountCircle
@@ -77,6 +78,7 @@ import org.orbitmvi.orbit.compose.collectSideEffect
 import java.text.SimpleDateFormat
 import java.util.Date
 import java.util.Locale
+
 
 @Composable
 fun CompanyScreen(
@@ -270,6 +272,25 @@ fun CompanyScreen(
                     text = stringResource(id = R.string.vacansies),
                     modifier = Modifier.fillMaxWidth(0.33f)
                 )
+            }
+
+            Row(
+                modifier = Modifier
+                    .padding(horizontal = 16.dp)
+                    .height(64.dp)
+                    .selectableGroup(),
+                horizontalArrangement = Arrangement.SpaceBetween,
+                verticalAlignment = Alignment.CenterVertically
+            ){
+                PrimaryButton(onClick = {
+                    navController.navigate(Destination.CompanyContent.route)},
+                    text = stringResource(id = R.string.vacancies))
+                PrimaryButton(onClick = {
+                    navController.navigate(Destination.CompanyContent.route)},
+                    text = stringResource(id = R.string.curses))
+                PrimaryButton(onClick = {
+                    navController.navigate(Destination.CompanyContent.route)},
+                    text = stringResource(id = R.string.practices))
             }
 
             Spacer(modifier = Modifier.height(16.dp))

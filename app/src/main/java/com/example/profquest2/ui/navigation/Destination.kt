@@ -8,6 +8,7 @@ sealed class Destination(val route: String) {
     data object School: Destination("school")
 
     data object Company: Destination("company")
+    data object CompanyContent: Destination("companyContent")
 
     data object Vacancies: Destination("vacancies")
 

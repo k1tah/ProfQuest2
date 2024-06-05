@@ -73,6 +73,10 @@
     <string name="favourites">Избранные</string>
     <string name="send_resume">Откликнуться</string>
     <string name="company_vacancies">Вакансии компании</string>
+    <string name="vacancies">Вакансии</string>
+    <string name="curses">Курсы</string>
+    <string name="practices">Практики</string>
+
 
     <!-- Confirm Code Screen -->
     <string name="we_send_code">Мы отправили код подтверждения на вашу почту</string>

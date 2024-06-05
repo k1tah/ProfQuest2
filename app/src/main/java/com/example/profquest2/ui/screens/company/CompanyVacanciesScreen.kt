@@ -27,10 +27,10 @@ import androidx.navigation.NavController
 import com.example.profquest2.R
 import com.example.profquest2.ui.composables.dialog.LoadingDialog
 import com.example.profquest2.ui.composables.icon.Icon
+import com.example.profquest2.ui.composables.item.VacancyItem
 import com.example.profquest2.ui.composables.text.TitleText
 import com.example.profquest2.ui.screens.vacancies.VacanciesSideEffect
 import com.example.profquest2.ui.screens.vacancies.VacanciesViewModel
-import com.example.profquest2.ui.screens.vacancies.VacancyItem
 import com.example.profquest2.utils.showShortToast
 import org.orbitmvi.orbit.compose.collectAsState
 import org.orbitmvi.orbit.compose.collectSideEffect
