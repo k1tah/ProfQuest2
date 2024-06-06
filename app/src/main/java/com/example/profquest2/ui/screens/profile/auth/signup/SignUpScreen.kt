@@ -17,6 +17,7 @@ import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.res.stringResource
+import androidx.compose.ui.text.input.PasswordVisualTransformation
 import androidx.compose.ui.unit.dp
 import androidx.hilt.navigation.compose.hiltViewModel
 import androidx.navigation.NavController
@@ -89,7 +90,8 @@ fun SignUpScreen(navController: NavController, viewModel: SignUpViewModel = hilt
             value = password,
             onValueChange = {
                 password = it
-            }
+            },
+            visualTransformation = PasswordVisualTransformation()
         )
         Spacer(modifier = Modifier.height(16.dp))
 
@@ -98,7 +100,8 @@ fun SignUpScreen(navController: NavController, viewModel: SignUpViewModel = hilt
             value = passwordConfirmation,
             onValueChange = {
                 passwordConfirmation = it
-            }
+            },
+            visualTransformation = PasswordVisualTransformation()
         )
         Spacer(modifier = Modifier.height(32.dp))
 

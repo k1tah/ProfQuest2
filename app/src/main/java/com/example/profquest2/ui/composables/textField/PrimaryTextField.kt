@@ -10,6 +10,7 @@ import androidx.compose.material3.OutlinedTextFieldDefaults
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
 import androidx.compose.ui.Modifier
+import androidx.compose.ui.text.input.VisualTransformation
 import androidx.compose.ui.unit.dp
 import com.example.profquest2.ui.theme.ProfQuest2Theme
 import com.example.profquest2.ui.composables.text.LabelText
@@ -22,7 +23,8 @@ fun PrimaryTextField(
     trailingIcon: @Composable () -> Unit = {},
     label: String = "",
     hint: String = "",
-    enabled: Boolean = true
+    enabled: Boolean = true,
+    visualTransformation: VisualTransformation = VisualTransformation.None
 ) {
     Column {
         if (label.isNotBlank()) {
@@ -51,7 +53,8 @@ fun PrimaryTextField(
             placeholder = { LabelText(text = hint) },
             modifier = modifier,
             trailingIcon = { trailingIcon() },
-            enabled = enabled
+            enabled = enabled,
+            visualTransformation = visualTransformation
         )
     }
 }

@@ -14,6 +14,24 @@ class VacanciesDataSourceImpl @Inject constructor(private val service: Vacancies
         token: String
     ): HttpResponse = service.getVacancies(query, address, name, page, size, token)
 
+    override suspend fun getPractices(
+        query: String,
+        address: String,
+        name: String,
+        page: Int,
+        size: Int,
+        token: String
+    ): HttpResponse = service.getPractices(query, address, name, page, size, token)
+
+    override suspend fun getCourses(
+        query: String,
+        address: String,
+        name: String,
+        page: Int,
+        size: Int,
+        token: String
+    ): HttpResponse = service.getCourses(query, address, name, page, size, token)
+
     override suspend fun getFavouritesVacancies(token: String): HttpResponse = service.getFavouritesVacancies(token)
 
     override suspend fun updateIsFavourite(id: Long, token: String) = service.updateIsFavourite(id, token)
@@ -21,4 +39,8 @@ class VacanciesDataSourceImpl @Inject constructor(private val service: Vacancies
     override suspend fun sendResume(id: Long, token: String) = service.sendResume(id, token)
 
     override suspend fun getCompanyVacancies(id: Long, token: String): HttpResponse = service.getCompanyVacancies(id, token)
+
+    override suspend fun getCompanyCourses(id: Long, token: String): HttpResponse = service.getCompanyCourses(id, token)
+
+    override suspend fun getCompanyPractices(id: Long, token: String): HttpResponse = service.getCompanyPractices(id, token)
 }

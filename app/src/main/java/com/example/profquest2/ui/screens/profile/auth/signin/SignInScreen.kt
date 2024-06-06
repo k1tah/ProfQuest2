@@ -19,6 +19,7 @@ import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.res.stringResource
+import androidx.compose.ui.text.input.PasswordVisualTransformation
 import androidx.compose.ui.text.style.TextDecoration
 import androidx.compose.ui.unit.dp
 import androidx.hilt.navigation.compose.hiltViewModel
@@ -77,7 +78,8 @@ fun SignInScreen(navController: NavController, viewModel: SignInViewModel = hilt
         PrimaryTextField(
             hint = stringResource(id = R.string.password),
             value = password,
-            onValueChange = { password = it }
+            onValueChange = { password = it },
+            visualTransformation = PasswordVisualTransformation()
         )
         Spacer(modifier = Modifier.height(8.dp))
 

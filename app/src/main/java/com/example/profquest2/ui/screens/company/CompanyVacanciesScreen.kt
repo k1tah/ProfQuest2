@@ -1,6 +1,7 @@
 package com.example.profquest2.ui.screens.company
 
 import androidx.compose.foundation.clickable
+import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.PaddingValues
 import androidx.compose.foundation.layout.Row
@@ -11,6 +12,7 @@ import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.width
 import androidx.compose.foundation.lazy.LazyColumn
 import androidx.compose.foundation.lazy.items
+import androidx.compose.foundation.selection.selectableGroup
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.runtime.getValue
@@ -25,8 +27,11 @@ import androidx.compose.ui.unit.dp
 import androidx.hilt.navigation.compose.hiltViewModel
 import androidx.navigation.NavController
 import com.example.profquest2.R
+import com.example.profquest2.ui.composables.button.PrimaryRadioButton
 import com.example.profquest2.ui.composables.dialog.LoadingDialog
 import com.example.profquest2.ui.composables.icon.Icon
+import com.example.profquest2.ui.composables.item.CourseItem
+import com.example.profquest2.ui.composables.item.PracticeItem
 import com.example.profquest2.ui.composables.item.VacancyItem
 import com.example.profquest2.ui.composables.text.TitleText
 import com.example.profquest2.ui.screens.vacancies.VacanciesSideEffect
@@ -36,7 +41,11 @@ import org.orbitmvi.orbit.compose.collectAsState
 import org.orbitmvi.orbit.compose.collectSideEffect
 
 @Composable
-fun CompanyVacanciesScreen(id: Long, navController: NavController, viewModel: VacanciesViewModel = hiltViewModel()) {
+fun CompanyVacanciesScreen(
+    id: Long,
+    navController: NavController,
+    viewModel: VacanciesViewModel = hiltViewModel()
+) {
     LaunchedEffect(key1 = true) {
         viewModel.getCompanyVacancies(id)
     }
@@ -74,6 +83,24 @@ fun CompanyVacanciesScreen(id: Long, navController: NavController, viewModel: Va
 
     if (isLoading) LoadingDialog(Modifier.fillMaxSize())
 
+    val types = arrayOf(
+        stringResource(id = R.string.vacancies),
+        stringResource(id = R.string.curses),
+        stringResource(id = R.string.practices)
+    )
+
+    var currentType by rememberSaveable { mutableStateOf("Вакансии") }
+
+    LaunchedEffect(currentType) {
+        when (currentType) {
+            "Вакансии" -> viewModel.getCompanyVacancies(id)
+
+            "Курсы" -> viewModel.getCompanyCourses(id)
+
+            "Практики" -> viewModel.getCompanyPractices(id)
+        }
+    }
+
     Column(
         modifier = Modifier
             .fillMaxSize()
@@ -88,30 +115,62 @@ fun CompanyVacanciesScreen(id: Long, navController: NavController, viewModel: Va
             )
             Spacer(modifier = Modifier.weight(1f))
 
-            TitleText(text = stringResource(id = R.string.company_vacancies))
+            TitleText(text = "$currentType компании")
             Spacer(modifier = Modifier.width(16.dp))
 
             Spacer(modifier = Modifier.weight(1f))
         }
         Spacer(modifier = Modifier.height(24.dp))
 
-        LazyColumn(
-            contentPadding = PaddingValues(vertical = 16.dp)
+        Row(
+            modifier = Modifier
+                .padding(horizontal = 16.dp)
+                .height(64.dp)
+                .selectableGroup(),
+            horizontalArrangement = Arrangement.SpaceBetween,
+            verticalAlignment = Alignment.CenterVertically
         ) {
-            items(state.companyVacancies) { vacancy ->
-                state.companies.find { it.id == vacancy.company }
-                    ?.let { company ->
+            types.forEach {
+                PrimaryRadioButton(
+                    state = currentType == it, onClick = {
+                        currentType = it
+                    },
+                    text = it
+                )
+            }
+        }
+        Spacer(modifier = Modifier.height(8.dp))
+
+        LazyColumn(
+            contentPadding = PaddingValues(16.dp),
+            verticalArrangement = Arrangement.spacedBy(8.dp)
+        ) {
+            when (currentType) {
+                "Вакансии" -> {
+                    items(state.companyVacancies) { vacancy ->
                         VacancyItem(
                             vacancy,
-                            company,
-                            onSendResume = {
-                                viewModel.sendResume(vacancy.id)
-                            },
                             onFavouriteClick = {
                                 viewModel.updateIsFavourite(vacancy.id)
+                            },
+                            onSendResume = {
+                                viewModel.sendResume(vacancy.id)
                             }
                         )
                     }
+                }
+
+                "Курсы" -> {
+                    items(state.companyCourses) { course ->
+                        CourseItem(course)
+                    }
+                }
+
+                "Практики" -> {
+                    items(state.companyPractices) { practice ->
+                        PracticeItem(practice = practice)
+                    }
+                }
             }
         }
     }

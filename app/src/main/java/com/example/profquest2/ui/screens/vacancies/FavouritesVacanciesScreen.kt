@@ -101,19 +101,15 @@ fun FavouritesVacanciesScreen(
             contentPadding = PaddingValues(vertical = 16.dp)
         ) {
             items(state.favouritesVacancies) { vacancy ->
-                state.companies.find { it.id == vacancy.company }
-                    ?.let { company ->
-                        VacancyItem(
-                            vacancy,
-                            company,
-                            onSendResume = {
-                                viewModel.sendResume(vacancy.id)
-                            },
-                            onFavouriteClick = {
-                                viewModel.updateIsFavourite(vacancy.id)
-                            }
-                        )
+                VacancyItem(
+                    vacancy,
+                    onSendResume = {
+                        viewModel.sendResume(vacancy.id)
+                    },
+                    onFavouriteClick = {
+                        viewModel.updateIsFavourite(vacancy.id)
                     }
+                )
             }
         }
     }

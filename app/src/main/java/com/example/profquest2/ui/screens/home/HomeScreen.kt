@@ -144,7 +144,8 @@ fun HomeScreen(navController: NavController, viewModel: HomeViewModel = hiltView
 
     if (unauthorized) {
         Column(
-            Modifier.fillMaxSize(), verticalArrangement = Arrangement.Center,
+            Modifier.fillMaxSize(),
+            verticalArrangement = Arrangement.Center,
             horizontalAlignment = Alignment.CenterHorizontally
         ) {
             TitleText(text = stringResource(id = R.string.unauthorized))
@@ -221,11 +222,13 @@ fun HomeScreen(navController: NavController, viewModel: HomeViewModel = hiltView
 
                 SwipeRefresh(
                     state = refreshState,
-                    onRefresh = { viewModel.refreshPosts() }) {
+                    onRefresh = { viewModel.refreshPosts() }
+                ) {
                     LazyColumn(
                         contentPadding = PaddingValues(16.dp),
                         verticalArrangement = Arrangement.spacedBy(8.dp),
-                        state = scrollState
+                        state = scrollState,
+                        modifier = Modifier.fillMaxSize()
                     ) {
                         items(state.posts) {
                             Post(

@@ -76,6 +76,8 @@
     <string name="vacancies">Вакансии</string>
     <string name="curses">Курсы</string>
     <string name="practices">Практики</string>
+    <string name="documents">Документы</string>
+    <string name="specialities">Специальности</string>
 
 
     <!-- Confirm Code Screen -->

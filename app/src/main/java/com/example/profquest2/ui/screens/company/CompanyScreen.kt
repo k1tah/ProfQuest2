@@ -179,7 +179,7 @@ fun CompanyScreen(
                     modifier = Modifier.size(16.dp)
                 )
                 Spacer(modifier = Modifier.width(2.dp))
-                LabelText(text = state.company.date ?: "Не указано")
+                LabelText(text = state.company.date?.formatDate() ?: "Не указано")
             }
             Spacer(modifier = Modifier.height(4.dp))
 
@@ -272,25 +272,6 @@ fun CompanyScreen(
                     text = stringResource(id = R.string.vacansies),
                     modifier = Modifier.fillMaxWidth(0.33f)
                 )
-            }
-
-            Row(
-                modifier = Modifier
-                    .padding(horizontal = 16.dp)
-                    .height(64.dp)
-                    .selectableGroup(),
-                horizontalArrangement = Arrangement.SpaceBetween,
-                verticalAlignment = Alignment.CenterVertically
-            ){
-                PrimaryButton(onClick = {
-                    navController.navigate(Destination.CompanyContent.route)},
-                    text = stringResource(id = R.string.vacancies))
-                PrimaryButton(onClick = {
-                    navController.navigate(Destination.CompanyContent.route)},
-                    text = stringResource(id = R.string.curses))
-                PrimaryButton(onClick = {
-                    navController.navigate(Destination.CompanyContent.route)},
-                    text = stringResource(id = R.string.practices))
             }
 
             Spacer(modifier = Modifier.height(16.dp))

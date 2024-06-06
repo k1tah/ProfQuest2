@@ -1,5 +1,6 @@
 package com.example.profquest2.ui.screens.vacancies
 
+import android.util.Log
 import androidx.compose.animation.AnimatedVisibility
 import androidx.compose.animation.slideInHorizontally
 import androidx.compose.foundation.clickable
@@ -17,6 +18,7 @@ import androidx.compose.foundation.lazy.items
 import androidx.compose.foundation.lazy.rememberLazyListState
 import androidx.compose.foundation.selection.selectableGroup
 import androidx.compose.runtime.Composable
+import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.mutableIntStateOf
 import androidx.compose.runtime.mutableStateOf
@@ -34,6 +36,8 @@ import com.example.profquest2.R
 import com.example.profquest2.ui.composables.button.PrimaryButton
 import com.example.profquest2.ui.composables.button.PrimaryRadioButton
 import com.example.profquest2.ui.composables.icon.Icon
+import com.example.profquest2.ui.composables.item.CourseItem
+import com.example.profquest2.ui.composables.item.PracticeItem
 import com.example.profquest2.ui.composables.item.VacancyItem
 import com.example.profquest2.ui.composables.text.TitleText
 import com.example.profquest2.ui.composables.textField.SearchField
@@ -60,10 +64,6 @@ fun VacanciesScreen(navController: NavController, viewModel: VacanciesViewModel 
     var isLoading by rememberSaveable {
         mutableStateOf(false)
     }
-    var vacanciesState by rememberSaveable{ mutableStateOf(true) }
-    var coursesState by rememberSaveable{ mutableStateOf(false) }
-    var practicesState by rememberSaveable{ mutableStateOf(false) }
-    var currentInfoType by rememberSaveable { mutableStateOf("Vacancies") }
 
     var currentPage by rememberSaveable {
         mutableIntStateOf(0)
@@ -99,17 +99,24 @@ fun VacanciesScreen(navController: NavController, viewModel: VacanciesViewModel 
             }
         }
     }
-    when(currentInfoType){
-        "Vacancies" ->{
-            /*TODO*/
-        }
-        "Curses" ->{
-            /*TODO*/
-        }
-        "Practices" ->{
-            /*TODO*/
+    val types = arrayOf(
+        stringResource(id = R.string.vacancies),
+        stringResource(id = R.string.curses),
+        stringResource(id = R.string.practices)
+    )
+
+    var currentType by rememberSaveable { mutableStateOf("Вакансии") }
+
+    LaunchedEffect(currentType) {
+        when (currentType) {
+            "Вакансии" -> viewModel.refreshVacancies()
+
+            "Курсы" -> viewModel.refreshCourses()
+
+            "Практики" -> viewModel.refreshPractices()
         }
     }
+
     val state = viewModel.collectAsState().value
 
     if (unauthorized) {
@@ -159,7 +166,7 @@ fun VacanciesScreen(navController: NavController, viewModel: VacanciesViewModel 
                             modifier = Modifier.clickable { navController.navigate(Destination.Schools.route) }
                         )
                         Spacer(modifier = Modifier.weight(1f))
-                        TitleText(text = stringResource(id = R.string.vacansies))
+                        TitleText(text = currentType)
                         Spacer(modifier = Modifier.weight(1f))
                         Spacer(modifier = Modifier.width(16.dp))
                         Icon(
@@ -175,15 +182,26 @@ fun VacanciesScreen(navController: NavController, viewModel: VacanciesViewModel 
                         value = searchQuery,
                         onValueChanged = {
                             searchQuery = it
-                            if (searchQuery.length >= 2) viewModel.searchVacancies(searchQuery)
+                            if (searchQuery.length >= 2) {
+                                when (currentType) {
+                                    "Вакансии" -> viewModel.searchVacancies(searchQuery)
+
+                                    "Курсы" -> viewModel.searchCourses(searchQuery)
+
+                                    "Практики" -> viewModel.searchPractices(searchQuery)
+                                }
+                            }
                         },
                         onClose = {
                             isSearchVisible = false
-                            viewModel.getVacancies()
+                            viewModel.refreshVacancies()
+                            viewModel.refreshCourses()
+                            viewModel.refreshPractices()
                         }
                     )
                 }
             }
+
             Row(
                 modifier = Modifier
                     .padding(horizontal = 16.dp)
@@ -191,37 +209,28 @@ fun VacanciesScreen(navController: NavController, viewModel: VacanciesViewModel 
                     .selectableGroup(),
                 horizontalArrangement = Arrangement.SpaceBetween,
                 verticalAlignment = Alignment.CenterVertically
-            ){
-                PrimaryRadioButton(state = vacanciesState, onClick = {
-                    currentInfoType = "Vacancies"
-                    vacanciesState = true
-                    coursesState = false
-                    practicesState = false},
-                    text = stringResource(id = R.string.vacancies))
-                PrimaryRadioButton(state = coursesState, onClick = {
-                    currentInfoType = "Curses"
-                    vacanciesState = false
-                    coursesState = true
-                    practicesState = false},
-                    text = stringResource(id = R.string.curses))
-                PrimaryRadioButton(state = practicesState, onClick = {
-                    currentInfoType = "Practices"
-                    vacanciesState = false
-                    coursesState = false
-                    practicesState = true},
-                    text = stringResource(id = R.string.practices))
+            ) {
+                types.forEach {
+                    PrimaryRadioButton(
+                        state = currentType == it, onClick = {
+                            currentType = it
+                        },
+                        text = it
+                    )
+                }
             }
+
             Spacer(modifier = Modifier.height(8.dp))
+
             LazyColumn(
                 contentPadding = PaddingValues(16.dp),
                 verticalArrangement = Arrangement.spacedBy(8.dp)
             ) {
-                items(state.vacancies) { vacancy ->
-                    state.companies.find { it.id == vacancy.company }
-                        ?.let { company ->
+                when (currentType) {
+                    "Вакансии" -> {
+                        items(state.vacancies) { vacancy ->
                             VacancyItem(
                                 vacancy,
-                                company,
                                 onFavouriteClick = {
                                     viewModel.updateIsFavourite(vacancy.id)
                                 },
@@ -230,6 +239,19 @@ fun VacanciesScreen(navController: NavController, viewModel: VacanciesViewModel 
                                 }
                             )
                         }
+                    }
+
+                    "Курсы" -> {
+                        items(state.courses) { course ->
+                            CourseItem(course)
+                        }
+                    }
+
+                    "Практики" -> {
+                        items(state.practices) { practice ->
+                            PracticeItem(practice)
+                        }
+                    }
                 }
             }
         }

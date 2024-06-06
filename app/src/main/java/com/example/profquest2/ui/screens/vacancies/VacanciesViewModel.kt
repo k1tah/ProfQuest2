@@ -5,6 +5,8 @@ import com.example.data.repository.AuthRepository
 import com.example.data.repository.CompanyRepository
 import com.example.data.repository.VacanciesRepository
 import com.example.domain.model.Company
+import com.example.domain.model.Course
+import com.example.domain.model.Practice
 import com.example.domain.model.Vacancy
 import dagger.hilt.android.lifecycle.HiltViewModel
 import io.ktor.client.call.body
@@ -29,14 +31,79 @@ class VacanciesViewModel @Inject constructor(
     private val companyRepository: CompanyRepository
 ) : ContainerHost<VacanciesState, VacanciesSideEffect>, ViewModel() {
 
-    override val container: Container<VacanciesState, VacanciesSideEffect> =
-        container(VacanciesState())
+    override val container: Container<VacanciesState, VacanciesSideEffect> = container(VacanciesState())
 
     private var delayJob: Job? = null
 
     init {
         getCompanies()
         getVacancies()
+    }
+
+    fun refreshVacancies() = intent {
+        val response = vacanciesRepository.getVacancies(
+            "",
+            "",
+            "",
+            0,
+            10,
+            authRepository.getAuthToken()
+        )
+        when (response.status) {
+            HttpStatusCode.OK -> {
+                postSideEffect(VacanciesSideEffect.Done)
+                val vacancies = response.body<List<Vacancy>>()
+                reduce { state.copy(vacancies = vacancies) }
+            }
+
+            HttpStatusCode.Unauthorized -> postSideEffect(VacanciesSideEffect.Unauthorized)
+
+            else -> postSideEffect(VacanciesSideEffect.Error(response.status.value.toString()))
+        }
+    }
+
+    fun refreshPractices() = intent {
+        val response = vacanciesRepository.getPractices(
+            "",
+            "",
+            "",
+            0,
+            10,
+            authRepository.getAuthToken()
+        )
+        when (response.status) {
+            HttpStatusCode.OK -> {
+                postSideEffect(VacanciesSideEffect.Done)
+                val practices = response.body<List<Practice>>()
+                reduce { state.copy(practices = practices) }
+            }
+
+            HttpStatusCode.Unauthorized -> postSideEffect(VacanciesSideEffect.Unauthorized)
+
+            else -> postSideEffect(VacanciesSideEffect.Error(response.status.value.toString()))
+        }
+    }
+
+    fun refreshCourses() = intent {
+        val response = vacanciesRepository.getCourses(
+            "",
+            "",
+            "",
+            0,
+            10,
+            authRepository.getAuthToken()
+        )
+        when (response.status) {
+            HttpStatusCode.OK -> {
+                postSideEffect(VacanciesSideEffect.Done)
+                val courses = response.body<List<Course>>()
+                reduce { state.copy(courses = courses) }
+            }
+
+            HttpStatusCode.Unauthorized -> postSideEffect(VacanciesSideEffect.Unauthorized)
+
+            else -> postSideEffect(VacanciesSideEffect.Error(response.status.value.toString()))
+        }
     }
 
     fun getVacancies(
@@ -66,6 +133,82 @@ class VacanciesViewModel @Inject constructor(
             HttpStatusCode.Unauthorized -> postSideEffect(VacanciesSideEffect.Unauthorized)
 
             else -> postSideEffect(VacanciesSideEffect.Error(response.status.value.toString()))
+        }
+    }
+
+    fun getPractices(
+        query: String = "",
+        address: String = "",
+        name: String = "",
+        page: Int = 0,
+        size: Int = 10
+    ) = intent {
+        val response = vacanciesRepository.getPractices(
+            query,
+            address,
+            name,
+            page,
+            size,
+            authRepository.getAuthToken()
+        )
+        when (response.status) {
+            HttpStatusCode.OK -> {
+                postSideEffect(VacanciesSideEffect.Done)
+                val practices = response.body<List<Practice>>()
+                val currentVacancies = state.practices.toMutableList()
+                currentVacancies.addAll(practices)
+                reduce { state.copy(practices = currentVacancies) }
+            }
+
+            HttpStatusCode.Unauthorized -> postSideEffect(VacanciesSideEffect.Unauthorized)
+
+            else -> postSideEffect(VacanciesSideEffect.Error(response.status.value.toString()))
+        }
+    }
+
+    fun getCourses(
+        query: String = "",
+        address: String = "",
+        name: String = "",
+        page: Int = 0,
+        size: Int = 10
+    ) = intent {
+        val response = vacanciesRepository.getCourses(
+            query,
+            address,
+            name,
+            page,
+            size,
+            authRepository.getAuthToken()
+        )
+        when (response.status) {
+            HttpStatusCode.OK -> {
+                postSideEffect(VacanciesSideEffect.Done)
+                val courses = response.body<List<Course>>()
+                val currentCourses = state.courses.toMutableList()
+                currentCourses.addAll(courses)
+                reduce { state.copy(courses = currentCourses) }
+            }
+
+            HttpStatusCode.Unauthorized -> postSideEffect(VacanciesSideEffect.Unauthorized)
+
+            else -> postSideEffect(VacanciesSideEffect.Error(response.status.value.toString()))
+        }
+    }
+
+    fun searchCourses(query: String) {
+        if (delayJob?.isActive == true) delayJob?.cancel()
+        delayJob = CoroutineScope(Dispatchers.IO).launch {
+            delay(300L)
+            getCourses(query = query)
+        }
+    }
+
+    fun searchPractices(query: String) {
+        if (delayJob?.isActive == true) delayJob?.cancel()
+        delayJob = CoroutineScope(Dispatchers.IO).launch {
+            delay(300L)
+            getPractices(query = query)
         }
     }
 
@@ -122,6 +265,42 @@ class VacanciesViewModel @Inject constructor(
         }
     }
 
+    fun getCompanyPractices(
+        id: Long
+    ) = intent {
+        postSideEffect(VacanciesSideEffect.Loading)
+        val response = vacanciesRepository.getCompanyPractices(id, authRepository.getAuthToken())
+        when (response.status) {
+            HttpStatusCode.OK -> {
+                val practices = response.body<List<Practice>>()
+                reduce { state.copy(companyPractices = practices) }
+                postSideEffect(VacanciesSideEffect.Done)
+            }
+
+            HttpStatusCode.Unauthorized -> postSideEffect(VacanciesSideEffect.Unauthorized)
+
+            else -> postSideEffect(VacanciesSideEffect.Error(response.status.value.toString()))
+        }
+    }
+
+    fun getCompanyCourses(
+        id: Long
+    ) = intent {
+        postSideEffect(VacanciesSideEffect.Loading)
+        val response = vacanciesRepository.getCompanyCourses(id, authRepository.getAuthToken())
+        when (response.status) {
+            HttpStatusCode.OK -> {
+                val courses = response.body<List<Course>>()
+                reduce { state.copy(companyCourses = courses) }
+                postSideEffect(VacanciesSideEffect.Done)
+            }
+
+            HttpStatusCode.Unauthorized -> postSideEffect(VacanciesSideEffect.Unauthorized)
+
+            else -> postSideEffect(VacanciesSideEffect.Error(response.status.value.toString()))
+        }
+    }
+
     fun updateIsFavourite(id: Long) = intent {
         val response = vacanciesRepository.updateIsFavourite(id, authRepository.getAuthToken())
 
@@ -163,8 +342,12 @@ fun List<Vacancy>.update(item: Vacancy): List<Vacancy> {
 data class VacanciesState(
     val vacancies: List<Vacancy> = listOf(),
     val companies: List<Company> = listOf(),
+    val practices: List<Practice> = listOf(),
+    val courses: List<Course> = listOf(),
     val favouritesVacancies: List<Vacancy> = listOf(),
-    val companyVacancies: List<Vacancy> = listOf()
+    val companyVacancies: List<Vacancy> = listOf(),
+    val companyPractices: List<Practice> = listOf(),
+    val companyCourses: List<Course> = listOf()
 )
 
 sealed interface VacanciesSideEffect {

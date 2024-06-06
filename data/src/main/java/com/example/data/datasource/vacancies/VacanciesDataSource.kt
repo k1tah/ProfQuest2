@@ -12,6 +12,24 @@ interface VacanciesDataSource {
         token: String
     ): HttpResponse
 
+    suspend fun getCourses(
+        query: String,
+        address: String,
+        name: String,
+        page: Int,
+        size: Int,
+        token: String
+    ): HttpResponse
+
+    suspend fun getPractices(
+        query: String,
+        address: String,
+        name: String,
+        page: Int,
+        size: Int,
+        token: String
+    ): HttpResponse
+
     suspend fun getFavouritesVacancies(token: String): HttpResponse
 
     suspend fun updateIsFavourite(id: Long, token: String): HttpResponse
@@ -19,4 +37,8 @@ interface VacanciesDataSource {
     suspend fun sendResume(id: Long, token: String): HttpResponse
 
     suspend fun getCompanyVacancies(id: Long, token: String): HttpResponse
+
+    suspend fun getCompanyPractices(id: Long, token: String): HttpResponse
+
+    suspend fun getCompanyCourses(id: Long, token: String): HttpResponse
 }
