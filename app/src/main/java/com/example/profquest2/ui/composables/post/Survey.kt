@@ -13,6 +13,7 @@ import androidx.compose.foundation.layout.Spacer
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.padding
+import androidx.compose.foundation.layout.width
 import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.material3.Surface
 import androidx.compose.runtime.Composable
@@ -26,6 +27,7 @@ import com.example.profquest2.R
 import com.example.profquest2.ui.composables.icon.Icon
 import com.example.profquest2.ui.composables.text.BodyText
 import com.example.profquest2.ui.composables.text.LabelText
+import com.example.profquest2.ui.composables.text.TitleText
 import com.example.profquest2.ui.theme.ProfQuest2Theme
 
 @Composable
@@ -82,6 +84,7 @@ fun SurveyItem(
 
 @Composable
 fun Survey(
+    title: String,
     questions: List<String>,
     votes: List<Int>,
     isSelected: Boolean,
@@ -90,7 +93,11 @@ fun Survey(
     daysLeft: Int
 ) {
     Column {
-        Icon(icon = R.drawable.ic_stats)
+        Row {
+            Icon(icon = R.drawable.ic_stats)
+            Spacer(modifier = Modifier.width(16.dp))
+            TitleText(text = title)
+        }
         Spacer(modifier = Modifier.height(16.dp))
 
         questions.forEachIndexed { index, item ->
@@ -117,7 +124,7 @@ fun Survey(
             horizontalArrangement = Arrangement.spacedBy(4.dp),
             verticalAlignment = Alignment.CenterVertically
         ) {
-            LabelText(text = votes.sum().toString() + stringResource(R.string.votes))
+            LabelText(text = votes.sum().toString() + " " +  stringResource(R.string.votes))
             Icon(icon = R.drawable.ic_circle)
             LabelText(
                 text = when (daysLeft) {

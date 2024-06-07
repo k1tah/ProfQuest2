@@ -91,7 +91,7 @@ fun SchoolsScreen(navController: NavController, viewModel: SchoolsViewModel = hi
                 SchoolItem(
                     company,
                     onCompanyClick = {
-                        navController.navigate(Destination.School.route + "/${company.id}")
+                        navController.navigate(Destination.School.route + "/${company.institutionID}")
                     }
                 )
             }

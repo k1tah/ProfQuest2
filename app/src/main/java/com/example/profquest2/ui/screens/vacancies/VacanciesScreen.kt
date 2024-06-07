@@ -1,6 +1,5 @@
 package com.example.profquest2.ui.screens.vacancies
 
-import android.util.Log
 import androidx.compose.animation.AnimatedVisibility
 import androidx.compose.animation.slideInHorizontally
 import androidx.compose.foundation.clickable
@@ -97,6 +96,8 @@ fun VacanciesScreen(navController: NavController, viewModel: VacanciesViewModel 
                 isLoading = false
                 context.showShortToast(it.message)
             }
+
+            is VacanciesSideEffect.ResumeNotFound -> context.showShortToast("Сначала добавьте свое резюме в профиле!")
         }
     }
     val types = arrayOf(

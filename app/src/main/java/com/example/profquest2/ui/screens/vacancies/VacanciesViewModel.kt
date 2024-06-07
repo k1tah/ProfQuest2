@@ -40,9 +40,9 @@ class VacanciesViewModel @Inject constructor(
         getVacancies()
     }
 
-    fun refreshVacancies() = intent {
+    fun refreshVacancies(query: String = "") = intent {
         val response = vacanciesRepository.getVacancies(
-            "",
+            query,
             "",
             "",
             0,
@@ -62,9 +62,9 @@ class VacanciesViewModel @Inject constructor(
         }
     }
 
-    fun refreshPractices() = intent {
+    fun refreshPractices(query: String = "") = intent {
         val response = vacanciesRepository.getPractices(
-            "",
+            query,
             "",
             "",
             0,
@@ -84,9 +84,9 @@ class VacanciesViewModel @Inject constructor(
         }
     }
 
-    fun refreshCourses() = intent {
+    fun refreshCourses(query: String = "") = intent {
         val response = vacanciesRepository.getCourses(
-            "",
+            query,
             "",
             "",
             0,
@@ -200,7 +200,7 @@ class VacanciesViewModel @Inject constructor(
         if (delayJob?.isActive == true) delayJob?.cancel()
         delayJob = CoroutineScope(Dispatchers.IO).launch {
             delay(300L)
-            getCourses(query = query)
+            refreshCourses(query = query)
         }
     }
 
@@ -208,7 +208,7 @@ class VacanciesViewModel @Inject constructor(
         if (delayJob?.isActive == true) delayJob?.cancel()
         delayJob = CoroutineScope(Dispatchers.IO).launch {
             delay(300L)
-            getPractices(query = query)
+            refreshPractices(query = query)
         }
     }
 
@@ -216,7 +216,7 @@ class VacanciesViewModel @Inject constructor(
         if (delayJob?.isActive == true) delayJob?.cancel()
         delayJob = CoroutineScope(Dispatchers.IO).launch {
             delay(300L)
-            getVacancies(query = query)
+            refreshVacancies(query = query)
         }
     }
 
@@ -224,10 +224,13 @@ class VacanciesViewModel @Inject constructor(
         postSideEffect(VacanciesSideEffect.Loading)
         val response = vacanciesRepository.sendResume(id, authRepository.getAuthToken())
         when (response.status) {
+            HttpStatusCode.OK -> postSideEffect(VacanciesSideEffect.ResumeSended)
+
             HttpStatusCode.Continue -> postSideEffect(VacanciesSideEffect.ResumeSended)
 
-
             HttpStatusCode.Unauthorized -> postSideEffect(VacanciesSideEffect.Unauthorized)
+
+            HttpStatusCode.NotFound -> postSideEffect(VacanciesSideEffect.ResumeNotFound)
 
             else -> postSideEffect(VacanciesSideEffect.Error(response.status.value.toString()))
         }
@@ -360,4 +363,6 @@ sealed interface VacanciesSideEffect {
     data object Done : VacanciesSideEffect
 
     data object ResumeSended : VacanciesSideEffect
+
+    data object ResumeNotFound : VacanciesSideEffect
 }

@@ -22,7 +22,6 @@ import androidx.compose.foundation.lazy.items
 import androidx.compose.foundation.lazy.rememberLazyListState
 import androidx.compose.foundation.pager.HorizontalPager
 import androidx.compose.foundation.pager.rememberPagerState
-import androidx.compose.foundation.selection.selectableGroup
 import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.filled.AccountCircle
@@ -179,7 +178,7 @@ fun CompanyScreen(
                     modifier = Modifier.size(16.dp)
                 )
                 Spacer(modifier = Modifier.width(2.dp))
-                LabelText(text = state.company.date?.formatDate() ?: "Не указано")
+                LabelText(text = "Дата регистрации: ${state.company.date?.formatDate()}")
             }
             Spacer(modifier = Modifier.height(4.dp))
 
@@ -437,6 +436,7 @@ fun CompanyPostItem(
 
             if (post.votes != null && post.variants != null && post.isVoted != null && post.expirationDate != null) {
                 Survey(
+                    post.voteName ?: "",
                     post.variants!!,
                     post.votes!!,
                     post.isVoted!!,

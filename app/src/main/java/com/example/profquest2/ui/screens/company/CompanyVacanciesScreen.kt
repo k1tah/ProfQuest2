@@ -76,6 +76,8 @@ fun CompanyVacanciesScreen(
             }
 
             is VacanciesSideEffect.Error -> isLoading = false
+
+            is VacanciesSideEffect.ResumeNotFound -> context.showShortToast("Сначала добавьте свое резюме в профиле!")
         }
     }
 

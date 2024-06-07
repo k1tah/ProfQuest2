@@ -8,6 +8,7 @@ data class Company(
     val address: String?,
     @SerialName("companyId")
     val id: Long,
+    val userID: Long,
     @SerialName("companyName")
     val name: String,
     val date: String?,

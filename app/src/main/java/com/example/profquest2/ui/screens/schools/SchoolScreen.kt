@@ -176,7 +176,7 @@ fun SchoolScreen(
                     modifier = Modifier.size(16.dp)
                 )
                 Spacer(modifier = Modifier.width(2.dp))
-                LabelText(text = state.school.date)
+                LabelText(text = "Дата регистрации: ${state.school.date.formatDate()}")
             }
             Spacer(modifier = Modifier.height(24.dp))
 
@@ -403,6 +403,7 @@ fun SchoolPostItem(
 
             if (post.votes != null && post.variants != null && post.isVoted != null && post.expirationDate != null) {
                 Survey(
+                    post.voteName ?: "",
                     post.variants!!,
                     post.votes!!,
                     post.isVoted!!,
