@@ -2,6 +2,7 @@ package com.example.data.api
 
 import com.example.data.api.body.UpdateProfileRequestBody
 import com.example.data.api.body.auth.AuthRequestBody
+import com.example.data.api.body.resetPassword.ResetRequestBody
 import com.example.data.utils.getBasicToken
 import io.ktor.client.HttpClient
 import io.ktor.client.request.forms.MultiPartFormDataContent
@@ -72,12 +73,9 @@ class ApiService @Inject constructor(private val client: HttpClient) {
             )
         }
 
-    suspend fun resetPassword(email: String, code: String, password: String) =
+    suspend fun resetPassword(email: String, token: String, password: String) =
         client.put(BASE_URL + "user/reset") {
-            url {
-                parameters.append("email", email)
-                parameters.append("token", code)
-                parameters.append("password", password)
-            }
+            contentType(ContentType.Application.Json)
+            setBody(ResetRequestBody(email, token, password))
         }
 }

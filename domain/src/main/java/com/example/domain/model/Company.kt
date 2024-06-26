@@ -5,13 +5,14 @@ import kotlinx.serialization.Serializable
 
 @Serializable
 data class Company(
-    val address: String?,
     @SerialName("companyId")
     val id: Long,
+    val userID: Long,
     @SerialName("companyName")
     val name: String,
     val date: String?,
     val description: String?,
+    val address: String?,
     val email: String,
     val image: File?,
     val nickname: String,
